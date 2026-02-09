@@ -9,6 +9,7 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
+      "svelte": "./dist/index.js",
       "default": "./dist/index.js"
     },
     "./server": {
@@ -17,18 +18,16 @@
     },
     "./theme": {
       "types": "./dist/theme/index.d.ts",
+      "svelte": "./dist/theme/index.js",
       "default": "./dist/theme/index.js"
     }
   },
-  "svelte": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "svelte-package --tsconfig ./tsconfig.json",
-    "prepublishOnly": "npm run build",
-    "prepare": "npm run build"
+    "build": "svelte-package --tsconfig ./tsconfig.json"
   },
   "peerDependencies": {
-    "svelte": "^5.0.0"
+    "svelte": "^4.0.0 || ^5.0.0"
   },
   "dependencies": {
     "esm-env": "^1.2.2",

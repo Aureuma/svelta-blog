@@ -12,6 +12,8 @@ node_modules
 /test-results
 /playwright-report
 /packages/*/dist
+!/packages/blogkit/dist/
+!/packages/blogkit/dist/**
 /packages/*/.svelte-kit
 
 # OS
