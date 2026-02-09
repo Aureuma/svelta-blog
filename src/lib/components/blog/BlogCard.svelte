@@ -10,7 +10,7 @@
 	let thumbHeight = $derived(variant === 'suggestion' ? 'h-[190px]' : 'h-[280px]');
 </script>
 
-<a href={`/blog/${post.slug}`} class="group block">
+<a href={`/blog/${post.slug}`} class="group block" data-testid="blog-card">
 	<div class="relative overflow-hidden rounded-2xl border border-border-soft/10 bg-background-soft {thumbHeight}">
 		<img
 			src={post.cover}

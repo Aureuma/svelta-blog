@@ -10,7 +10,7 @@
 	let items: BlogCategory[] = $derived([{ label: 'All articles', slug: '' }, ...categories]);
 </script>
 
-<div class="relative">
+<div class="relative" data-testid="blog-tags">
 	<div
 		class="fade-mask-x no-scrollbar flex gap-2 overflow-x-auto py-2 md:flex-wrap md:overflow-visible md:[-webkit-mask-image:none] md:[mask-image:none]"
 		role="tablist"
