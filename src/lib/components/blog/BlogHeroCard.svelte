@@ -6,6 +6,7 @@
 
 <a
 	href={`/blog/${post.slug}`}
+	data-testid="blog-hero"
 	class="group relative my-12 block h-[480px] overflow-hidden rounded-3xl shadow-drop-md"
 >
 	<img

@@ -90,7 +90,7 @@
 							<div class="text-xs text-text-muted">{data.post.author.title}</div>
 						</div>
 					</div>
-					<ShareButtons title={data.post.title} url={data.canonicalUrl} />
+					<ShareButtons title={data.post.title} url={data.canonicalUrl} testId="blog-share-mobile" />
 				</div>
 
 				<article bind:this={articleEl} class="blog-prose prose mt-10">
@@ -109,7 +109,7 @@
 					</div>
 				</div>
 
-				<ShareButtons title={data.post.title} url={data.canonicalUrl} />
+				<ShareButtons title={data.post.title} url={data.canonicalUrl} testId="blog-share-desktop" />
 			</aside>
 		</div>
 	</div>

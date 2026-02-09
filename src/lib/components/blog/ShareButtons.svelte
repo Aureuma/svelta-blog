@@ -1,10 +1,11 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
 
-	let { title, url, label = 'Share this article' } = $props<{
+	let { title, url, label = 'Share this article', testId } = $props<{
 		title: string;
 		url: string;
 		label?: string;
+		testId?: string;
 	}>();
 
 	let copied = $state(false);
@@ -39,7 +40,7 @@
 	let encodedTitle = $derived(encodeURIComponent(title));
 </script>
 
-<div>
+<div data-testid={testId}>
 	<p class="text-xs font-mono uppercase tracking-[0.6px] text-text-muted">{label}</p>
 	<div class="mt-3 flex flex-wrap gap-2">
 		<button
@@ -60,7 +61,8 @@
 		<button
 			type="button"
 			class="inline-flex size-8 items-center justify-center rounded-full border border-border-soft/10 bg-background-soft text-text-sub transition hover:bg-background-main/60 hover:text-text-main"
-			onclick={() => openShare(`https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`)}
+			onclick={() =>
+				openShare(`https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`)}
 			aria-label="Share on LinkedIn"
 		>
 			<svg viewBox="0 0 24 24" class="size-4" aria-hidden="true">
