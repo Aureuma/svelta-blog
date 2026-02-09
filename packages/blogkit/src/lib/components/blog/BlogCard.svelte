@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { BlogPost } from '$lib/types/blog';
-	import Avatar from '$lib/components/blog/Avatar.svelte';
+	import type { BlogPost } from '../../types/blog';
+	import Avatar from './Avatar.svelte';
 
 	let { post, variant = 'default' } = $props<{
 		post: BlogPost;

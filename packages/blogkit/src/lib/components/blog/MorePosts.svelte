@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { BlogPost } from '$lib/types/blog';
-	import BlogCard from '$lib/components/blog/BlogCard.svelte';
+	import type { BlogPost } from '../../types/blog';
+	import BlogCard from './BlogCard.svelte';
 
 	let { posts } = $props<{ posts: BlogPost[] }>();
 </script>

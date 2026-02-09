@@ -26,4 +26,3 @@ export function getAuthor(id: string): BlogAuthor {
 	if (!author) throw new Error(`Unknown author id: ${id}`);
 	return author;
 }
-

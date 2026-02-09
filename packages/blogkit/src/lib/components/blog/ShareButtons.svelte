@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { browser } from '$app/environment';
+	import { BROWSER } from 'esm-env';
 
 	let { title, url, label = 'Share this article', testId } = $props<{
 		title: string;
@@ -11,12 +11,12 @@
 	let copied = $state(false);
 
 	function openShare(href: string) {
-		if (!browser) return;
+		if (!BROWSER) return;
 		window.open(href, '_blank', 'noopener,noreferrer');
 	}
 
 	async function copyLink() {
-		if (!browser) return;
+		if (!BROWSER) return;
 		try {
 			await navigator.clipboard.writeText(url);
 			copied = true;
