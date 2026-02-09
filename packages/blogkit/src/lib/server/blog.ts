@@ -17,7 +17,14 @@ const frontmatterSchema = z.object({
 	draft: z.boolean().optional()
 });
 
-type Frontmatter = z.infer<typeof frontmatterSchema>;
+export type BlogFrontmatter = z.infer<typeof frontmatterSchema>;
+
+export type BlogFrontmatterAdapter = (args: {
+	data: unknown;
+	content: string;
+	slug: string;
+	path: string;
+}) => BlogFrontmatter;
 
 type CompiledModule = {
 	default: BlogPostFull['component'];
@@ -28,6 +35,8 @@ export type BlogCreateConfig = {
 	rawModules: Record<string, () => Promise<string>>;
 	getAuthor: (id: string) => BlogAuthor;
 	categoryOrder?: string[];
+	// Optional adapter for apps with existing frontmatter schemas.
+	mapFrontmatter?: BlogFrontmatterAdapter;
 };
 
 const DEFAULT_CATEGORY_ORDER = [
@@ -156,7 +165,9 @@ export function createBlog(config: BlogCreateConfig) {
 			const raw = await rawFn();
 
 			const { data, content } = matter(raw);
-			const metadata: Frontmatter = frontmatterSchema.parse(data);
+			const metadata: BlogFrontmatter = config.mapFrontmatter
+				? config.mapFrontmatter({ data, content, slug, path })
+				: frontmatterSchema.parse(data);
 			if (metadata.draft) continue;
 
 			const dateObj = parseISODate(metadata.date);
