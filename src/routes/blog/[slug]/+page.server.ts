@@ -1,4 +1,5 @@
 import { getAllPosts, getPostBySlug } from '$lib/server/blog';
+import { buildPostSeo } from '$lib/server/seo';
 import { error } from '@sveltejs/kit';
 import { render } from 'svelte/server';
 import type { PageServerLoad } from './$types';
@@ -32,7 +33,7 @@ export const load: PageServerLoad = async ({ params, url }) => {
 		post,
 		contentHtml: rendered.html,
 		morePosts,
-		canonicalUrl
+		canonicalUrl,
+		seo: buildPostSeo(post, canonicalUrl)
 	};
 };
-

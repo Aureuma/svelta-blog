@@ -673,13 +673,25 @@ Status: Done
 Implementation notes:
 - RSS lives at `src/routes/feed.xml/+server.ts`.
 - Auto-discovery is provided via `<link rel="alternate">` in `src/routes/+layout.svelte`.
-- The plan mentioned `src/lib/server/rss.ts`; we inlined RSS generation in the route for simplicity.
+- RSS XML generation is factored into `src/lib/server/rss.ts`.
 
 ### Workstream 7: Polish (A11y + SEO + QA)
 
 Status: Done (with ongoing content-driven tweaks as new post types are added)
 
 Implementation notes:
-- Per-post SEO meta tags are set in `src/routes/blog/[slug]/+page.svelte`.
+- Per-post SEO meta tags are set in `src/routes/blog/[slug]/+page.svelte` using `src/lib/server/seo.ts`.
 - E2E coverage is added via Playwright in `tests/blog.spec.ts` and includes theme toggling, RSS, and mobile folding checks.
 - Markdown edge cases are validated via `src/content/blog/markdown-kitchen-sink.md` and table/URL hardening in `src/app.css`.
+
+### Workstream 8: Library Packaging (Reuse Across Repos)
+
+Status: Done
+
+Implementation notes:
+- Reusable blog components + content loader helpers are packaged as a local workspace library: `packages/blogkit` (`@convelt/blogkit`).
+- The demo app consumes the library via thin glue modules:
+  - `src/lib/server/blog.ts` wraps `createBlog()` from `@convelt/blogkit/server`
+  - `src/lib/stores/theme.ts` wraps `createThemeController()` from `@convelt/blogkit/theme`
+  - `src/lib/types/blog.ts` re-exports library types
+- See `packages/blogkit/README.md` for integration guidance.
