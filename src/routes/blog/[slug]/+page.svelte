@@ -1,11 +1,5 @@
 <script lang="ts">
-	import Avatar from '$lib/components/blog/Avatar.svelte';
-	import BackLink from '$lib/components/blog/BackLink.svelte';
-	import Container from '$lib/components/blog/Container.svelte';
-	import ImageLightbox from '$lib/components/blog/ImageLightbox.svelte';
-	import MorePosts from '$lib/components/blog/MorePosts.svelte';
-	import ShareButtons from '$lib/components/blog/ShareButtons.svelte';
-	import SummaryCard from '$lib/components/blog/SummaryCard.svelte';
+	import { Avatar, BackLink, Container, ImageLightbox, MorePosts, ShareButtons, SummaryCard } from '@convelt/blogkit';
 	import type { BlogPost } from '$lib/types/blog';
 
 	let { data } = $props<{

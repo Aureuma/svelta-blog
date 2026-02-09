@@ -1,10 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import BlogCard from '$lib/components/blog/BlogCard.svelte';
-	import BlogHeroCard from '$lib/components/blog/BlogHeroCard.svelte';
-	import Container from '$lib/components/blog/Container.svelte';
-	import TagTabs from '$lib/components/blog/TagTabs.svelte';
+	import { BlogCard, BlogHeroCard, Container, TagTabs } from '@convelt/blogkit';
 	import type { BlogPost } from '$lib/types/blog';
 	import { onMount } from 'svelte';
 

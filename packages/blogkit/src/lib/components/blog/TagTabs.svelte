@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { BlogCategory } from '$lib/types/blog';
+	import type { BlogCategory } from '../../types/blog';
 
 	let { categories, selected, onSelect } = $props<{
 		categories: BlogCategory[];

@@ -1,5 +1,5 @@
-import { getAuthor } from '$lib/content/authors';
-import type { BlogCategory, BlogPost, BlogPostFull } from '$lib/types/blog';
+import type { BlogAuthor, BlogCategory, BlogPost, BlogPostFull } from '../types/blog';
+import { DEV } from 'esm-env';
 import matter from 'gray-matter';
 import readingTime from 'reading-time';
 import { z } from 'zod';
@@ -19,7 +19,18 @@ const frontmatterSchema = z.object({
 
 type Frontmatter = z.infer<typeof frontmatterSchema>;
 
-const CATEGORY_ORDER = [
+type CompiledModule = {
+	default: BlogPostFull['component'];
+};
+
+export type BlogCreateConfig = {
+	compiledModules: Record<string, () => Promise<CompiledModule>>;
+	rawModules: Record<string, () => Promise<string>>;
+	getAuthor: (id: string) => BlogAuthor;
+	categoryOrder?: string[];
+};
+
+const DEFAULT_CATEGORY_ORDER = [
 	'all',
 	'ai-trends',
 	'announcements',
@@ -104,107 +115,139 @@ function minutesToLabels(minutes: number) {
 	};
 }
 
-const compiledModules = import.meta.glob('/src/content/blog/*.md');
-const rawModules = import.meta.glob('/src/content/blog/*.md', {
-	query: '?raw',
-	import: 'default'
-});
+export function createBlog(config: BlogCreateConfig) {
+	const categoryOrder = config.categoryOrder ?? DEFAULT_CATEGORY_ORDER;
 
-type CompiledModule = {
-	default: BlogPostFull['component'];
-};
+	let cachedMetaIndex: BlogPost[] | null = null;
+	let cachedFullIndex: BlogPostFull[] | null = null;
+	let cachedSlugToPath: Map<string, string> | null = null;
 
-let cachedIndex: BlogPostFull[] | null = null;
+	function getSlugToPath(): Map<string, string> {
+		if (!DEV && cachedSlugToPath) return cachedSlugToPath;
 
-async function buildIndex(): Promise<BlogPostFull[]> {
-	if (!import.meta.env.DEV && cachedIndex) return cachedIndex;
+		const m = new Map<string, string>();
+		const paths = Object.keys(config.rawModules).sort();
+		for (const path of paths) {
+			const file = path.split('/').pop();
+			const slug = file?.replace(/\.md(?:\?.*)?$/, '');
+			if (!slug) continue;
+			m.set(slug, path);
+		}
 
-	const posts: BlogPostFull[] = [];
-	const paths = Object.keys(compiledModules).sort();
-
-	for (const path of paths) {
-		const slug = path.split('/').pop()?.replace(/\.md$/, '');
-		if (!slug) continue;
-
-		const [compiled, raw] = await Promise.all([
-			(compiledModules[path] as () => Promise<CompiledModule>)(),
-			(rawModules[path] as () => Promise<string>)()
-		]);
-
-		const { data, content } = matter(raw);
-		const metadata = frontmatterSchema.parse(data);
-		if (metadata.draft) continue;
-
-		const dateObj = parseISODate(metadata.date);
-		const rt = minutesToLabels(readingTime(content).minutes);
-		const category = normalizeCategory(metadata.category);
-
-		const excerpt = metadata.excerpt?.trim() || excerptFromContent(content);
-
-		posts.push({
-			slug,
-			title: metadata.title.trim(),
-			excerpt,
-			category,
-			tags: metadata.tags ?? [],
-			author: getAuthor(metadata.author),
-			date: metadata.date,
-			dateLong: fmtLong.format(dateObj),
-			dateShort: fmtShort.format(dateObj),
-			readingMinutes: rt.minutes,
-			readingTimeShort: rt.short,
-			readingTimeLong: rt.long,
-			cover: metadata.cover,
-			summaryAI: metadata.summaryAI,
-			featured: Boolean(metadata.featured),
-			component: compiled.default
-		});
+		if (!DEV) cachedSlugToPath = m;
+		return m;
 	}
 
-	posts.sort((a, b) => parseISODate(b.date).getTime() - parseISODate(a.date).getTime());
+	async function buildMetaIndex(): Promise<BlogPost[]> {
+		if (!DEV && cachedMetaIndex) return cachedMetaIndex;
 
-	if (!import.meta.env.DEV) cachedIndex = posts;
-	return posts;
-}
+		const posts: BlogPost[] = [];
+		const paths = Object.keys(config.rawModules).sort();
 
-export async function getAllPosts(): Promise<BlogPost[]> {
-	const full = await buildIndex();
-	return full.map(({ component: _c, ...rest }) => rest);
-}
+		for (const path of paths) {
+			const file = path.split('/').pop();
+			// Glob keys can include query strings depending on bundler usage; normalize aggressively.
+			const slug = file?.replace(/\.md(?:\?.*)?$/, '');
+			if (!slug) continue;
 
-export async function getAllPostsFull(): Promise<BlogPostFull[]> {
-	return buildIndex();
-}
+			const rawFn = config.rawModules[path];
+			if (!rawFn) continue;
 
-export async function getPostBySlug(slug: string): Promise<BlogPostFull | null> {
-	const posts = await buildIndex();
-	return posts.find((p) => p.slug === slug) ?? null;
-}
+			const raw = await rawFn();
 
-export async function getCategories(): Promise<BlogCategory[]> {
-	const posts = await getAllPosts();
-	const map = new Map<string, string>();
+			const { data, content } = matter(raw);
+			const metadata: Frontmatter = frontmatterSchema.parse(data);
+			if (metadata.draft) continue;
 
-	for (const p of posts) {
-		map.set(p.category.slug, p.category.label);
+			const dateObj = parseISODate(metadata.date);
+			const rt = minutesToLabels(readingTime(content).minutes);
+			const category = normalizeCategory(metadata.category);
+			const excerpt = metadata.excerpt?.trim() || excerptFromContent(content);
+
+			posts.push({
+				slug,
+				title: metadata.title.trim(),
+				excerpt,
+				category,
+				tags: metadata.tags ?? [],
+				author: config.getAuthor(metadata.author),
+				date: metadata.date,
+				dateLong: fmtLong.format(dateObj),
+				dateShort: fmtShort.format(dateObj),
+				readingMinutes: rt.minutes,
+				readingTimeShort: rt.short,
+				readingTimeLong: rt.long,
+				cover: metadata.cover,
+				summaryAI: metadata.summaryAI,
+				featured: Boolean(metadata.featured)
+			});
+		}
+
+		posts.sort((a, b) => parseISODate(b.date).getTime() - parseISODate(a.date).getTime());
+
+		if (!DEV) cachedMetaIndex = posts;
+		return posts;
 	}
 
-	const categories = Array.from(map.entries())
-		.map(([slug, label]) => ({ slug, label }))
-		.sort((a, b) => {
-			const ai = CATEGORY_ORDER.indexOf(a.slug);
-			const bi = CATEGORY_ORDER.indexOf(b.slug);
-			if (ai === -1 && bi === -1) return a.label.localeCompare(b.label);
-			if (ai === -1) return 1;
-			if (bi === -1) return -1;
-			return ai - bi;
-		});
+	async function getAllPosts(): Promise<BlogPost[]> {
+		return buildMetaIndex();
+	}
 
-	return categories;
-}
+	async function getAllPostsFull(): Promise<BlogPostFull[]> {
+		if (!DEV && cachedFullIndex) return cachedFullIndex;
 
-export async function pickHero(posts?: BlogPost[]): Promise<BlogPost> {
-	const list = posts ?? (await getAllPosts());
-	const featured = list.filter((p) => p.featured);
-	return (featured[0] ?? list[0])!;
+		const meta = await buildMetaIndex();
+		const slugToPath = getSlugToPath();
+
+		const full: BlogPostFull[] = [];
+		for (const post of meta) {
+			const path = slugToPath.get(post.slug);
+			const compiledFn = path ? config.compiledModules[path] : undefined;
+			if (!compiledFn) continue;
+			const compiled = await compiledFn();
+			full.push({ ...post, component: compiled.default });
+		}
+
+		if (!DEV) cachedFullIndex = full;
+		return full;
+	}
+
+	async function getPostBySlug(slug: string): Promise<BlogPostFull | null> {
+		const meta = await buildMetaIndex();
+		const post = meta.find((p) => p.slug === slug) ?? null;
+		if (!post) return null;
+
+		const path = getSlugToPath().get(slug);
+		const compiledFn = path ? config.compiledModules[path] : undefined;
+		if (!compiledFn) return null;
+
+		const compiled = await compiledFn();
+		return { ...post, component: compiled.default };
+	}
+
+	async function getCategories(): Promise<BlogCategory[]> {
+		const posts = await getAllPosts();
+		const map = new Map<string, string>();
+
+		for (const p of posts) map.set(p.category.slug, p.category.label);
+
+		return Array.from(map.entries())
+			.map(([slug, label]) => ({ slug, label }))
+			.sort((a, b) => {
+				const ai = categoryOrder.indexOf(a.slug);
+				const bi = categoryOrder.indexOf(b.slug);
+				if (ai === -1 && bi === -1) return a.label.localeCompare(b.label);
+				if (ai === -1) return 1;
+				if (bi === -1) return -1;
+				return ai - bi;
+			});
+	}
+
+	async function pickHero(posts?: BlogPost[]): Promise<BlogPost> {
+		const list = posts ?? (await getAllPosts());
+		const featured = list.filter((p) => p.featured);
+		return (featured[0] ?? list[0])!;
+	}
+
+	return { getAllPosts, getAllPostsFull, getPostBySlug, getCategories, pickHero };
 }

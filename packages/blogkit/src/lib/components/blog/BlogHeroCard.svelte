@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { BlogPost } from '$lib/types/blog';
+	import type { BlogPost } from '../../types/blog';
 
 	let { post } = $props<{ post: BlogPost }>();
 </script>

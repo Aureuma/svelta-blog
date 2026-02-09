@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { browser } from '$app/environment';
+	import { BROWSER } from 'esm-env';
 	import { onMount } from 'svelte';
 
 	let { image, onClose } = $props<{
@@ -10,18 +10,18 @@
 	let dialogEl = $state<HTMLDivElement | null>(null);
 
 	$effect(() => {
-		if (!browser) return;
+		if (!BROWSER) return;
 		if (image) document.body.style.overflow = 'hidden';
 		else document.body.style.overflow = '';
 	});
 
 	$effect(() => {
-		if (!browser) return;
+		if (!BROWSER) return;
 		if (image && dialogEl) dialogEl.focus();
 	});
 
 	onMount(() => {
-		if (!browser) return;
+		if (!BROWSER) return;
 		const onKeyDown = (e: KeyboardEvent) => {
 			if (e.key === 'Escape') onClose();
 		};

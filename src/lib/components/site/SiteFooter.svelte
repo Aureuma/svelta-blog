@@ -1,5 +1,6 @@
 <script lang="ts">
-	import ThemeSwitcher from '$lib/components/site/ThemeSwitcher.svelte';
+	import { ThemeSwitcher } from '@convelt/blogkit/theme';
+	import { theme } from '$lib/stores/theme';
 </script>
 
 <footer class="border-t border-border-soft/10">
@@ -17,7 +18,7 @@
 				<span class="inline-block size-1.5 rounded-full bg-brand" aria-hidden="true"></span>
 			</a>
 
-			<ThemeSwitcher />
+			<ThemeSwitcher controller={theme} />
 		</div>
 	</div>
 </footer>
