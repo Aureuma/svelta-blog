@@ -8,6 +8,12 @@
 			contentHtml: string;
 			morePosts: BlogPost[];
 			canonicalUrl: string;
+			seo: {
+				title: string;
+				description: string;
+				canonicalUrl: string;
+				og: { title: string; description: string; type: 'article'; url: string };
+			};
 		};
 	}>();
 
@@ -33,13 +39,13 @@
 </script>
 
 <svelte:head>
-	<title>{data.post.title} | Convelt Blog</title>
-	<meta name="description" content={data.post.excerpt} />
-	<link rel="canonical" href={data.canonicalUrl} />
-	<meta property="og:title" content={data.post.title} />
-	<meta property="og:description" content={data.post.excerpt} />
-	<meta property="og:type" content="article" />
-	<meta property="og:url" content={data.canonicalUrl} />
+	<title>{data.seo.title}</title>
+	<meta name="description" content={data.seo.description} />
+	<link rel="canonical" href={data.seo.canonicalUrl} />
+	<meta property="og:title" content={data.seo.og.title} />
+	<meta property="og:description" content={data.seo.og.description} />
+	<meta property="og:type" content={data.seo.og.type} />
+	<meta property="og:url" content={data.seo.og.url} />
 </svelte:head>
 
 <Container size="4xl">
