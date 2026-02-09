@@ -1,0 +1,62 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          registry-url: https://registry.npmjs.org
+
+      - name: Install
+        run: npm ci
+
+      - name: Create Release PR or Publish
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          publish: npm run release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Tag Published Package
+        if: steps.changesets.outputs.published == 'true'
+        id: tag
+        run: |
+          node - <<'NODE'
+          const pkgs = JSON.parse(process.env.PUBLISHED_PACKAGES || '[]');
+          const blogkit = pkgs.find((p) => p.name && p.name.includes('blogkit'));
+          if (!blogkit) process.exit(0);
+          const tag = `${blogkit.name}@${blogkit.version}`;
+          console.log(`tag=${tag}`);
+          require('fs').appendFileSync(process.env.GITHUB_OUTPUT, `tag=${tag}\\n`);
+          NODE
+          if [ -n "${{ steps.tag.outputs.tag }}" ]; then
+            git tag "${{ steps.tag.outputs.tag }}"
+            git push origin "${{ steps.tag.outputs.tag }}"
+          fi
+        env:
+          PUBLISHED_PACKAGES: ${{ steps.changesets.outputs.publishedPackages }}
+
+      - name: GitHub Release
+        if: steps.changesets.outputs.published == 'true' && steps.tag.outputs.tag != ''
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag.outputs.tag }}
+          generate_release_notes: true
+
