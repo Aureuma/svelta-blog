@@ -622,3 +622,64 @@ Deliverables:
   - markdown rendering with heading anchors, shiki code blocks, styled tables/quotes
   - sticky author/share column on desktop; folded into header on mobile
   - “More blog posts to read” with 2 suggestion cards
+
+---
+
+## 4) Plan Status (As Of 2026-02-09)
+
+### Workstream 1: Foundations (SvelteKit + Theme)
+
+Status: Done
+
+Implementation notes:
+- Theme-aware light/dark/system is implemented via an early script in `src/app.html` plus a runtime store in `src/lib/stores/theme.ts`.
+- Global tokens live in `src/app.css` and are applied via `html.light` / `html.dark`.
+
+### Workstream 2: Content Pipeline (Markdown + Frontmatter)
+
+Status: Done
+
+Implementation notes:
+- `.md` is compiled via mdsvex in `svelte.config.js` and server-rendered to HTML strings for the post route.
+- Frontmatter is parsed with `gray-matter` in `src/lib/server/blog.ts` (not mdsvex metadata exports) to avoid `script_duplicate` issues with Shiki.
+
+### Workstream 3: Blog Index UI + Infinite Scroll
+
+Status: Done
+
+Implementation notes:
+- `/blog` uses SSR for hero + initial list and a paginated JSON endpoint for additional loads.
+- Category pills are scrollable on mobile with edge fade masking (`fade-mask-x` in `src/app.css`).
+
+### Workstream 4: Post Page UI (Layout + Summary + Share + More Posts)
+
+Status: Done
+
+Implementation notes:
+- Desktop: sticky author/share rail; Mobile: author + share fold into the main column.
+- AI summary is conditional on `summaryAI` in frontmatter.
+
+### Workstream 5: Media UX (Image Framing + Lightbox)
+
+Status: Done
+
+Implementation notes:
+- In-content images are framed via typography + `.blog-prose` tweaks and open a simple lightbox on click.
+
+### Workstream 6: RSS Feed
+
+Status: Done
+
+Implementation notes:
+- RSS lives at `src/routes/feed.xml/+server.ts`.
+- Auto-discovery is provided via `<link rel="alternate">` in `src/routes/+layout.svelte`.
+- The plan mentioned `src/lib/server/rss.ts`; we inlined RSS generation in the route for simplicity.
+
+### Workstream 7: Polish (A11y + SEO + QA)
+
+Status: Done (with ongoing content-driven tweaks as new post types are added)
+
+Implementation notes:
+- Per-post SEO meta tags are set in `src/routes/blog/[slug]/+page.svelte`.
+- E2E coverage is added via Playwright in `tests/blog.spec.ts` and includes theme toggling, RSS, and mobile folding checks.
+- Markdown edge cases are validated via `src/content/blog/markdown-kitchen-sink.md` and table/URL hardening in `src/app.css`.
