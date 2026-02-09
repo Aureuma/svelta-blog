@@ -10,6 +10,11 @@ This repo keeps `convelt` as a demo app, and exposes the reusable parts as a loc
 - Server helpers: `createBlog()` to load Markdown posts (frontmatter, excerpt, reading-time, categories, hero).
 - Theme helper: `createThemeController()` and a simple theme switcher component.
 
+### Compatibility
+
+- Component source is compatible with Svelte 4 and Svelte 5 (no runes required).
+- If you already have an existing frontmatter schema, use `mapFrontmatter` to adapt it to BlogKit's expected fields.
+
 ## Use In Another Repo
 
 ### Option A: mono-repo / workspaces (recommended)
