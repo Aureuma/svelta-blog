@@ -689,9 +689,9 @@ Implementation notes:
 Status: Done
 
 Implementation notes:
-- Reusable blog components + content loader helpers are packaged as a local workspace library: `packages/blogkit` (`@convelt/blogkit`).
+- Reusable blog components + content loader helpers are packaged as a local workspace library: `packages/blogkit` (`@aureuma/blogkit`).
 - The demo app consumes the library via thin glue modules:
-  - `src/lib/server/blog.ts` wraps `createBlog()` from `@convelt/blogkit/server`
-  - `src/lib/stores/theme.ts` wraps `createThemeController()` from `@convelt/blogkit/theme`
+  - `src/lib/server/blog.ts` wraps `createBlog()` from `@aureuma/blogkit/server`
+  - `src/lib/stores/theme.ts` wraps `createThemeController()` from `@aureuma/blogkit/theme`
   - `src/lib/types/blog.ts` re-exports library types
 - See `packages/blogkit/README.md` for integration guidance.

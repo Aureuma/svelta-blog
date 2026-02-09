@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ThemeSwitcher } from '@convelt/blogkit/theme';
+	import { ThemeSwitcher } from '@aureuma/blogkit/theme';
 	import { theme } from '$lib/stores/theme';
 </script>
 

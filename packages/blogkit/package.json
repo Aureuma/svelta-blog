@@ -1,10 +1,13 @@
 {
-  "name": "@convelt/blogkit",
+  "name": "@aureuma/blogkit",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
   "type": "module",
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
   ],
   "exports": {
     ".": {
@@ -23,8 +26,33 @@
     }
   },
   "types": "./dist/index.d.ts",
+  "main": "./dist/index.js",
+  "svelte": "./dist/index.js",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/Aureuma/convelt.git",
+    "directory": "packages/blogkit"
+  },
+  "bugs": {
+    "url": "https://github.com/Aureuma/convelt/issues"
+  },
+  "homepage": "https://github.com/Aureuma/convelt/tree/main/packages/blogkit#readme",
+  "keywords": [
+    "svelte",
+    "sveltekit",
+    "blog",
+    "markdown",
+    "mdsvex",
+    "shiki",
+    "tailwind"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
-    "build": "svelte-package --tsconfig ./tsconfig.json"
+    "build": "svelte-package --tsconfig ./tsconfig.json",
+    "prepack": "npm run build"
   },
   "peerDependencies": {
     "svelte": "^4.0.0 || ^5.0.0"

@@ -1,2 +1,1 @@
-export type { BlogAuthor, BlogCategory, BlogPost, BlogPostFull } from '@convelt/blogkit';
-
+export type { BlogAuthor, BlogCategory, BlogPost, BlogPostFull } from '@aureuma/blogkit';

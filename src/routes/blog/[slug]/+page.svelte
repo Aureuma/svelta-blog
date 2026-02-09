@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Avatar, BackLink, Container, ImageLightbox, MorePosts, ShareButtons, SummaryCard } from '@convelt/blogkit';
+	import { Avatar, BackLink, Container, ImageLightbox, MorePosts, ShareButtons, SummaryCard } from '@aureuma/blogkit';
 	import type { BlogPost } from '$lib/types/blog';
 
 	let { data } = $props<{
