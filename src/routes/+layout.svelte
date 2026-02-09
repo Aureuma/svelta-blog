@@ -21,6 +21,7 @@
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
+	<link rel="alternate" type="application/rss+xml" title="Convelt Blog" href="/feed.xml" />
 </svelte:head>
 
 <div class="min-h-dvh bg-background-main text-text-main">
