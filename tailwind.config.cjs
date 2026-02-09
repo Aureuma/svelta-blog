@@ -1,7 +1,12 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
 	darkMode: 'class',
-	content: ['./src/**/*.{html,js,svelte,ts,md}', './src/content/**/*.{md}'],
+	content: [
+		'./src/**/*.{html,js,svelte,ts,md}',
+		'./src/content/**/*.{md}',
+		'./packages/blogkit/src/**/*.{svelte,ts}',
+		'./packages/blogkit/dist/**/*.{js,ts,svelte}'
+	],
 	theme: {
 		extend: {
 			colors: {
@@ -126,4 +131,3 @@ module.exports = {
 	},
 	plugins: [require('@tailwindcss/typography')]
 };
-

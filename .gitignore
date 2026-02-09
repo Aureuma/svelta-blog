@@ -11,6 +11,8 @@ node_modules
 # Playwright
 /test-results
 /playwright-report
+/packages/*/dist
+/packages/*/.svelte-kit
 
 # OS
 .DS_Store
