@@ -1,4 +1,4 @@
-# @convelt/blogkit
+# @aureuma/blogkit
 
 A Mintlify-inspired blog UI + content pipeline helpers for SvelteKit + mdsvex.
 
@@ -16,6 +16,12 @@ This repo keeps `convelt` as a demo app, and exposes the reusable parts as a loc
 - If you already have an existing frontmatter schema, use `mapFrontmatter` to adapt it to BlogKit's expected fields.
 
 ## Use In Another Repo
+
+### Install from npm
+
+```sh
+npm i @aureuma/blogkit
+```
 
 ### Option A: mono-repo / workspaces (recommended)
 
@@ -36,8 +42,8 @@ git submodule add git@github.com:Aureuma/convelt.git packages/convelt
 3. Import and use:
 
 ```ts
-import { BlogCard } from '@convelt/blogkit';
-import { createBlog } from '@convelt/blogkit/server';
+import { BlogCard } from '@aureuma/blogkit';
+import { createBlog } from '@aureuma/blogkit/server';
 ```
 
 ### Option B: publish to npm
@@ -55,9 +61,9 @@ import { createBlog } from '@convelt/blogkit/server';
 
 ```ts
 // src/lib/server/blog.ts
-import { createBlog } from '@convelt/blogkit/server';
+import { createBlog } from '@aureuma/blogkit/server';
 import { getAuthor } from '$lib/content/authors';
-import type { BlogPostFull } from '@convelt/blogkit';
+import type { BlogPostFull } from '@aureuma/blogkit';
 
 type CompiledModule = { default: BlogPostFull['component'] };
 
@@ -75,7 +81,7 @@ export const { getAllPosts, getPostBySlug, getCategories, pickHero } = blog;
 ```
 
 4. Tailwind: ensure your `content` globs include the package so class names are not purged.
-   - If installed from npm: include `./node_modules/@convelt/blogkit/dist/**/*`.
+   - If installed from npm: include `./node_modules/@aureuma/blogkit/dist/**/*`.
 
 5. Routes: copy the blog routes from this repo:
    - `src/routes/blog/*`

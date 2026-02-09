@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import { BlogCard, BlogHeroCard, Container, TagTabs } from '@convelt/blogkit';
+	import { BlogCard, BlogHeroCard, Container, TagTabs } from '@aureuma/blogkit';
 	import type { BlogPost } from '$lib/types/blog';
 	import { onMount } from 'svelte';
 

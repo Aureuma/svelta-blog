@@ -38,18 +38,22 @@ jobs:
         if: steps.changesets.outputs.published == 'true'
         id: tag
         run: |
-          node - <<'NODE'
+          TAG="$(node - <<'NODE'
           const pkgs = JSON.parse(process.env.PUBLISHED_PACKAGES || '[]');
           const blogkit = pkgs.find((p) => p.name && p.name.includes('blogkit'));
           if (!blogkit) process.exit(0);
-          const tag = `${blogkit.name}@${blogkit.version}`;
-          console.log(`tag=${tag}`);
-          require('fs').appendFileSync(process.env.GITHUB_OUTPUT, `tag=${tag}\\n`);
+          process.stdout.write(`${blogkit.name}@${blogkit.version}`);
           NODE
-          if [ -n "${{ steps.tag.outputs.tag }}" ]; then
-            git tag "${{ steps.tag.outputs.tag }}"
-            git push origin "${{ steps.tag.outputs.tag }}"
+          )"
+
+          if [ -z "$TAG" ]; then
+            echo "No published blogkit package found; skipping tag."
+            exit 0
           fi
+
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          git tag "$TAG"
+          git push origin "$TAG"
         env:
           PUBLISHED_PACKAGES: ${{ steps.changesets.outputs.publishedPackages }}
 
@@ -59,4 +63,3 @@ jobs:
         with:
           tag_name: ${{ steps.tag.outputs.tag }}
           generate_release_notes: true
-

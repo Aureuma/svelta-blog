@@ -1,4 +1,4 @@
-import { createBlog } from '@convelt/blogkit/server';
+import { createBlog } from '@aureuma/blogkit/server';
 import { getAuthor } from '$lib/content/authors';
 import type { BlogPostFull } from '$lib/types/blog';
 
@@ -20,4 +20,3 @@ export const blog = createBlog({
 });
 
 export const { getAllPosts, getAllPostsFull, getPostBySlug, getCategories, pickHero } = blog;
-
