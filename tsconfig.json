@@ -1,0 +1,15 @@
+{
+  "extends": "./.svelte-kit/tsconfig.json",
+  "compilerOptions": {
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "moduleResolution": "Bundler",
+    "resolveJsonModule": true,
+    "types": ["svelte"]
+  },
+  "include": [
+    "src/**/*",
+    ".svelte-kit/**/*.d.ts",
+    "vite.config.ts",
+    "svelte.config.js"
+  ]
+}

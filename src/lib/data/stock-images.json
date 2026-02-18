@@ -1,0 +1,119 @@
+[
+  {
+    "id": "hero-smb",
+    "filename": "hero-smb.jpg",
+    "width": 6720,
+    "height": 4480,
+    "photographer": "RDNE Stock project",
+    "url": "https://www.pexels.com/photo/woman-in-dress-sitting-in-front-of-a-laptop-10375901/",
+    "source": "Pexels"
+  },
+  {
+    "id": "template-dentist",
+    "filename": "template-dentist.jpg",
+    "width": 5760,
+    "height": 3840,
+    "photographer": "Andrea Piacquadio",
+    "url": "https://www.pexels.com/photo/female-orthodontist-using-tablet-while-assisting-patient-in-clinic-3952129/",
+    "source": "Pexels"
+  },
+  {
+    "id": "template-salon",
+    "filename": "template-salon.jpg",
+    "width": 4368,
+    "height": 2912,
+    "photographer": "Delbeautybox",
+    "url": "https://www.pexels.com/photo/black-salon-chairs-853427/",
+    "source": "Pexels"
+  },
+  {
+    "id": "template-cafe",
+    "filename": "template-cafe.jpg",
+    "width": 2706,
+    "height": 1804,
+    "photographer": "Flickr",
+    "url": "https://www.pexels.com/photo/man-on-black-polo-shirt-is-standing-infront-of-bar-counter-157060/",
+    "source": "Pexels"
+  },
+  {
+    "id": "template-fitness",
+    "filename": "template-fitness.jpg",
+    "width": 5869,
+    "height": 3918,
+    "photographer": "Kampus Production",
+    "url": "https://www.pexels.com/photo/a-woman-in-black-tank-top-looking-at-the-person-holding-a-metal-bar-6922159/",
+    "source": "Pexels"
+  },
+  {
+    "id": "blog-automation",
+    "filename": "blog-automation.jpg",
+    "width": 4891,
+    "height": 3261,
+    "photographer": "RDNE Stock project",
+    "url": "https://www.pexels.com/photo/a-woman-in-bed-with-brown-boxes-while-holding-a-tablet-7309319/",
+    "source": "Pexels"
+  },
+  {
+    "id": "blog-trust",
+    "filename": "blog-trust.jpg",
+    "width": 6000,
+    "height": 4000,
+    "photographer": "Pavel Danilyuk",
+    "url": "https://www.pexels.com/photo/a-woman-at-a-dental-clinic-6193192/",
+    "source": "Pexels"
+  },
+  {
+    "id": "blog-speed",
+    "filename": "blog-speed.jpg",
+    "width": 4000,
+    "height": 2667,
+    "photographer": "Antoni Shkraba Studio",
+    "url": "https://www.pexels.com/photo/a-man-in-the-barbershop-sitting-on-a-black-barber-chair-4625644/",
+    "source": "Pexels"
+  },
+  {
+    "id": "blog-local",
+    "filename": "blog-local.jpg",
+    "width": 3861,
+    "height": 2574,
+    "photographer": "Lina Kivaka",
+    "url": "https://www.pexels.com/photo/pastry-shop-3639541/",
+    "source": "Pexels"
+  },
+  {
+    "id": "blog-brand",
+    "filename": "blog-brand.jpg",
+    "width": 5391,
+    "height": 3594,
+    "photographer": "Rachel Claire",
+    "url": "https://www.pexels.com/photo/shoes-and-clothes-on-a-rack-in-a-boutique-5531542/",
+    "source": "Pexels"
+  },
+  {
+    "id": "author-jules",
+    "filename": "author-jules.jpg",
+    "width": 3910,
+    "height": 3910,
+    "photographer": "Lubomir Satko",
+    "url": "https://www.pexels.com/photo/businessmen-posing-confidently-outdoors-34129728/",
+    "source": "Pexels"
+  },
+  {
+    "id": "author-rina",
+    "filename": "author-rina.jpg",
+    "width": 8308,
+    "height": 8308,
+    "photographer": "Amar  Preciado",
+    "url": "https://www.pexels.com/photo/camera-crew-hilding-camera-equipment-9866568/",
+    "source": "Pexels"
+  },
+  {
+    "id": "author-mateo",
+    "filename": "author-mateo.jpg",
+    "width": 2475,
+    "height": 2475,
+    "photographer": "OVAN",
+    "url": "https://www.pexels.com/photo/person-sitting-facing-laptop-computer-with-sketch-pad-57690/",
+    "source": "Pexels"
+  }
+]
