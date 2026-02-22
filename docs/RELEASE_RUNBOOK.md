@@ -8,6 +8,9 @@ This repository uses Git tags + GitHub Releases + npm publish. Follow this order
 - CI is green on `main`
 - You can push tags and create releases in GitHub
 - You are authenticated to npm for `@aureuma`
+- npm publish access is confirmed:
+  - `npm whoami`
+  - `npm access ls-packages <your-npm-user-or-team> | grep '@aureuma/svelta\|@aureuma/blogkit'`
 
 ## 1. Decide Version
 
@@ -49,7 +52,17 @@ Run:
 
 This confirms package tarballs and checksum generation before publishing a GitHub Release.
 
-## 6. Create GitHub Release
+## 6. Publish npm Packages (npmjs)
+
+1. Publish the root package:
+   - `npm publish --access public`
+1. Publish blogkit workspace package:
+   - `npm publish -w @aureuma/blogkit --access public`
+1. Verify both publishes resolved on npmjs:
+   - `npm view @aureuma/svelta version`
+   - `npm view @aureuma/blogkit version`
+
+## 7. Create GitHub Release
 
 1. In GitHub UI: Releases -> "Draft a new release".
 1. Choose tag `vX.Y.Z` on `main`.
@@ -60,13 +73,6 @@ This confirms package tarballs and checksum generation before publishing a GitHu
    - Add short upgrade notes if behavior changed.
 1. Publish the release.
 1. After publish, wait for workflow `NPM Release Assets` to complete (it uploads `.tgz` archives + checksums).
-
-## 7. Publish npm Packages
-
-1. Publish the root package:
-   - `npm publish --access public`
-1. Publish blogkit workspace package:
-   - `npm publish -w @aureuma/blogkit --access public`
 
 ## 8. Post-release Checks
 

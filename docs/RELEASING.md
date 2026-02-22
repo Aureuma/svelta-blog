@@ -42,6 +42,13 @@ git status -sb
 git fetch --tags origin
 git switch main
 git pull --ff-only
+npm whoami
+```
+
+Recommended npm permission check:
+
+```bash
+npm access ls-packages <your-npm-user-or-team> | grep '@aureuma/svelta\|@aureuma/blogkit'
 ```
 
 ### 1) Determine version and release title
@@ -86,7 +93,18 @@ git push origin main
 git push origin vX.Y.Z
 ```
 
-### 7) Create GitHub Release
+### 7) Publish to npm (npmjs first)
+
+```bash
+npm publish --access public
+npm publish -w @aureuma/blogkit --access public
+npm view @aureuma/svelta version
+npm view @aureuma/blogkit version
+```
+
+If npm publish fails, stop here and fix before creating a GitHub Release.
+
+### 8) Create GitHub Release
 
 Option A: GitHub UI
 - Draft release for tag `vX.Y.Z`.
@@ -100,13 +118,6 @@ gh release create vX.Y.Z \
   --title "vX.Y.Z - <short title>" \
   --notes-file release-notes.md \
   --verify-tag
-```
-
-### 8) Publish to npm
-
-```bash
-npm publish --access public
-npm publish -w @aureuma/blogkit --access public
 ```
 
 ### 9) Verify published release

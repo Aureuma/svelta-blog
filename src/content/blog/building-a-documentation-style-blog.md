@@ -1,21 +1,21 @@
 ---
-title: "Building a Mintlify-Inspired Blog in SvelteKit"
+title: "Building a Documentation-Style Blog in SvelteKit"
 date: "2026-02-08"
 category: "Engineering"
 author: "shawn"
-cover: "/blog/covers/mintlify-style.svg"
+cover: "/blog/covers/blog-style.svg"
 featured: true
 tags:
   - "SvelteKit"
   - "mdsvex"
   - "Tailwind"
-excerpt: "A practical blueprint for a Mintlify-inspired blog: proportions, theming, Markdown rendering, reading-time, share widgets, infinite scroll, and RSS."
-summaryAI: "We mirror Mintlify’s blog *system* (not its assets): fixed-width containers, hero+grid index, pill category tabs, a two-column post layout with a sticky author/share rail on desktop, Shiki-highlighted Markdown, reading-time labels, framed images, bottom recommendations, and an RSS feed. The implementation is SvelteKit-first: mdsvex for Markdown, Tailwind tokens for theming, and a JSON pagination endpoint for infinite scroll."
+excerpt: "A practical blueprint for a documentation-style blog: proportions, theming, Markdown rendering, reading-time, share widgets, infinite scroll, and RSS."
+summaryAI: "We mirror a high-signal documentation blog system: fixed-width containers, hero+grid index, pill category tabs, a two-column post layout with a sticky author/share rail on desktop, Shiki-highlighted Markdown, reading-time labels, framed images, bottom recommendations, and an RSS feed. The implementation is SvelteKit-first: mdsvex for Markdown, Tailwind tokens for theming, and a JSON pagination endpoint for infinite scroll."
 ---
 
-This post documents the structure we’re building: a blog that *feels* like Mintlify’s in layout and typographic rhythm, while remaining our own code + assets.
+This post documents the structure we’re building: a blog with strong documentation layout and typographic rhythm, while remaining our own code + assets.
 
-## What “Mintlify-inspired” means
+## What “documentation-style” means
 
 It’s mainly about **placement and proportions**:
 
@@ -46,4 +46,3 @@ const minutes = Math.max(1, Math.round(readingTime(markdown).minutes));
 ## Next
 
 In the following posts we’ll break down each part (tabs, infinite scroll, Markdown, RSS) into its own implementation.
-
