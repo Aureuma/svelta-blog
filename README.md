@@ -33,6 +33,14 @@ Set `PUBLIC_SVELTA_EXPERIENCE=docs` or `PUBLIC_SVELTA_EXPERIENCE=blog`.
 npm run dev
 ```
 
+## Internal Hosting (Pre-deploy)
+
+```sh
+npm run host:internal
+```
+
+This serves the built site on `0.0.0.0:4173` for internal network validation.
+
 ## Typecheck
 
 ```sh

@@ -18,10 +18,24 @@ test('docs index renders section grid and links into a docs page', async ({ page
 	await page.goto('/docs');
 
 	await expect(page.getByTestId('docs-section-grid')).toBeVisible();
+	await expect(page.getByTestId('docs-home-tabs')).toBeVisible();
+	await expect(page.getByTestId('docs-faq')).toBeVisible();
 	await page.getByRole('link', { name: 'Overview' }).first().click();
 	await expect(page).toHaveURL(/\/docs\/overview$/);
 	await expect(page.getByTestId('docs-sidebar')).toBeVisible();
+	await expect(page.getByTestId('docs-toc')).toBeVisible();
 	await expect(page.getByTestId('docs-pager')).toBeVisible();
+});
+
+test('docs command palette opens and navigates to selected page', async ({ page }) => {
+	await page.goto('/docs');
+
+	await page.getByTestId('docs-search-trigger').click();
+	const searchInput = page.getByPlaceholder('Search documentation...');
+	await expect(searchInput).toBeVisible();
+	await searchInput.fill('Server API');
+	await searchInput.press('Enter');
+	await expect(page).toHaveURL(/\/docs\/server-api$/);
 });
 
 test('post page renders summary, shiki blocks, and more posts', async ({ page }) => {
@@ -70,4 +84,13 @@ test('mobile layout folds share UI into the content column', async ({ page }) =>
 
 	await expect(page.getByTestId('blog-share-mobile')).toBeVisible();
 	await expect(page.getByTestId('blog-share-desktop')).toBeHidden();
+});
+
+test('mobile docs navigation opens in a sheet panel', async ({ page }) => {
+	await page.setViewportSize({ width: 390, height: 844 });
+	await page.goto('/docs/overview');
+
+	await page.getByTestId('docs-mobile-nav-trigger').click();
+	await expect(page.getByTestId('docs-mobile-nav-panel')).toBeVisible();
+	await expect(page.getByTestId('docs-mobile-nav-panel').getByRole('link', { name: 'Overview' })).toBeVisible();
 });
