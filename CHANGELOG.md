@@ -4,6 +4,15 @@ All notable changes to this repository are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project follows [Semantic Versioning](https://semver.org/).
 
+## [v0.1.1] - 2026-02-22
+### Added
+- Added SI-browser-based end-to-end validation coverage for key website features on a live preview deployment.
+
+### Changed
+- Consolidated package surface to `@aureuma/svelta` and moved reusable internals under private workspace `@aureuma/svelta-core`.
+- Removed separate `@aureuma/blogkit` release flow and simplified release tooling/docs to a single npm package publish.
+- Removed legacy Mintlify-branded references, filenames, and documentation artifacts from repository content.
+
 ## [v0.1.0] - 2026-02-22
 ### Added
 - Added raw markdown blog ingestion through `createRawBlog` for repository-driven blog content.
