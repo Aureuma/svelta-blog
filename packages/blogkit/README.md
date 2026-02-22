@@ -2,7 +2,7 @@
 
 A Mintlify-inspired blog UI + content pipeline helpers for SvelteKit + mdsvex.
 
-This repo keeps `convelt` as a demo app, and exposes the reusable parts as a local workspace package under `packages/blogkit`.
+This repo keeps `svelta` as a demo app, and exposes the reusable parts as a local workspace package under `packages/blogkit`.
 
 ## What you get
 
@@ -28,14 +28,14 @@ npm i @aureuma/blogkit
 1. Add this repo as a submodule (or subtree) inside your project:
 
 ```sh
-git submodule add git@github.com:Aureuma/convelt.git packages/convelt
+git submodule add git@github.com:Aureuma/svelta.git packages/svelta
 ```
 
 2. Point your workspace config at the package:
 
 ```json
 {
-  "workspaces": ["packages/*", "packages/convelt/packages/*"]
+  "workspaces": ["packages/*", "packages/svelta/packages/*"]
 }
 ```
 

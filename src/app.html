@@ -6,7 +6,7 @@
 		<script>
 			(() => {
 				try {
-					const stored = localStorage.getItem('convelt-theme') || 'system';
+					const stored = localStorage.getItem('svelta-theme') || 'system';
 					const prefersDark =
 						window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
 					const resolved = stored === 'system' ? (prefersDark ? 'dark' : 'light') : stored;

@@ -13,7 +13,7 @@ export type PostSeo = {
 };
 
 export function buildPostSeo(post: BlogPost, canonicalUrl: string): PostSeo {
-	const title = `${post.title} | Convelt Blog`;
+	const title = `${post.title} | Svelta Blog`;
 	const description = post.excerpt;
 
 	return {
