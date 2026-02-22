@@ -19,9 +19,9 @@
 				role="tab"
 				aria-selected={selected === item.slug}
 				class="h-[31px] whitespace-nowrap rounded-full border px-3 text-xs font-mono uppercase tracking-[0.6px] transition
-					hover:bg-background-main/60
+					hover:bg-background-main/60 hover:text-text-main
 					{selected === item.slug
-						? 'border-border-soft/15 bg-background-main text-text-main'
+						? 'border-background-invert/40 bg-background-invert text-text-invert'
 						: 'border-border-soft/10 bg-background-soft text-text-sub'}"
 				on:click={() => onSelect(item.slug)}
 			>

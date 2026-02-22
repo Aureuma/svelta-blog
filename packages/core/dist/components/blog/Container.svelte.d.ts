@@ -17,7 +17,7 @@ type $$__sveltets_2_PropsWithChildren<Props, Slots> = Props & (Slots extends {
     children?: any;
 } : {});
 declare const Container: $$__sveltets_2_IsomorphicComponent<$$__sveltets_2_PropsWithChildren<{
-    size?: "4xl" | "5xl";
+    size?: "4xl" | "5xl" | "6xl";
 }, {
     default: {};
 }>, {

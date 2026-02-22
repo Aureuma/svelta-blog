@@ -4,11 +4,13 @@
 
 	export let post: BlogPost;
 	export let variant: 'default' | 'suggestion' = 'default';
-	$: thumbHeight = variant === 'suggestion' ? 'h-[190px]' : 'h-[280px]';
+	$: thumbHeight = variant === 'suggestion' ? 'h-[190px]' : 'h-[250px]';
 </script>
 
 <a href={`/blog/${post.slug}`} class="group block" data-testid="blog-card">
-	<div class="relative overflow-hidden rounded-2xl border border-border-soft/10 bg-background-soft {thumbHeight}">
+	<div
+		class="relative overflow-hidden rounded-2xl border border-border-soft/10 bg-background-soft {thumbHeight}"
+	>
 		<img
 			src={post.cover}
 			alt={post.title}
@@ -20,7 +22,7 @@
 	<div class="mt-4">
 		<p class="text-xs font-mono uppercase tracking-[0.6px] text-brand">{post.category.label}</p>
 		<h3
-			class="mt-1 text-xl font-medium leading-[30px] tracking-tight underline-offset-[6px] decoration-border-soft/30 group-hover:underline"
+			class="mt-1 text-[22px] font-medium leading-[30px] tracking-tight underline-offset-[6px] decoration-border-soft/30 group-hover:underline"
 		>
 			{post.title}
 		</h3>
