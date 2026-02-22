@@ -86,6 +86,7 @@ jobs:
           gh release upload "${tag}" dist/*.tgz dist/checksums.txt --repo "${{ github.repository }}" --clobber
 
       - name: Attest release artifacts
+        continue-on-error: true
         uses: actions/attest-build-provenance@v2
         with:
           subject-path: |
