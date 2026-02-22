@@ -1,4 +1,4 @@
-# Mintlify Blog Study (Design + Implementation Notes for Convelt)
+# Mintlify Blog Study (Design + Implementation Notes for Svelta)
 
 Date: 2026-02-08
 

@@ -1,6 +1,6 @@
 <section class="mx-auto w-full max-w-5xl px-6 py-20">
 	<div class="max-w-2xl">
-		<p class="text-xs font-mono uppercase tracking-[0.6px] text-text-muted">Convelt</p>
+		<p class="text-xs font-mono uppercase tracking-[0.6px] text-text-muted">Svelta</p>
 		<h1 class="mt-3 text-4xl font-semibold leading-[44px] tracking-[-0.8px]">
 			A Mintlify-inspired blog system, built in SvelteKit.
 		</h1>

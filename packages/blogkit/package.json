@@ -31,13 +31,13 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/Aureuma/convelt.git",
+    "url": "git+ssh://git@github.com/Aureuma/svelta.git",
     "directory": "packages/blogkit"
   },
   "bugs": {
-    "url": "https://github.com/Aureuma/convelt/issues"
+    "url": "https://github.com/Aureuma/svelta/issues"
   },
-  "homepage": "https://github.com/Aureuma/convelt/tree/main/packages/blogkit#readme",
+  "homepage": "https://github.com/Aureuma/svelta/tree/main/packages/blogkit#readme",
   "keywords": [
     "svelte",
     "sveltekit",
