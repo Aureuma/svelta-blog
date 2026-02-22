@@ -11,5 +11,11 @@ export { default as SummaryCard } from './components/blog/SummaryCard.svelte';
 export { default as TagTabs } from './components/blog/TagTabs.svelte';
 
 // Types
-export type { BlogAuthor, BlogCategory, BlogPost, BlogPostFull } from './types/blog';
-
+export type {
+	BlogAuthor,
+	BlogCategory,
+	BlogPost,
+	BlogPostFull,
+	BlogPostWithContent,
+	BlogTag
+} from './types/blog';
