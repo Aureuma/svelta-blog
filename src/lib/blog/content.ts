@@ -1,38 +1,132 @@
+import type { BlogPostWithContent } from '@aureuma/svelta';
+import { createRawBlog } from '@aureuma/svelta/server';
 import { parse } from 'yaml';
 import { blogFrontmatterSchema } from './schema';
-import { renderMarkdown } from './markdown';
-import type { BlogPost, BlogFrontmatter, Tag } from './types';
-import { calculateReadingTime, slugify } from './utils';
+import type { BlogFrontmatter, BlogPost, Tag } from './types';
+import { slugify } from './utils';
 
-const modules = import.meta.glob('/src/content/blog/*.md', {
+const blogModules = import.meta.glob('/src/content/blog/*.md', {
+  query: '?raw',
+  import: 'default'
+}) as Record<string, () => Promise<string>>;
+
+const authorModules = import.meta.glob('/src/content/authors/*.md', {
   eager: true,
   query: '?raw',
   import: 'default'
-});
-
-let cachedPosts: BlogPost[] | null = null;
+}) as Record<string, string>;
 
 const splitFrontmatter = (raw: string) => {
   const match = raw.match(
     /^---\s*[\r\n]+([\s\S]*?)\r?\n---\s*[\r\n]+([\s\S]*)$/
   );
   if (!match) {
-    // Fail loudly so content issues stop builds instead of shipping silently.
     throw new Error('Missing or malformed frontmatter block.');
   }
   return { frontmatter: match[1], body: match[2].trim() };
 };
 
-const parseFrontmatter = (
-  frontmatter: string,
-  path: string
-): BlogFrontmatter => {
-  const data = parse(frontmatter);
+const normalizeFrontmatterInput = (data: unknown): BlogFrontmatter => {
   if (!data || typeof data !== 'object') {
-    throw new Error(`Frontmatter must be a YAML object in ${path}.`);
+    return blogFrontmatterSchema.parse(data) as BlogFrontmatter;
   }
-  return blogFrontmatterSchema.parse(data) as BlogFrontmatter;
+
+  const record = {
+    ...(data as Record<string, unknown>)
+  };
+
+  for (const key of ['publishedAt', 'updatedAt'] as const) {
+    const value = record[key];
+    if (value instanceof Date) {
+      record[key] = value.toISOString();
+    }
+  }
+
+  return blogFrontmatterSchema.parse(record) as BlogFrontmatter;
 };
+
+const parseAuthorMap = () => {
+  const map = new Map<
+    string,
+    {
+      id: string;
+      name: string;
+      title: string;
+      avatar: string;
+    }
+  >();
+
+  for (const [path, raw] of Object.entries(authorModules)) {
+    const slug = path.split('/').pop()?.replace('.md', '') || '';
+    const { frontmatter } = splitFrontmatter(raw);
+    const data = parse(frontmatter);
+    if (!data || typeof data !== 'object') {
+      throw new Error(`Author frontmatter must be a YAML object in ${path}.`);
+    }
+
+    const record = data as Record<string, unknown>;
+    const authorSlug =
+      typeof record.slug === 'string' && record.slug.length > 0
+        ? record.slug
+        : slug;
+    const name =
+      typeof record.name === 'string' && record.name.length > 0
+        ? record.name
+        : authorSlug;
+    const title =
+      typeof record.role === 'string' && record.role.length > 0
+        ? record.role
+        : 'Contributor';
+
+    const avatarValue = record.avatar;
+    const avatar =
+      avatarValue &&
+      typeof avatarValue === 'object' &&
+      typeof (avatarValue as Record<string, unknown>).url === 'string'
+        ? String((avatarValue as Record<string, unknown>).url)
+        : '/favicon.ico';
+
+    map.set(authorSlug, {
+      id: authorSlug,
+      name,
+      title,
+      avatar
+    });
+  }
+
+  return map;
+};
+
+const authorMap = parseAuthorMap();
+
+const fallbackAuthor = {
+  id: 'unknown',
+  name: 'Unknown Author',
+  title: 'Contributor',
+  avatar: '/favicon.ico'
+};
+
+const blog = createRawBlog({
+  rawModules: blogModules,
+  getAuthor: (id) => authorMap.get(id) ?? fallbackAuthor,
+  mapFrontmatter: ({ data }) => {
+    const parsed = normalizeFrontmatterInput(data);
+    return {
+      title: parsed.title,
+      date: parsed.publishedAt,
+      category: parsed.tags?.[0] ?? 'General',
+      author: parsed.author,
+      cover: parsed.ogImage.url,
+      excerpt: parsed.description,
+      tags: parsed.tags,
+      summaryAI: undefined,
+      featured: false,
+      draft: parsed.draft
+    };
+  }
+});
+
+let cachedPosts: BlogPost[] | null = null;
 
 const toTags = (tags: string[]): Tag[] =>
   tags.map((tag) => ({
@@ -40,69 +134,47 @@ const toTags = (tags: string[]): Tag[] =>
     slug: slugify(tag)
   }));
 
-const parsePost = async (path: string, raw: string): Promise<BlogPost> => {
-  const slug = path.split('/').pop()?.replace('.md', '') || '';
-  const { frontmatter, body } = splitFrontmatter(raw);
-  const parsed = parseFrontmatter(frontmatter, path);
+const toWordCount = (raw: string) => {
+  const trimmed = raw.trim();
+  if (!trimmed) return 0;
+  return trimmed.split(/\s+/).length;
+};
 
-  if (parsed.slug !== slug) {
-    throw new Error(
-      `Frontmatter slug mismatch in ${path}. Expected "${slug}" but got "${parsed.slug}".`
-    );
-  }
-
-  if (!parsed.ogImage.url.startsWith('/images/blog/')) {
-    throw new Error(
-      `ogImage.url must point to a local blog asset in ${path}.`
-    );
-  }
-
-  const publishedAt = new Date(parsed.publishedAt);
-  const updatedAt = new Date(parsed.updatedAt);
-  if (updatedAt < publishedAt) {
-    throw new Error(`updatedAt must be >= publishedAt in ${path}.`);
-  }
-
-  const html = await renderMarkdown(body);
-  const { label, wordCount } = calculateReadingTime(body);
-
+const toLegacyPost = (post: BlogPostWithContent): BlogPost => {
+  const parsed = normalizeFrontmatterInput(post.frontmatter);
   return {
-    slug,
-    title: parsed.title,
+    slug: post.slug,
+    title: post.title,
     description: parsed.description,
-    excerpt: parsed.description,
-    publishedAt,
-    updatedAt,
+    excerpt: post.excerpt,
+    publishedAt: new Date(parsed.publishedAt),
+    updatedAt: new Date(parsed.updatedAt),
     author: parsed.author,
     tags: toTags(parsed.tags),
     canonical: parsed.canonical,
     ogImage: parsed.ogImage,
     seo: parsed.seo,
-    draft: parsed.draft,
-    html,
-    readingTime: label,
-    wordCount,
-    raw: body
+    draft: Boolean(parsed.draft),
+    html: post.html,
+    readingTime: post.readingTimeShort,
+    wordCount: toWordCount(post.raw),
+    raw: post.raw
   };
+};
+
+const getCachedPosts = async () => {
+  if (!cachedPosts) {
+    const posts = await blog.getAllPostsWithContent();
+    cachedPosts = posts.map(toLegacyPost);
+  }
+  return cachedPosts;
 };
 
 export const getAllPosts = async ({
   includeDrafts = false
 }: { includeDrafts?: boolean } = {}) => {
-  if (!cachedPosts) {
-    const entries = await Promise.all(
-      Object.entries(modules).map(([path, raw]) =>
-        parsePost(path, raw as string)
-      )
-    );
-    cachedPosts = entries.sort(
-      (a, b) => b.publishedAt.getTime() - a.publishedAt.getTime()
-    );
-  }
-
-  return includeDrafts
-    ? cachedPosts
-    : cachedPosts.filter((post) => !post.draft);
+  const posts = await getCachedPosts();
+  return includeDrafts ? posts : posts.filter((post) => !post.draft);
 };
 
 export const getPostBySlug = async (slug: string) => {
