@@ -33,6 +33,19 @@ export type BlogTag = {
     name: string;
     slug: string;
 };
+export type BlogArchiveGroup = {
+    id: string;
+    year: number;
+    month: number;
+    label: string;
+    count: number;
+    posts: BlogPost[];
+};
+export type BlogAuthorSummary = {
+    author: BlogAuthor;
+    postCount: number;
+    latestPostDate: string;
+};
 export type BlogPostWithContent = BlogPost & {
     html: string;
     raw: string;

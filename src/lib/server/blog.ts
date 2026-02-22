@@ -19,4 +19,18 @@ export const blog = createBlog({
 	getAuthor
 });
 
-export const { getAllPosts, getAllPostsFull, getPostBySlug, getCategories, pickHero } = blog;
+export const {
+	getAllPosts,
+	getAllPostsFull,
+	getPostBySlug,
+	getCategories,
+	pickHero,
+	getAllTags,
+	getPostsByTag,
+	getPostsByAuthor,
+	getAllAuthors,
+	getAuthorSummaries,
+	getArchiveGroups,
+	getAdjacentPosts,
+	getRelatedPosts
+} = blog;

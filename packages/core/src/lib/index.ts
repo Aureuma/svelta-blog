@@ -18,6 +18,8 @@ export { createExperienceCatalog, parseExperienceKind } from './experience';
 // Types
 export type {
 	BlogAuthor,
+	BlogAuthorSummary,
+	BlogArchiveGroup,
 	BlogCategory,
 	BlogPost,
 	BlogPostFull,

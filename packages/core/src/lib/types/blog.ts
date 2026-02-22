@@ -39,6 +39,21 @@ export type BlogTag = {
 	slug: string;
 };
 
+export type BlogArchiveGroup = {
+	id: string; // "2026-02"
+	year: number;
+	month: number; // 1-12
+	label: string; // "February 2026"
+	count: number;
+	posts: BlogPost[];
+};
+
+export type BlogAuthorSummary = {
+	author: BlogAuthor;
+	postCount: number;
+	latestPostDate: string; // ISO
+};
+
 export type BlogPostWithContent = BlogPost & {
 	html: string;
 	raw: string;

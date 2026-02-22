@@ -100,6 +100,11 @@ const fmtShort = new Intl.DateTimeFormat('en-US', {
     year: 'numeric',
     timeZone: 'UTC'
 });
+const fmtArchive = new Intl.DateTimeFormat('en-US', {
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'UTC'
+});
 function stripForExcerpt(markdown) {
     return (markdown
         // remove fenced code blocks
@@ -259,7 +264,127 @@ export function createBlog(config) {
         const featured = list.filter((p) => p.featured);
         return (featured[0] ?? list[0]);
     }
-    return { getAllPosts, getAllPostsFull, getPostBySlug, getCategories, pickHero };
+    async function getAllTags() {
+        const posts = await getAllPosts();
+        const map = new Map();
+        for (const post of posts) {
+            for (const tagName of post.tags) {
+                const tag = toBlogTag(tagName);
+                map.set(tag.slug, tag);
+            }
+        }
+        return Array.from(map.values()).sort((a, b) => a.name.localeCompare(b.name));
+    }
+    async function getPostsByTag(tagSlug) {
+        const posts = await getAllPosts();
+        return posts.filter((post) => post.tags.some((tagName) => slugify(tagName) === tagSlug));
+    }
+    async function getPostsByAuthor(authorId) {
+        const posts = await getAllPosts();
+        return posts.filter((post) => post.author.id === authorId);
+    }
+    async function getAllAuthors() {
+        const posts = await getAllPosts();
+        const map = new Map();
+        for (const post of posts)
+            map.set(post.author.id, post.author);
+        return Array.from(map.values()).sort((a, b) => a.name.localeCompare(b.name));
+    }
+    async function getAuthorSummaries() {
+        const posts = await getAllPosts();
+        const map = new Map();
+        for (const post of posts) {
+            const existing = map.get(post.author.id);
+            if (!existing) {
+                map.set(post.author.id, {
+                    author: post.author,
+                    postCount: 1,
+                    latestPostDate: post.date
+                });
+                continue;
+            }
+            existing.postCount += 1;
+            if (parseISODate(post.date).getTime() > parseISODate(existing.latestPostDate).getTime()) {
+                existing.latestPostDate = post.date;
+            }
+        }
+        return Array.from(map.values()).sort((a, b) => b.postCount - a.postCount || a.author.name.localeCompare(b.author.name));
+    }
+    async function getArchiveGroups() {
+        const posts = await getAllPosts();
+        const map = new Map();
+        for (const post of posts) {
+            const date = parseISODate(post.date);
+            const year = date.getUTCFullYear();
+            const month = date.getUTCMonth() + 1;
+            const key = `${year}-${String(month).padStart(2, '0')}`;
+            const existing = map.get(key);
+            if (existing) {
+                existing.posts.push(post);
+                existing.count += 1;
+                continue;
+            }
+            map.set(key, {
+                id: key,
+                year,
+                month,
+                label: fmtArchive.format(date),
+                count: 1,
+                posts: [post]
+            });
+        }
+        return Array.from(map.values()).sort((a, b) => b.id.localeCompare(a.id));
+    }
+    async function getAdjacentPosts(slug) {
+        const posts = await getAllPosts();
+        const index = posts.findIndex((post) => post.slug === slug);
+        if (index === -1)
+            return { previous: null, next: null };
+        return {
+            previous: posts[index + 1] ?? null,
+            next: posts[index - 1] ?? null
+        };
+    }
+    async function getRelatedPosts(slug, limit = 3) {
+        const posts = await getAllPosts();
+        const current = posts.find((post) => post.slug === slug);
+        if (!current)
+            return [];
+        const tagSet = new Set(current.tags.map((tag) => slugify(tag)));
+        const byOverlap = posts
+            .filter((post) => post.slug !== slug)
+            .map((post) => {
+            const overlap = post.tags.filter((tag) => tagSet.has(slugify(tag))).length;
+            const sameCategory = post.category.slug === current.category.slug ? 1 : 0;
+            return { post, overlap, sameCategory };
+        })
+            .filter((entry) => entry.overlap > 0 || entry.sameCategory > 0)
+            .sort((a, b) => {
+            if (b.overlap !== a.overlap)
+                return b.overlap - a.overlap;
+            if (b.sameCategory !== a.sameCategory)
+                return b.sameCategory - a.sameCategory;
+            return parseISODate(b.post.date).getTime() - parseISODate(a.post.date).getTime();
+        })
+            .slice(0, limit)
+            .map((entry) => entry.post);
+        return byOverlap;
+    }
+    return {
+        getAllPosts,
+        getAllPostsFull,
+        getPostBySlug,
+        getCategories,
+        pickHero,
+        getAllTags,
+        getPostsByTag,
+        getPostsByAuthor,
+        getAllAuthors,
+        getAuthorSummaries,
+        getArchiveGroups,
+        getAdjacentPosts,
+        getRelatedPosts
+    };
 }
 export function parseVivaBlogFrontmatter(data) {
     return vivaBlogFrontmatterSchema.parse(data);

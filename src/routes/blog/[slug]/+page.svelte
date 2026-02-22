@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Avatar, BackLink, Container, ImageLightbox, MorePosts, ShareButtons, SummaryCard } from '@aureuma/svelta';
+	import { attachCodeCopyButtons } from '$lib/client/code-copy';
 	import type { BlogPost } from '$lib/types/blog';
 
 	let { data } = $props<{
@@ -7,6 +8,7 @@
 			post: BlogPost;
 			contentHtml: string;
 			morePosts: BlogPost[];
+			adjacent: { previous: BlogPost | null; next: BlogPost | null };
 			canonicalUrl: string;
 			seo: {
 				title: string;
@@ -30,10 +32,12 @@
 			const img = e.currentTarget as HTMLImageElement;
 			lightbox = { src: img.currentSrc || img.src, alt: img.alt || data.post.title };
 		};
+		const cleanupCodeCopy = attachCodeCopyButtons(articleEl);
 
 		for (const img of imgs) img.addEventListener('click', onClick);
 		return () => {
 			for (const img of imgs) img.removeEventListener('click', onClick);
+			cleanupCodeCopy();
 		};
 	});
 </script>
@@ -84,9 +88,12 @@
 					<div class="flex items-center gap-3">
 						<Avatar src={data.post.author.avatar} alt={data.post.author.name} size={48} />
 						<div class="leading-tight">
-							<div class="text-sm font-medium tracking-tight text-text-main">
+							<a
+								href={`/blog/authors/${data.post.author.id}`}
+								class="text-sm font-medium tracking-tight text-text-main underline-offset-4 hover:underline"
+							>
 								{data.post.author.name}
-							</div>
+							</a>
 							<div class="text-xs text-text-muted">{data.post.author.title}</div>
 						</div>
 					</div>
@@ -97,6 +104,25 @@
 					{@html data.contentHtml}
 				</article>
 
+				<div class="mt-10 grid grid-cols-1 gap-3 border-y border-border-soft/10 py-6 md:grid-cols-2" data-testid="blog-adjacent-nav">
+					<a
+						href={data.adjacent.previous ? `/blog/${data.adjacent.previous.slug}` : '#'}
+						class="rounded-2xl border border-border-soft/10 bg-background-soft p-4 transition hover:bg-background-main/60 {data.adjacent.previous ? '' : 'pointer-events-none opacity-45'}"
+					>
+						<p class="text-[11px] font-mono uppercase tracking-[0.6px] text-text-muted">Previous</p>
+						<p class="mt-1 text-sm font-medium text-text-main">
+							{data.adjacent.previous?.title || 'None'}
+						</p>
+					</a>
+					<a
+						href={data.adjacent.next ? `/blog/${data.adjacent.next.slug}` : '#'}
+						class="rounded-2xl border border-border-soft/10 bg-background-soft p-4 transition hover:bg-background-main/60 {data.adjacent.next ? '' : 'pointer-events-none opacity-45'}"
+					>
+						<p class="text-[11px] font-mono uppercase tracking-[0.6px] text-text-muted">Next</p>
+						<p class="mt-1 text-sm font-medium text-text-main">{data.adjacent.next?.title || 'None'}</p>
+					</a>
+				</div>
+
 				<MorePosts posts={data.morePosts} />
 			</div>
 
@@ -104,7 +130,12 @@
 				<div class="flex items-center gap-3">
 					<Avatar src={data.post.author.avatar} alt={data.post.author.name} size={48} />
 					<div class="leading-tight">
-						<div class="text-sm font-medium tracking-tight text-text-main">{data.post.author.name}</div>
+						<a
+							href={`/blog/authors/${data.post.author.id}`}
+							class="text-sm font-medium tracking-tight text-text-main underline-offset-4 hover:underline"
+						>
+							{data.post.author.name}
+						</a>
 						<div class="text-xs text-text-muted">{data.post.author.title}</div>
 					</div>
 				</div>

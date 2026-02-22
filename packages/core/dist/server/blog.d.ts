@@ -1,4 +1,4 @@
-import type { BlogAuthor, BlogCategory, BlogPost, BlogPostFull, BlogPostWithContent, BlogTag } from '../types/blog';
+import type { BlogAuthor, BlogAuthorSummary, BlogArchiveGroup, BlogCategory, BlogPost, BlogPostFull, BlogPostWithContent, BlogTag } from '../types/blog';
 import { z } from 'zod';
 declare const frontmatterSchema: z.ZodObject<{
     title: z.ZodString;
@@ -83,6 +83,17 @@ export declare function createBlog(config: BlogCreateConfig): {
     getPostBySlug: (slug: string) => Promise<BlogPostFull | null>;
     getCategories: () => Promise<BlogCategory[]>;
     pickHero: (posts?: BlogPost[]) => Promise<BlogPost>;
+    getAllTags: () => Promise<BlogTag[]>;
+    getPostsByTag: (tagSlug: string) => Promise<BlogPost[]>;
+    getPostsByAuthor: (authorId: string) => Promise<BlogPost[]>;
+    getAllAuthors: () => Promise<BlogAuthor[]>;
+    getAuthorSummaries: () => Promise<BlogAuthorSummary[]>;
+    getArchiveGroups: () => Promise<BlogArchiveGroup[]>;
+    getAdjacentPosts: (slug: string) => Promise<{
+        previous: BlogPost | null;
+        next: BlogPost | null;
+    }>;
+    getRelatedPosts: (slug: string, limit?: number) => Promise<BlogPost[]>;
 };
 export declare function parseVivaBlogFrontmatter(data: unknown): VivaBlogFrontmatter;
 export declare function parseVivaAuthorFrontmatter(data: unknown): VivaAuthorFrontmatter;

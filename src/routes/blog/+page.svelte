@@ -99,6 +99,12 @@
 	</div>
 
 	<section class="pb-32 pt-8">
+		<div class="mb-8 flex flex-wrap items-center gap-2 text-xs font-mono uppercase tracking-[0.6px] text-text-muted">
+			<a href="/blog/tags" class="rounded-full border border-border-soft/10 bg-background-soft px-3 py-1 transition hover:bg-background-main/60">Tags</a>
+			<a href="/blog/archive" class="rounded-full border border-border-soft/10 bg-background-soft px-3 py-1 transition hover:bg-background-main/60">Archive</a>
+			<a href="/blog/authors" class="rounded-full border border-border-soft/10 bg-background-soft px-3 py-1 transition hover:bg-background-main/60">Authors</a>
+		</div>
+
 		<div class="grid grid-cols-1 gap-x-5 gap-y-12 md:grid-cols-2">
 			{#if posts.length === 0}
 				<p class="text-sm leading-6 text-text-sub">No posts in this category yet.</p>
