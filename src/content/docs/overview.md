@@ -19,6 +19,9 @@ tags: ["intro", "architecture"]
 
 Both run through the same Markdown + mdsvex pipeline.
 
+> [!TIP]
+> Use `docs` for structured reference and `blog` for narrative updates. Teams usually need both.
+
 ## Why this exists
 
 Most teams start with docs, then add a blog, or the reverse. Svelta keeps both in one package and one authoring workflow.

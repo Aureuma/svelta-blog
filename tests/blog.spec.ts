@@ -38,6 +38,16 @@ test('docs command palette opens and navigates to selected page', async ({ page 
 	await expect(page).toHaveURL(/\/docs\/server-api$/);
 });
 
+test('docs markdown enhancements render admonitions, code-copy, and feedback', async ({ page }) => {
+	await page.goto('/docs/overview');
+	await expect(page.locator('[data-admonition]').first()).toBeVisible();
+	await page.getByTestId('docs-feedback-yes').click();
+	await expect(page.getByTestId('docs-feedback')).toContainText('Thanks for the feedback.');
+
+	await page.goto('/docs/getting-started');
+	await expect(page.locator('[data-code-copy]').first()).toBeVisible();
+});
+
 test('post page renders summary, shiki blocks, and more posts', async ({ page }) => {
 	await page.goto('/blog/ai-summary-cards-with-frontmatter');
 
@@ -51,6 +61,23 @@ test('post page renders summary, shiki blocks, and more posts', async ({ page })
 		.toBeGreaterThan(0);
 
 	await expect(page.getByTestId('blog-more-posts')).toBeVisible();
+	await expect(page.getByTestId('blog-adjacent-nav')).toBeVisible();
+});
+
+test('blog taxonomy pages render tags, archive, and authors', async ({ page }) => {
+	await page.goto('/blog/tags');
+	await expect(page.getByTestId('blog-tags-page')).toBeVisible();
+	await page.locator('[data-testid=\"blog-tags-page\"] a').first().click();
+	await expect(page.getByTestId('blog-tag-page')).toBeVisible();
+
+	await page.goto('/blog/archive');
+	await expect(page.getByTestId('blog-archive-page')).toBeVisible();
+	await expect(page.locator('[data-testid=\"blog-archive-group\"]').first()).toBeVisible();
+
+	await page.goto('/blog/authors');
+	await expect(page.getByTestId('blog-authors-page')).toBeVisible();
+	await page.locator('[data-testid=\"blog-authors-page\"] a').first().click();
+	await expect(page.getByTestId('blog-author-page')).toBeVisible();
 });
 
 test('appearance toggling applies the expected html class', async ({ page }) => {

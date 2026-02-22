@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { BackLink, DocsPager, DocsShell } from '@aureuma/svelta';
+	import { attachCodeCopyButtons } from '$lib/client/code-copy';
+	import DocsFeedback from '$lib/components/site/DocsFeedback.svelte';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
 	import * as Breadcrumb from '$lib/components/ui/breadcrumb';
@@ -25,6 +27,14 @@
 	}>();
 
 	let copied = $state(false);
+	let articleEl = $state<HTMLElement | null>(null);
+
+	$effect(() => {
+		const _ = data.contentHtml;
+		if (!articleEl) return;
+		const cleanup = attachCodeCopyButtons(articleEl);
+		return cleanup;
+	});
 
 	async function copyCanonicalUrl() {
 		if (!('clipboard' in navigator)) return;
@@ -110,9 +120,11 @@
 
 			<Separator class="my-8" />
 
-			<article class="docs-prose blog-prose prose" data-testid="docs-article">
+			<article bind:this={articleEl} class="docs-prose blog-prose prose" data-testid="docs-article">
 				{@html data.contentHtml}
 			</article>
+
+			<DocsFeedback pageSlug={data.page.slug} />
 
 			<DocsPager previous={data.adjacent.previous} next={data.adjacent.next} />
 		</div>
