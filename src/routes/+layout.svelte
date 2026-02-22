@@ -21,7 +21,7 @@
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
-	<link rel="alternate" type="application/rss+xml" title="Svelta Blog" href="/feed.xml" />
+	<link rel="alternate" type="application/rss+xml" title="svelta Blog" href="/feed.xml" />
 </svelte:head>
 
 <div class="min-h-dvh bg-background-main text-text-main">

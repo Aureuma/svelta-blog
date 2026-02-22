@@ -11,7 +11,7 @@
 >
 	<div class="mx-auto flex h-16 w-full max-w-5xl items-center justify-between px-6">
 		<a href="/" class="group inline-flex items-center gap-2">
-			<span class="text-sm font-semibold tracking-tight">Svelta</span>
+			<span class="text-sm font-semibold tracking-tight">svelta</span>
 			<span
 				class="rounded-full bg-brand/15 px-2 py-0.5 text-[11px] font-mono uppercase tracking-[0.6px] text-brand"
 			>

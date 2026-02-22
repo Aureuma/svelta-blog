@@ -4,7 +4,7 @@ export const AUTHORS: Record<string, BlogAuthor> = {
 	shawn: {
 		id: 'shawn',
 		name: 'Shawn',
-		title: 'Builder at Svelta',
+		title: 'Builder at svelta',
 		avatar: '/blog/authors/shawn.svg'
 	},
 	alex: {
