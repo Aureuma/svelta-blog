@@ -11,7 +11,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ### Changed
 - Consolidated package surface to `@aureuma/svelta` and moved reusable internals under private workspace `@aureuma/svelta-core`.
 - Removed separate `@aureuma/blogkit` release flow and simplified release tooling/docs to a single npm package publish.
-- Removed legacy Mintlify-branded references, filenames, and documentation artifacts from repository content.
+- Removed legacy external-brand references, filenames, and documentation artifacts from repository content.
 
 ## [v0.1.0] - 2026-02-22
 ### Added
