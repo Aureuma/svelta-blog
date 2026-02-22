@@ -1,6 +1,6 @@
 {
-	"name": "svelta",
-	"private": true,
+	"name": "@aureuma/svelta",
+	"private": false,
 	"version": "0.0.1",
 	"type": "module",
 	"workspaces": [
@@ -52,5 +52,8 @@
 		"gray-matter": "^4.0.3",
 		"reading-time": "^1.5.0",
 		"zod": "^4.3.6"
+	},
+	"publishConfig": {
+		"access": "public"
 	}
 }
