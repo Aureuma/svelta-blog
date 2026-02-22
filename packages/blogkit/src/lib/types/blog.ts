@@ -34,3 +34,14 @@ export type BlogPostFull = BlogPost & {
 	component: ComponentType;
 };
 
+export type BlogTag = {
+	name: string;
+	slug: string;
+};
+
+export type BlogPostWithContent = BlogPost & {
+	html: string;
+	raw: string;
+	authorId: string;
+	frontmatter: Record<string, unknown>;
+};

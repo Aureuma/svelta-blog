@@ -8,4 +8,4 @@ export { default as MorePosts } from './components/blog/MorePosts.svelte';
 export { default as ShareButtons } from './components/blog/ShareButtons.svelte';
 export { default as SummaryCard } from './components/blog/SummaryCard.svelte';
 export { default as TagTabs } from './components/blog/TagTabs.svelte';
-export type { BlogAuthor, BlogCategory, BlogPost, BlogPostFull } from './types/blog';
+export type { BlogAuthor, BlogCategory, BlogPost, BlogPostFull, BlogPostWithContent, BlogTag } from './types/blog';

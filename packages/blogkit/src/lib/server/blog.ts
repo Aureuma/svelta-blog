@@ -1,6 +1,14 @@
-import type { BlogAuthor, BlogCategory, BlogPost, BlogPostFull } from '../types/blog';
+import type {
+	BlogAuthor,
+	BlogCategory,
+	BlogPost,
+	BlogPostFull,
+	BlogPostWithContent,
+	BlogTag
+} from '../types/blog';
 import { DEV } from 'esm-env';
 import matter from 'gray-matter';
+import { marked } from 'marked';
 import readingTime from 'reading-time';
 import { z } from 'zod';
 
@@ -37,6 +45,16 @@ export type BlogCreateConfig = {
 	categoryOrder?: string[];
 	// Optional adapter for apps with existing frontmatter schemas.
 	mapFrontmatter?: BlogFrontmatterAdapter;
+};
+
+export type MarkdownRenderer = (markdown: string) => string | Promise<string>;
+
+export type RawBlogCreateConfig = {
+	rawModules: Record<string, () => Promise<string>>;
+	getAuthor: (id: string) => BlogAuthor;
+	categoryOrder?: string[];
+	mapFrontmatter?: BlogFrontmatterAdapter;
+	renderMarkdown?: MarkdownRenderer;
 };
 
 const DEFAULT_CATEGORY_ORDER = [
@@ -261,4 +279,180 @@ export function createBlog(config: BlogCreateConfig) {
 	}
 
 	return { getAllPosts, getAllPostsFull, getPostBySlug, getCategories, pickHero };
+}
+
+const defaultRenderMarkdown: MarkdownRenderer = (markdown) => String(marked.parse(markdown));
+
+function toBlogTag(name: string): BlogTag {
+	return {
+		name,
+		slug: slugify(name)
+	};
+}
+
+export function createRawBlog(config: RawBlogCreateConfig) {
+	const categoryOrder = config.categoryOrder ?? DEFAULT_CATEGORY_ORDER;
+	const renderMarkdown = config.renderMarkdown ?? defaultRenderMarkdown;
+
+	let cachedContentIndex: BlogPostWithContent[] | null = null;
+
+	async function buildContentIndex(): Promise<BlogPostWithContent[]> {
+		if (!DEV && cachedContentIndex) return cachedContentIndex;
+
+		const posts: BlogPostWithContent[] = [];
+		const paths = Object.keys(config.rawModules).sort();
+
+		for (const path of paths) {
+			const file = path.split('/').pop();
+			const slug = file?.replace(/\.md(?:\?.*)?$/, '');
+			if (!slug) continue;
+
+			const rawFn = config.rawModules[path];
+			if (!rawFn) continue;
+
+			const raw = await rawFn();
+			const { data, content } = matter(raw);
+			const metadata: BlogFrontmatter = config.mapFrontmatter
+				? config.mapFrontmatter({ data, content, slug, path })
+				: frontmatterSchema.parse(data);
+			if (metadata.draft) continue;
+
+			const dateObj = parseISODate(metadata.date);
+			const rt = minutesToLabels(readingTime(content).minutes);
+			const category = normalizeCategory(metadata.category);
+			const excerpt = metadata.excerpt?.trim() || excerptFromContent(content);
+			const rendered = await renderMarkdown(content);
+
+			posts.push({
+				slug,
+				title: metadata.title.trim(),
+				excerpt,
+				category,
+				tags: metadata.tags ?? [],
+				author: config.getAuthor(metadata.author),
+				authorId: metadata.author,
+				date: metadata.date,
+				dateLong: fmtLong.format(dateObj),
+				dateShort: fmtShort.format(dateObj),
+				readingMinutes: rt.minutes,
+				readingTimeShort: rt.short,
+				readingTimeLong: rt.long,
+				cover: metadata.cover,
+				summaryAI: metadata.summaryAI,
+				featured: Boolean(metadata.featured),
+				html: rendered,
+				raw: content,
+				frontmatter: typeof data === 'object' && data ? (data as Record<string, unknown>) : {}
+			});
+		}
+
+		posts.sort((a, b) => parseISODate(b.date).getTime() - parseISODate(a.date).getTime());
+		if (!DEV) cachedContentIndex = posts;
+		return posts;
+	}
+
+	function stripContent(post: BlogPostWithContent): BlogPost {
+		const { html: _html, raw: _raw, authorId: _authorId, frontmatter: _frontmatter, ...meta } = post;
+		return meta;
+	}
+
+	async function getAllPosts(): Promise<BlogPost[]> {
+		const posts = await buildContentIndex();
+		return posts.map(stripContent);
+	}
+
+	async function getAllPostsWithContent(): Promise<BlogPostWithContent[]> {
+		return buildContentIndex();
+	}
+
+	async function getPostBySlug(slug: string): Promise<BlogPostWithContent | null> {
+		const posts = await buildContentIndex();
+		return posts.find((p) => p.slug === slug) ?? null;
+	}
+
+	async function getCategories(): Promise<BlogCategory[]> {
+		const posts = await getAllPosts();
+		const map = new Map<string, string>();
+		for (const p of posts) map.set(p.category.slug, p.category.label);
+		return Array.from(map.entries())
+			.map(([slug, label]) => ({ slug, label }))
+			.sort((a, b) => {
+				const ai = categoryOrder.indexOf(a.slug);
+				const bi = categoryOrder.indexOf(b.slug);
+				if (ai === -1 && bi === -1) return a.label.localeCompare(b.label);
+				if (ai === -1) return 1;
+				if (bi === -1) return -1;
+				return ai - bi;
+			});
+	}
+
+	async function pickHero(posts?: BlogPost[]): Promise<BlogPost> {
+		const list = posts ?? (await getAllPosts());
+		const featured = list.filter((p) => p.featured);
+		return (featured[0] ?? list[0])!;
+	}
+
+	async function getAllTags(): Promise<BlogTag[]> {
+		const posts = await buildContentIndex();
+		const map = new Map<string, BlogTag>();
+		for (const post of posts) {
+			for (const tagName of post.tags) {
+				const tag = toBlogTag(tagName);
+				map.set(tag.slug, tag);
+			}
+		}
+		return Array.from(map.values()).sort((a, b) => a.name.localeCompare(b.name));
+	}
+
+	async function getPostsByTag(tagSlug: string): Promise<BlogPostWithContent[]> {
+		const posts = await buildContentIndex();
+		return posts.filter((post) => post.tags.some((tagName) => slugify(tagName) === tagSlug));
+	}
+
+	async function getPostsByAuthor(authorId: string): Promise<BlogPostWithContent[]> {
+		const posts = await buildContentIndex();
+		return posts.filter((post) => post.authorId === authorId);
+	}
+
+	async function getAdjacentPosts(
+		slug: string
+	): Promise<{ previous: BlogPostWithContent | null; next: BlogPostWithContent | null }> {
+		const posts = await buildContentIndex();
+		const index = posts.findIndex((post) => post.slug === slug);
+		if (index === -1) return { previous: null, next: null };
+		return {
+			previous: posts[index + 1] ?? null,
+			next: posts[index - 1] ?? null
+		};
+	}
+
+	async function getRelatedPosts(slug: string, limit = 3): Promise<BlogPostWithContent[]> {
+		const posts = await buildContentIndex();
+		const current = posts.find((post) => post.slug === slug);
+		if (!current) return [];
+		const tagSet = new Set(current.tags.map((tag) => slugify(tag)));
+		return posts
+			.filter((post) => post.slug !== slug)
+			.map((post) => {
+				const overlap = post.tags.filter((tag) => tagSet.has(slugify(tag))).length;
+				return { post, overlap };
+			})
+			.filter((entry) => entry.overlap > 0)
+			.sort((a, b) => b.overlap - a.overlap)
+			.slice(0, limit)
+			.map((entry) => entry.post);
+	}
+
+	return {
+		getAllPosts,
+		getAllPostsWithContent,
+		getPostBySlug,
+		getCategories,
+		pickHero,
+		getAllTags,
+		getPostsByTag,
+		getPostsByAuthor,
+		getAdjacentPosts,
+		getRelatedPosts
+	};
 }

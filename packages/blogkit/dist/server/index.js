@@ -1,1 +1,1 @@
-export { createBlog } from './blog';
+export { createBlog, createRawBlog } from './blog';
