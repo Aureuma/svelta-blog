@@ -1,8 +1,12 @@
 import type { BlogPostWithContent } from '@aureuma/svelta';
-import { createRawBlog } from '@aureuma/svelta/server';
-import { parse } from 'yaml';
-import { blogFrontmatterSchema } from './schema';
-import type { BlogFrontmatter, BlogPost, Tag } from './types';
+import {
+  createRawBlog,
+  parseMarkdownAuthorMap,
+  parseVivaAuthorProfiles,
+  parseVivaBlogFrontmatter,
+  type VivaAuthorProfile
+} from '@aureuma/svelta/server';
+import type { AuthorProfile, BlogPost, Tag } from './types';
 import { slugify } from './utils';
 
 const blogModules = import.meta.glob('/src/content/blog/*.md', {
@@ -16,88 +20,7 @@ const authorModules = import.meta.glob('/src/content/authors/*.md', {
   import: 'default'
 }) as Record<string, string>;
 
-const splitFrontmatter = (raw: string) => {
-  const match = raw.match(
-    /^---\s*[\r\n]+([\s\S]*?)\r?\n---\s*[\r\n]+([\s\S]*)$/
-  );
-  if (!match) {
-    throw new Error('Missing or malformed frontmatter block.');
-  }
-  return { frontmatter: match[1], body: match[2].trim() };
-};
-
-const normalizeFrontmatterInput = (data: unknown): BlogFrontmatter => {
-  if (!data || typeof data !== 'object') {
-    return blogFrontmatterSchema.parse(data) as BlogFrontmatter;
-  }
-
-  const record = {
-    ...(data as Record<string, unknown>)
-  };
-
-  for (const key of ['publishedAt', 'updatedAt'] as const) {
-    const value = record[key];
-    if (value instanceof Date) {
-      record[key] = value.toISOString();
-    }
-  }
-
-  return blogFrontmatterSchema.parse(record) as BlogFrontmatter;
-};
-
-const parseAuthorMap = () => {
-  const map = new Map<
-    string,
-    {
-      id: string;
-      name: string;
-      title: string;
-      avatar: string;
-    }
-  >();
-
-  for (const [path, raw] of Object.entries(authorModules)) {
-    const slug = path.split('/').pop()?.replace('.md', '') || '';
-    const { frontmatter } = splitFrontmatter(raw);
-    const data = parse(frontmatter);
-    if (!data || typeof data !== 'object') {
-      throw new Error(`Author frontmatter must be a YAML object in ${path}.`);
-    }
-
-    const record = data as Record<string, unknown>;
-    const authorSlug =
-      typeof record.slug === 'string' && record.slug.length > 0
-        ? record.slug
-        : slug;
-    const name =
-      typeof record.name === 'string' && record.name.length > 0
-        ? record.name
-        : authorSlug;
-    const title =
-      typeof record.role === 'string' && record.role.length > 0
-        ? record.role
-        : 'Contributor';
-
-    const avatarValue = record.avatar;
-    const avatar =
-      avatarValue &&
-      typeof avatarValue === 'object' &&
-      typeof (avatarValue as Record<string, unknown>).url === 'string'
-        ? String((avatarValue as Record<string, unknown>).url)
-        : '/favicon.ico';
-
-    map.set(authorSlug, {
-      id: authorSlug,
-      name,
-      title,
-      avatar
-    });
-  }
-
-  return map;
-};
-
-const authorMap = parseAuthorMap();
+const authorMap = parseMarkdownAuthorMap(authorModules);
 
 const fallbackAuthor = {
   id: 'unknown',
@@ -110,7 +33,7 @@ const blog = createRawBlog({
   rawModules: blogModules,
   getAuthor: (id) => authorMap.get(id) ?? fallbackAuthor,
   mapFrontmatter: ({ data }) => {
-    const parsed = normalizeFrontmatterInput(data);
+    const parsed = parseVivaBlogFrontmatter(data);
     return {
       title: parsed.title,
       date: parsed.publishedAt,
@@ -127,6 +50,7 @@ const blog = createRawBlog({
 });
 
 let cachedPosts: BlogPost[] | null = null;
+let cachedAuthors: AuthorProfile[] | null = null;
 
 const toTags = (tags: string[]): Tag[] =>
   tags.map((tag) => ({
@@ -140,8 +64,21 @@ const toWordCount = (raw: string) => {
   return trimmed.split(/\s+/).length;
 };
 
+const toLegacyAuthor = (author: VivaAuthorProfile): AuthorProfile => ({
+  slug: author.slug,
+  name: author.name,
+  role: author.role,
+  bio: author.bio,
+  interests: author.interests,
+  canonical: author.canonical,
+  avatar: author.avatar,
+  seo: author.seo,
+  html: author.html,
+  raw: author.raw
+});
+
 const toLegacyPost = (post: BlogPostWithContent): BlogPost => {
-  const parsed = normalizeFrontmatterInput(post.frontmatter);
+  const parsed = parseVivaBlogFrontmatter(post.frontmatter);
   return {
     slug: post.slug,
     title: post.title,
@@ -168,6 +105,21 @@ const getCachedPosts = async () => {
     cachedPosts = posts.map(toLegacyPost);
   }
   return cachedPosts;
+};
+
+const getCachedAuthors = async () => {
+  if (!cachedAuthors) {
+    const profiles = await parseVivaAuthorProfiles(authorModules);
+    cachedAuthors = profiles.map(toLegacyAuthor);
+  }
+  return cachedAuthors;
+};
+
+export const getAllAuthors = async () => getCachedAuthors();
+
+export const getAuthorBySlug = async (slug: string) => {
+  const authors = await getCachedAuthors();
+  return authors.find((author) => author.slug === slug) ?? null;
 };
 
 export const getAllPosts = async ({

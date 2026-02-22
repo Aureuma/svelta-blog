@@ -26,6 +26,16 @@
   --input: 240 6% 12%;
   --ring: 75 100% 50%;
   --radius: 0.65rem;
+  --c-background-main: 247 250 243;
+  --c-background-soft: 237 244 227;
+  --c-background-invert: 9 20 16;
+  --c-text-main: 19 29 24;
+  --c-text-sub: 54 94 74;
+  --c-text-muted: 82 124 102;
+  --c-text-invert: 243 248 239;
+  --c-border-soft: 59 112 87;
+  --c-brand: 64 184 86;
+  --c-brand-soft: 220 246 228;
 
   --cv-ink: hsl(var(--foreground));
   --cv-neon: hsl(var(--primary));
@@ -73,6 +83,16 @@
   --border: 46 33% 92%;
   --input: 46 33% 92%;
   --ring: 75 100% 55%;
+  --c-background-main: 8 18 12;
+  --c-background-soft: 14 27 19;
+  --c-background-invert: 242 249 236;
+  --c-text-main: 212 245 210;
+  --c-text-sub: 145 207 142;
+  --c-text-muted: 101 160 101;
+  --c-text-invert: 8 16 11;
+  --c-border-soft: 112 194 115;
+  --c-brand: 74 222 128;
+  --c-brand-soft: 21 54 32;
 
   --cv-shadow: 6px 6px 0 hsl(46 33% 92%);
   --cv-hero-bg:

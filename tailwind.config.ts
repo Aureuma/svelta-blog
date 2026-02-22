@@ -2,10 +2,23 @@ import type { Config } from 'tailwindcss';
 
 const config: Config = {
   darkMode: ['class'],
-  content: ['./src/**/*.{html,js,svelte,ts}'],
+  content: [
+    './src/**/*.{html,js,svelte,ts}',
+    './node_modules/@aureuma/svelta/packages/core/dist/**/*.{js,ts,svelte}'
+  ],
   theme: {
     extend: {
       colors: {
+        'background-main': 'rgb(var(--c-background-main) / <alpha-value>)',
+        'background-soft': 'rgb(var(--c-background-soft) / <alpha-value>)',
+        'background-invert': 'rgb(var(--c-background-invert) / <alpha-value>)',
+        'text-main': 'rgb(var(--c-text-main) / <alpha-value>)',
+        'text-sub': 'rgb(var(--c-text-sub) / <alpha-value>)',
+        'text-muted': 'rgb(var(--c-text-muted) / <alpha-value>)',
+        'text-invert': 'rgb(var(--c-text-invert) / <alpha-value>)',
+        'border-soft': 'rgb(var(--c-border-soft) / <alpha-value>)',
+        brand: 'rgb(var(--c-brand) / <alpha-value>)',
+        'brand-soft': 'rgb(var(--c-brand-soft) / <alpha-value>)',
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         card: 'hsl(var(--card))',

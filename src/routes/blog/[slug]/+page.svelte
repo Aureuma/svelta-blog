@@ -1,33 +1,27 @@
 <script lang="ts">
-  import { absoluteUrl, buildBlogPostingJsonLd } from '$lib/blog/seo';
-  import { BLOG_NAME } from '$lib/blog/site';
-  import Badge from '$components/ui/badge.svelte';
-  import Button from '$components/ui/button.svelte';
+  import {
+    Avatar,
+    BackLink,
+    Container,
+    MorePosts,
+    ShareButtons,
+    SummaryCard
+  } from '@aureuma/svelta';
+  import { toSveltaPost, toSveltaPosts } from '$lib/blog/svelta-adapter';
 
   export let data: {
-    post: {
+    post: Record<string, unknown> & {
       title: string;
-      description: string;
       slug: string;
-      publishedLabel: string;
-      updatedLabel: string;
-      readingTime: string;
-      publishedAt: string | Date;
-      updatedAt: string | Date;
-      publishedAtIso: string;
-      updatedAtIso: string;
       html: string;
-      tags: { name: string; slug: string }[];
-      canonical: string;
-      ogImage: {
-        url: string;
-        alt: string;
-        width: number;
-        height: number;
-        credit: string;
-        source: string;
+      canonical?: string;
+      summaryAI?: string;
+      seo?: {
+        title?: string;
+        description?: string;
+        keywords?: string[];
       };
-      seo: { title: string; description: string; keywords: string[] };
+      tags?: { name: string; slug: string }[];
     };
     author: {
       slug: string;
@@ -36,157 +30,153 @@
       bio: string;
       avatar: { url: string; alt: string; width: number; height: number };
     };
-    related: { slug: string; title: string; description: string }[];
-    adjacent: {
-      previous: { slug: string; title: string } | null;
-      next: { slug: string; title: string } | null;
+    related?: unknown[];
+    adjacent?: {
+      previous?: unknown | null;
+      next?: unknown | null;
+    };
+    meta?: {
+      title?: string;
+      description?: string;
+      canonical?: string;
     };
   };
 
-  const ogImage = absoluteUrl(data.post.ogImage.url);
-  const seoTitle = data.post.seo.title || data.post.title;
-  const seoDescription = data.post.seo.description || data.post.description;
-  const jsonLdScript = JSON.stringify(
-    buildBlogPostingJsonLd(data.post, data.author)
-  ).replace(/</g, '\\u003c');
+  const fallbackAuthor = {
+    id: data.author.slug,
+    name: data.author.name,
+    title: data.author.role,
+    avatar: data.author.avatar.url
+  };
+
+  $: post = toSveltaPost(data.post, fallbackAuthor);
+  $: canonicalUrl =
+    (typeof data.meta?.canonical === 'string' && data.meta.canonical) ||
+    (typeof data.post.canonical === 'string' && data.post.canonical) ||
+    `/blog/${post.slug}`;
+
+  $: relatedPosts = toSveltaPosts(data.related ?? [], fallbackAuthor);
+  $: previous = data.adjacent?.previous
+    ? toSveltaPost(data.adjacent.previous as Record<string, unknown>, fallbackAuthor)
+    : null;
+  $: next = data.adjacent?.next
+    ? toSveltaPost(data.adjacent.next as Record<string, unknown>, fallbackAuthor)
+    : null;
+
+  $: seoTitle =
+    (typeof data.meta?.title === 'string' && data.meta.title) ||
+    (typeof data.post.seo?.title === 'string' && data.post.seo.title) ||
+    post.title;
+  $: seoDescription =
+    (typeof data.meta?.description === 'string' && data.meta.description) ||
+    (typeof data.post.seo?.description === 'string' && data.post.seo.description) ||
+    post.excerpt;
 </script>
 
 <svelte:head>
-  <title>{seoTitle} — {BLOG_NAME}</title>
+  <title>{seoTitle}</title>
   <meta name="description" content={seoDescription} />
-  <meta name="keywords" content={data.post.seo.keywords.join(', ')} />
-  <meta name="author" content={data.author.name} />
-  <link rel="canonical" href={data.post.canonical} />
-
+  {#if data.post.seo?.keywords}
+    <meta name="keywords" content={data.post.seo.keywords.join(', ')} />
+  {/if}
+  <link rel="canonical" href={canonicalUrl} />
   <meta property="og:type" content="article" />
   <meta property="og:title" content={seoTitle} />
   <meta property="og:description" content={seoDescription} />
-  <meta property="og:url" content={data.post.canonical} />
-  <meta property="og:image" content={ogImage} />
-  <meta property="og:image:alt" content={data.post.ogImage.alt} />
-  <meta property="og:image:width" content={String(data.post.ogImage.width)} />
-  <meta property="og:image:height" content={String(data.post.ogImage.height)} />
-  <meta property="article:published_time" content={data.post.publishedAtIso} />
-  <meta property="article:modified_time" content={data.post.updatedAtIso} />
-  <meta property="article:author" content={data.author.name} />
-  {#each data.post.tags as tag}
-    <meta property="article:tag" content={tag.name} />
-  {/each}
-
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content={seoTitle} />
-  <meta name="twitter:description" content={seoDescription} />
-  <meta name="twitter:image" content={ogImage} />
-  <meta name="twitter:image:alt" content={data.post.ogImage.alt} />
-
-  <script type="application/ld+json">{jsonLdScript}</script>
+  <meta property="og:url" content={canonicalUrl} />
+  <meta property="og:image" content={post.cover} />
 </svelte:head>
 
-<article class="mx-auto max-w-3xl space-y-8">
-  <header class="space-y-4">
-    <Badge variant="outline">Field note</Badge>
-    <h1 class="text-4xl font-semibold">{data.post.title}</h1>
-    <p class="text-base text-muted-foreground">{data.post.description}</p>
-    <div class="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-      <div class="flex items-center gap-3">
-        <img
-          src={data.author.avatar.url}
-          alt={data.author.avatar.alt}
-          width={data.author.avatar.width}
-          height={data.author.avatar.height}
-          loading="lazy"
-          class="h-9 w-9 rounded-full object-cover border-2 border-border"
-        />
-        <span>by {data.author.name}</span>
+<Container size="4xl">
+  <section class="pb-24 pt-14">
+    <BackLink href="/blog" label="Back to blog" />
+
+    <header class="mt-8 border-b border-border-soft/10 pb-8">
+      <div class="flex items-center gap-2 text-xs font-mono uppercase tracking-[0.6px]">
+        <span class="text-brand">{post.category.label}</span>
+        <span class="text-text-muted" aria-hidden="true">/</span>
+        <span class="text-text-muted">{post.readingTimeLong}</span>
       </div>
-      <span>{data.post.publishedLabel}</span>
-      <span>{data.post.readingTime}</span>
-    </div>
-    <div class="flex flex-wrap gap-2">
-      {#each data.post.tags as tag}
-        <a
-          href={`/blog/tag/${tag.slug}`}
-          class="rounded-full border-2 border-border px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em]"
-        >
-          {tag.name}
-        </a>
-      {/each}
-    </div>
-  </header>
 
-  <figure class="space-y-3">
-    <img
-      src={data.post.ogImage.url}
-      alt={data.post.ogImage.alt}
-      width={data.post.ogImage.width}
-      height={data.post.ogImage.height}
-      loading="eager"
-      decoding="async"
-      fetchpriority="high"
-      class="rounded-2xl border-2 border-border object-cover"
-    />
-    <figcaption class="text-xs text-muted-foreground">
-      Photo by {data.post.ogImage.credit} · {data.post.ogImage.source}
-    </figcaption>
-  </figure>
+      <h1 class="mt-4 text-4xl font-semibold leading-[44px] tracking-[-0.8px] text-text-main">
+        {post.title}
+      </h1>
 
-  <div class="prose max-w-none prose-headings:font-semibold prose-a:text-cv-neon prose-a:no-underline">
-    {@html data.post.html}
-  </div>
+      <p class="mt-4 text-xs font-mono uppercase tracking-[0.6px] text-text-muted">
+        {post.dateLong}
+      </p>
+    </header>
 
-  <section class="cv-panel rounded-2xl p-6">
-    <a href={`/blog/author/${data.author.slug}`} class="flex flex-col gap-4 sm:flex-row sm:items-center">
-      <img
-        src={data.author.avatar.url}
-        alt={data.author.avatar.alt}
-        width={data.author.avatar.width}
-        height={data.author.avatar.height}
-        loading="lazy"
-        class="h-16 w-16 rounded-full object-cover border-2 border-border"
-      />
-      <div>
-        <p class="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground">
-          Written by {data.author.name}
-        </p>
-        <p class="mt-2 text-lg font-semibold">{data.author.role}</p>
-        <p class="mt-2 text-sm text-muted-foreground">{data.author.bio}</p>
-      </div>
-    </a>
-  </section>
+    <div class="mt-10 grid grid-cols-1 gap-x-16 md:grid-cols-[minmax(0,628px)_160px]">
+      <div class="min-w-0">
+        <div class="overflow-hidden rounded-3xl border border-border-soft/10 bg-background-soft">
+          <img src={post.cover} alt={post.title} class="h-[360px] w-full object-cover" />
+        </div>
 
-  {#if data.related.length > 0}
-    <section class="space-y-4">
-      <h2 class="text-2xl font-semibold">Related notes</h2>
-      <div class="grid gap-4 md:grid-cols-3">
-        {#each data.related as post}
+        {#if post.summaryAI}
+          <div class="mt-6">
+            <SummaryCard summary={post.summaryAI} />
+          </div>
+        {/if}
+
+        <div class="mt-8 flex flex-col gap-6 md:hidden">
+          <div class="flex items-center gap-3">
+            <Avatar src={data.author.avatar.url} alt={data.author.name} size={48} />
+            <div class="leading-tight">
+              <a
+                href={`/blog/author/${data.author.slug}`}
+                class="text-sm font-medium tracking-tight text-text-main underline-offset-4 hover:underline"
+              >
+                {data.author.name}
+              </a>
+              <div class="text-xs text-text-muted">{data.author.role}</div>
+            </div>
+          </div>
+          <ShareButtons title={post.title} url={canonicalUrl} />
+        </div>
+
+        <article class="blog-prose prose mt-10">
+          {@html data.post.html}
+        </article>
+
+        <div class="mt-10 grid grid-cols-1 gap-3 border-y border-border-soft/10 py-6">
           <a
-            href={`/blog/${post.slug}`}
-            class="cv-panel rounded-xl p-4 text-sm transition hover:-translate-y-1"
+            href={next ? `/blog/${next.slug}` : '#'}
+            class="rounded-2xl border border-border-soft/10 bg-background-soft p-4 transition hover:bg-background-main/60 {next ? '' : 'pointer-events-none opacity-45'}"
           >
-            <p class="font-semibold">{post.title}</p>
-            <p class="mt-2 text-xs text-muted-foreground">{post.description}</p>
+            <p class="text-[11px] font-mono uppercase tracking-[0.6px] text-text-muted">Next</p>
+            <p class="mt-1 text-sm font-medium text-text-main">{next?.title || 'None'}</p>
           </a>
-        {/each}
+          <a
+            href={previous ? `/blog/${previous.slug}` : '#'}
+            class="rounded-2xl border border-border-soft/10 bg-background-soft p-4 transition hover:bg-background-main/60 {previous ? '' : 'pointer-events-none opacity-45'}"
+          >
+            <p class="text-[11px] font-mono uppercase tracking-[0.6px] text-text-muted">Previous</p>
+            <p class="mt-1 text-sm font-medium text-text-main">{previous?.title || 'None'}</p>
+          </a>
+        </div>
+
+        {#if relatedPosts.length > 0}
+          <MorePosts posts={relatedPosts} />
+        {/if}
       </div>
-    </section>
-  {/if}
 
-  <nav class="flex flex-col gap-3 border-t-2 border-border pt-6 text-sm">
-    {#if data.adjacent.next}
-      <a href={`/blog/${data.adjacent.next.slug}`} class="cv-panel rounded-xl p-4">
-        <span class="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground">Next</span>
-        <p class="mt-2 font-semibold">{data.adjacent.next.title}</p>
-      </a>
-    {/if}
-    {#if data.adjacent.previous}
-      <a href={`/blog/${data.adjacent.previous.slug}`} class="cv-panel rounded-xl p-4">
-        <span class="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground">Previous</span>
-        <p class="mt-2 font-semibold">{data.adjacent.previous.title}</p>
-      </a>
-    {/if}
-  </nav>
+      <aside class="sticky top-20 hidden self-start md:flex md:flex-col md:gap-8">
+        <div class="flex items-center gap-3">
+          <Avatar src={data.author.avatar.url} alt={data.author.name} size={48} />
+          <div class="leading-tight">
+            <a
+              href={`/blog/author/${data.author.slug}`}
+              class="text-sm font-medium tracking-tight text-text-main underline-offset-4 hover:underline"
+            >
+              {data.author.name}
+            </a>
+            <div class="text-xs text-text-muted">{data.author.role}</div>
+          </div>
+        </div>
 
-  <div class="flex justify-center">
-    <Button variant="outline" href="/blog">Back to blog</Button>
-  </div>
-</article>
+        <ShareButtons title={post.title} url={canonicalUrl} />
+      </aside>
+    </div>
+  </section>
+</Container>
