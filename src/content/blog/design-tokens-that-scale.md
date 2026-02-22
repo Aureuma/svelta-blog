@@ -7,11 +7,11 @@ cover: "/blog/covers/design-tokens.svg"
 tags:
   - "Design Systems"
   - "Theming"
-excerpt: "A small, opinionated token set that keeps contrast crisp across light/dark, while preserving the Mintlify-like quiet UI."
+excerpt: "A small, opinionated token set that keeps contrast crisp across light/dark, while preserving the documentation-style quiet UI."
 summaryAI: "Use a tiny set of semantic tokens: `background.main/soft`, `text.main/sub/muted`, `border.soft`, and `brand`. Map them to CSS variables on `html.light`/`html.dark`, then reference them via Tailwind colors. Keep borders extremely subtle and reserve the brand color for metadata accents."
 ---
 
-Mintlify’s blog looks “clean” because everything is token-driven and low-noise.
+Great documentation blogs look “clean” because everything is token-driven and low-noise.
 
 ## Token strategy
 

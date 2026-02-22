@@ -8,7 +8,7 @@ tags:
   - "UX"
   - "Content"
 excerpt: "A skimmable summary card that appears near the top of the post, controlled by a single frontmatter field."
-summaryAI: "Add an optional `summaryAI` field in frontmatter. If present, render a soft card after the hero image with a mono uppercase label (“AI SUMMARY”) and a short paragraph. If absent, omit the card entirely (Mintlify does this on some posts)."
+summaryAI: "Add an optional `summaryAI` field in frontmatter. If present, render a soft card after the hero image with a mono uppercase label (“AI SUMMARY”) and a short paragraph. If absent, omit the card entirely."
 ---
 
 Readers don’t always want the whole story. They often want the gist, then decide.

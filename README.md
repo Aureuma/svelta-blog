@@ -1,6 +1,6 @@
 # svelta
 
-Mintlify-inspired blogging system built with SvelteKit (Svelte 5) + Markdown.
+A documentation-first blogging system built with SvelteKit (Svelte 5) + Markdown.
 
 ## Routes
 
@@ -32,4 +32,3 @@ npm run check
 npm run build
 npm run preview
 ```
-

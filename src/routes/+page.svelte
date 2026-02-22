@@ -2,7 +2,7 @@
 	<div class="max-w-2xl">
 		<p class="text-xs font-mono uppercase tracking-[0.6px] text-text-muted">svelta</p>
 		<h1 class="mt-3 text-4xl font-semibold leading-[44px] tracking-[-0.8px]">
-			A Mintlify-inspired blog system, built in SvelteKit.
+			A documentation-first blog system, built in SvelteKit.
 		</h1>
 		<p class="mt-4 text-base leading-6 text-text-sub">
 			Markdown posts, Shiki code highlighting, tag filtering, infinite scroll, author profiles, share
@@ -30,7 +30,7 @@
 			<p class="text-xs font-mono uppercase tracking-[0.6px] text-text-muted">Design</p>
 			<p class="mt-2 text-lg font-medium tracking-tight">Proportions first</p>
 			<p class="mt-2 text-sm leading-6 text-text-sub">
-				Containers, spacing, and typography scale tuned to match the Mintlify blog’s feel.
+				Containers, spacing, and typography scale tuned for clear long-form reading.
 			</p>
 		</div>
 		<div class="rounded-3xl border border-border-soft/10 bg-background-soft p-8">

@@ -7,11 +7,11 @@ cover: "/blog/covers/infinite-scroll.svg"
 tags:
   - "Performance"
   - "Svelte"
-excerpt: "Mintlify-style content loading: a paginated JSON endpoint plus a sentinel at the bottom of the grid."
+excerpt: "Documentation-style content loading: a paginated JSON endpoint plus a sentinel at the bottom of the grid."
 summaryAI: "Render the first page on the server for SEO, then append pages on the client using an `IntersectionObserver` watching a sentinel div. The endpoint should accept `offset`, `limit`, and `category`, and it should exclude the hero post to avoid duplicates."
 ---
 
-The Mintlify blog index loads more cards as you scroll. There’s no “Load more” button.
+Our blog index loads more cards as you scroll. There’s no “Load more” button.
 
 ## The shape of the API
 
@@ -34,4 +34,3 @@ io.observe(sentinel);
 ## Optional: virtualization
 
 If you ever have thousands of posts, add virtualization. Until then, pagination is enough.
-

@@ -1,6 +1,6 @@
 # @aureuma/blogkit
 
-A Mintlify-inspired blog UI + content pipeline helpers for SvelteKit + mdsvex.
+A documentation-first blog UI + content pipeline helper set for SvelteKit + mdsvex.
 
 This repo keeps `svelta` as a demo app, and exposes the reusable parts as a local workspace package under `packages/blogkit`.
 
