@@ -1,1 +1,1 @@
-export { createBlog, createRawBlog } from './blog';
+export { createBlog, createRawBlog, parseMarkdownAuthorMap, parseVivaAuthorFrontmatter, parseVivaAuthorProfiles, parseVivaBlogFrontmatter } from './blog';

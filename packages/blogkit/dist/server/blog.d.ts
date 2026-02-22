@@ -37,6 +37,46 @@ export type RawBlogCreateConfig = {
     mapFrontmatter?: BlogFrontmatterAdapter;
     renderMarkdown?: MarkdownRenderer;
 };
+export type VivaImageAsset = {
+    url: string;
+    alt: string;
+    width: number;
+    height: number;
+    credit: string;
+    source: string;
+};
+export type VivaSeoFields = {
+    title: string;
+    description: string;
+    keywords: string[];
+};
+export type VivaBlogFrontmatter = {
+    title: string;
+    description: string;
+    slug: string;
+    publishedAt: string;
+    updatedAt: string;
+    author: string;
+    tags: string[];
+    canonical: string;
+    ogImage: VivaImageAsset;
+    draft: boolean;
+    seo: VivaSeoFields;
+};
+export type VivaAuthorFrontmatter = {
+    name: string;
+    slug: string;
+    role: string;
+    bio: string;
+    interests: string[];
+    canonical: string;
+    avatar: VivaImageAsset;
+    seo: VivaSeoFields;
+};
+export type VivaAuthorProfile = VivaAuthorFrontmatter & {
+    html: string;
+    raw: string;
+};
 export declare function createBlog(config: BlogCreateConfig): {
     getAllPosts: () => Promise<BlogPost[]>;
     getAllPostsFull: () => Promise<BlogPostFull[]>;
@@ -44,6 +84,10 @@ export declare function createBlog(config: BlogCreateConfig): {
     getCategories: () => Promise<BlogCategory[]>;
     pickHero: (posts?: BlogPost[]) => Promise<BlogPost>;
 };
+export declare function parseVivaBlogFrontmatter(data: unknown): VivaBlogFrontmatter;
+export declare function parseVivaAuthorFrontmatter(data: unknown): VivaAuthorFrontmatter;
+export declare function parseMarkdownAuthorMap(rawModules: Record<string, string>, fallbackAvatar?: string): Map<string, BlogAuthor>;
+export declare function parseVivaAuthorProfiles(rawModules: Record<string, string>, renderMarkdown?: MarkdownRenderer): Promise<VivaAuthorProfile[]>;
 export declare function createRawBlog(config: RawBlogCreateConfig): {
     getAllPosts: () => Promise<BlogPost[]>;
     getAllPostsWithContent: () => Promise<BlogPostWithContent[]>;

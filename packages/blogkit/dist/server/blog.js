@@ -24,6 +24,46 @@ const DEFAULT_CATEGORY_ORDER = [
     'design',
     'best-practices'
 ];
+const vivaImageAssetSchema = z.object({
+    url: z.string(),
+    alt: z.string(),
+    width: z.number(),
+    height: z.number(),
+    credit: z.string(),
+    source: z.string()
+});
+const vivaSeoFieldsSchema = z.object({
+    title: z.string(),
+    description: z.string(),
+    keywords: z.array(z.string())
+});
+const vivaDateField = z
+    .union([z.string(), z.date()])
+    .transform((value) => (value instanceof Date ? value.toISOString() : value));
+const vivaBlogFrontmatterSchema = z.object({
+    title: z.string(),
+    description: z.string(),
+    slug: z.string(),
+    publishedAt: vivaDateField,
+    updatedAt: vivaDateField,
+    author: z.string(),
+    tags: z.array(z.string()),
+    canonical: z.string(),
+    ogImage: vivaImageAssetSchema,
+    draft: z.boolean().optional().default(false),
+    seo: vivaSeoFieldsSchema
+});
+const vivaAuthorFrontmatterSchema = z.object({
+    name: z.string(),
+    slug: z.string(),
+    role: z.string(),
+    bio: z.string(),
+    interests: z.array(z.string()),
+    canonical: z.string(),
+    avatar: vivaImageAssetSchema,
+    seo: vivaSeoFieldsSchema
+});
+const frontmatterOnlySchema = /^---\s*[\r\n]+([\s\S]*?)\r?\n---\s*[\r\n]+/;
 function slugify(input) {
     return input
         .toLowerCase()
@@ -220,6 +260,52 @@ export function createBlog(config) {
         return (featured[0] ?? list[0]);
     }
     return { getAllPosts, getAllPostsFull, getPostBySlug, getCategories, pickHero };
+}
+export function parseVivaBlogFrontmatter(data) {
+    return vivaBlogFrontmatterSchema.parse(data);
+}
+export function parseVivaAuthorFrontmatter(data) {
+    return vivaAuthorFrontmatterSchema.parse(data);
+}
+function extractFrontmatter(raw) {
+    const match = raw.match(frontmatterOnlySchema);
+    if (!match)
+        return {};
+    return matter(raw).data;
+}
+export function parseMarkdownAuthorMap(rawModules, fallbackAvatar = '/favicon.ico') {
+    const map = new Map();
+    for (const [path, raw] of Object.entries(rawModules)) {
+        const defaultSlug = path.split('/').pop()?.replace(/\.md(?:\?.*)?$/, '') || '';
+        const data = extractFrontmatter(raw);
+        const record = (typeof data === 'object' && data ? data : {});
+        const id = typeof record.slug === 'string' && record.slug.length > 0 ? record.slug : defaultSlug;
+        if (!id)
+            continue;
+        const name = typeof record.name === 'string' && record.name.length > 0 ? record.name : id;
+        const title = typeof record.role === 'string' && record.role.length > 0 ? record.role : 'Contributor';
+        const avatarRecord = record.avatar && typeof record.avatar === 'object'
+            ? record.avatar
+            : null;
+        const avatar = avatarRecord && typeof avatarRecord.url === 'string' ? avatarRecord.url : fallbackAvatar;
+        map.set(id, { id, name, title, avatar });
+    }
+    return map;
+}
+export async function parseVivaAuthorProfiles(rawModules, renderMarkdown = defaultRenderMarkdown) {
+    const profiles = [];
+    for (const [path, raw] of Object.entries(rawModules)) {
+        const { data, content } = matter(raw);
+        const parsed = parseVivaAuthorFrontmatter(data);
+        const html = await renderMarkdown(content);
+        profiles.push({
+            ...parsed,
+            html,
+            raw: content
+        });
+    }
+    profiles.sort((a, b) => a.name.localeCompare(b.name));
+    return profiles;
 }
 const defaultRenderMarkdown = (markdown) => String(marked.parse(markdown));
 function toBlogTag(name) {

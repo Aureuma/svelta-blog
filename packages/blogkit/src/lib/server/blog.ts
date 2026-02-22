@@ -57,6 +57,51 @@ export type RawBlogCreateConfig = {
 	renderMarkdown?: MarkdownRenderer;
 };
 
+export type VivaImageAsset = {
+	url: string;
+	alt: string;
+	width: number;
+	height: number;
+	credit: string;
+	source: string;
+};
+
+export type VivaSeoFields = {
+	title: string;
+	description: string;
+	keywords: string[];
+};
+
+export type VivaBlogFrontmatter = {
+	title: string;
+	description: string;
+	slug: string;
+	publishedAt: string;
+	updatedAt: string;
+	author: string;
+	tags: string[];
+	canonical: string;
+	ogImage: VivaImageAsset;
+	draft: boolean;
+	seo: VivaSeoFields;
+};
+
+export type VivaAuthorFrontmatter = {
+	name: string;
+	slug: string;
+	role: string;
+	bio: string;
+	interests: string[];
+	canonical: string;
+	avatar: VivaImageAsset;
+	seo: VivaSeoFields;
+};
+
+export type VivaAuthorProfile = VivaAuthorFrontmatter & {
+	html: string;
+	raw: string;
+};
+
 const DEFAULT_CATEGORY_ORDER = [
 	'all',
 	'ai-trends',
@@ -66,6 +111,52 @@ const DEFAULT_CATEGORY_ORDER = [
 	'design',
 	'best-practices'
 ];
+
+const vivaImageAssetSchema = z.object({
+	url: z.string(),
+	alt: z.string(),
+	width: z.number(),
+	height: z.number(),
+	credit: z.string(),
+	source: z.string()
+});
+
+const vivaSeoFieldsSchema = z.object({
+	title: z.string(),
+	description: z.string(),
+	keywords: z.array(z.string())
+});
+
+const vivaDateField = z
+	.union([z.string(), z.date()])
+	.transform((value) => (value instanceof Date ? value.toISOString() : value));
+
+const vivaBlogFrontmatterSchema = z.object({
+	title: z.string(),
+	description: z.string(),
+	slug: z.string(),
+	publishedAt: vivaDateField,
+	updatedAt: vivaDateField,
+	author: z.string(),
+	tags: z.array(z.string()),
+	canonical: z.string(),
+	ogImage: vivaImageAssetSchema,
+	draft: z.boolean().optional().default(false),
+	seo: vivaSeoFieldsSchema
+});
+
+const vivaAuthorFrontmatterSchema = z.object({
+	name: z.string(),
+	slug: z.string(),
+	role: z.string(),
+	bio: z.string(),
+	interests: z.array(z.string()),
+	canonical: z.string(),
+	avatar: vivaImageAssetSchema,
+	seo: vivaSeoFieldsSchema
+});
+
+const frontmatterOnlySchema = /^---\s*[\r\n]+([\s\S]*?)\r?\n---\s*[\r\n]+/;
 
 function slugify(input: string): string {
 	return input
@@ -279,6 +370,73 @@ export function createBlog(config: BlogCreateConfig) {
 	}
 
 	return { getAllPosts, getAllPostsFull, getPostBySlug, getCategories, pickHero };
+}
+
+export function parseVivaBlogFrontmatter(data: unknown): VivaBlogFrontmatter {
+	return vivaBlogFrontmatterSchema.parse(data);
+}
+
+export function parseVivaAuthorFrontmatter(data: unknown): VivaAuthorFrontmatter {
+	return vivaAuthorFrontmatterSchema.parse(data);
+}
+
+function extractFrontmatter(raw: string): unknown {
+	const match = raw.match(frontmatterOnlySchema);
+	if (!match) return {};
+	return matter(raw).data;
+}
+
+export function parseMarkdownAuthorMap(
+	rawModules: Record<string, string>,
+	fallbackAvatar = '/favicon.ico'
+): Map<string, BlogAuthor> {
+	const map = new Map<string, BlogAuthor>();
+
+	for (const [path, raw] of Object.entries(rawModules)) {
+		const defaultSlug = path.split('/').pop()?.replace(/\.md(?:\?.*)?$/, '') || '';
+		const data = extractFrontmatter(raw);
+		const record = (typeof data === 'object' && data ? data : {}) as Record<string, unknown>;
+
+		const id =
+			typeof record.slug === 'string' && record.slug.length > 0 ? record.slug : defaultSlug;
+		if (!id) continue;
+
+		const name = typeof record.name === 'string' && record.name.length > 0 ? record.name : id;
+		const title =
+			typeof record.role === 'string' && record.role.length > 0 ? record.role : 'Contributor';
+
+		const avatarRecord =
+			record.avatar && typeof record.avatar === 'object'
+				? (record.avatar as Record<string, unknown>)
+				: null;
+		const avatar =
+			avatarRecord && typeof avatarRecord.url === 'string' ? avatarRecord.url : fallbackAvatar;
+
+		map.set(id, { id, name, title, avatar });
+	}
+
+	return map;
+}
+
+export async function parseVivaAuthorProfiles(
+	rawModules: Record<string, string>,
+	renderMarkdown: MarkdownRenderer = defaultRenderMarkdown
+): Promise<VivaAuthorProfile[]> {
+	const profiles: VivaAuthorProfile[] = [];
+
+	for (const [path, raw] of Object.entries(rawModules)) {
+		const { data, content } = matter(raw);
+		const parsed = parseVivaAuthorFrontmatter(data);
+		const html = await renderMarkdown(content);
+		profiles.push({
+			...parsed,
+			html,
+			raw: content
+		});
+	}
+
+	profiles.sort((a, b) => a.name.localeCompare(b.name));
+	return profiles;
 }
 
 const defaultRenderMarkdown: MarkdownRenderer = (markdown) => String(marked.parse(markdown));
