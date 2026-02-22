@@ -1,0 +1,129 @@
+# Releasing and Changelog Guide
+
+This project follows Semantic Versioning and keeps a human-focused changelog.
+
+## Versioning Rules
+
+- Use SemVer: `MAJOR.MINOR.PATCH` (tag format: `vX.Y.Z`).
+- While on `v0.x`, breaking changes should bump `MINOR`.
+- Features should bump `MINOR`.
+- Fixes/docs-only releases should bump `PATCH`.
+
+## Changelog Format
+
+Use this structure for each release entry:
+
+```markdown
+## [vX.Y.Z] - YYYY-MM-DD
+### Added
+- ...
+### Changed
+- ...
+### Fixed
+- ...
+### Removed
+- ...
+### Security
+- ...
+```
+
+Guidelines:
+- Newest first.
+- Use only sections that apply.
+- Keep bullets concise and user-facing.
+- Dates are UTC, format `YYYY-MM-DD`.
+
+## Release Process
+
+### 0) Pre-flight (clean + sync)
+
+```bash
+git status -sb
+git fetch --tags origin
+git switch main
+git pull --ff-only
+```
+
+### 1) Determine version and release title
+
+- Decide `vX.Y.Z` using rules above.
+- Pick a short title for GitHub Release:
+  - `vX.Y.Z - Suggested Name`
+
+### 2) Update release notes
+
+1. Add the new section to `CHANGELOG.md`.
+2. Add package notes to `packages/blogkit/CHANGELOG.md`.
+
+### 3) Bump versions
+
+Update:
+- `package.json`
+- `packages/blogkit/package.json`
+- `package-lock.json` (`npm install --package-lock-only`)
+
+### 4) Validate + build release artifacts locally
+
+```bash
+npm ci
+npm run check
+tools/release/validate-release-version.sh --tag vX.Y.Z
+tools/release/build-npm-release-assets.sh --version vX.Y.Z --out-dir .artifacts/release-preflight
+```
+
+### 5) Commit + tag
+
+```bash
+git add CHANGELOG.md package.json package-lock.json packages/blogkit/CHANGELOG.md packages/blogkit/package.json
+git commit -m "release: vX.Y.Z"
+git tag -a vX.Y.Z -m "vX.Y.Z"
+```
+
+### 6) Push
+
+```bash
+git push origin main
+git push origin vX.Y.Z
+```
+
+### 7) Create GitHub Release
+
+Option A: GitHub UI
+- Draft release for tag `vX.Y.Z`.
+- Use title `vX.Y.Z - <short title>`.
+- Paste relevant changelog section.
+
+Option B: GitHub CLI
+
+```bash
+gh release create vX.Y.Z \
+  --title "vX.Y.Z - <short title>" \
+  --notes-file release-notes.md \
+  --verify-tag
+```
+
+### 8) Publish to npm
+
+```bash
+npm publish --access public
+npm publish -w @aureuma/blogkit --access public
+```
+
+### 9) Verify published release
+
+```bash
+gh release view vX.Y.Z --web
+gh release view vX.Y.Z --json assets --jq '.assets[].name'
+npm view @aureuma/svelta version
+npm view @aureuma/blogkit version
+```
+
+## Automated release assets
+
+Workflow `.github/workflows/npm-release-assets.yml` runs on GitHub Release publish and uploads:
+
+- `aureuma-svelta-<version>.tgz`
+- `aureuma-blogkit-<version>.tgz`
+- `checksums.txt`
+
+It enforces version/tag parity using `tools/release/validate-release-version.sh`.
