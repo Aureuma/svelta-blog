@@ -8,8 +8,8 @@ export const GET: RequestHandler = async ({ url }) => {
 	const rss = buildRss({
 		baseUrl: url,
 		posts,
-		siteTitle: 'Svelta Blog',
-		description: 'Engineering, design, and product notes from Svelta.'
+		siteTitle: 'svelta Blog',
+		description: 'Engineering, design, and product notes from svelta.'
 	});
 
 	return new Response(rss, {

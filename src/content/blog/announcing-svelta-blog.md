@@ -1,5 +1,5 @@
 ---
-title: "Announcing the Svelta Blog"
+title: "Announcing the svelta Blog"
 date: "2026-01-30"
 category: "Announcements"
 author: "shawn"
@@ -9,7 +9,7 @@ tags:
 excerpt: "A small, fast blog system that feels like product documentation: clean, structured, and easy to skim."
 ---
 
-We’re publishing more of the thinking behind Svelta: engineering decisions, design constraints, and practical patterns.
+We’re publishing more of the thinking behind svelta: engineering decisions, design constraints, and practical patterns.
 
 ## What you’ll see here
 

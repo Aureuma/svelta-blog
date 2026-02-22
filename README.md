@@ -1,4 +1,4 @@
-# Svelta
+# svelta
 
 Mintlify-inspired blogging system built with SvelteKit (Svelte 5) + Markdown.
 
