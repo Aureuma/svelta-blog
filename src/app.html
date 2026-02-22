@@ -7,14 +7,18 @@
 			(() => {
 				try {
 					const stored = localStorage.getItem('svelta-appearance') || 'system';
+					const storedPalette =
+						localStorage.getItem('svelta-appearance-palette') || 'argon';
 					const prefersDark =
 						window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
 					const resolved = stored === 'system' ? (prefersDark ? 'dark' : 'light') : stored;
 					document.documentElement.classList.remove('light', 'dark');
 					document.documentElement.classList.add(resolved);
 					document.documentElement.dataset.appearance = stored;
+					document.documentElement.dataset.palette = storedPalette;
 				} catch {
 					document.documentElement.classList.add('light');
+					document.documentElement.dataset.palette = 'argon';
 				}
 			})();
 		</script>

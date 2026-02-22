@@ -20,8 +20,10 @@ test('docs index renders section grid and links into a docs page', async ({ page
 	await expect(page.getByTestId('docs-section-grid')).toBeVisible();
 	await expect(page.getByTestId('docs-home-tabs')).toBeVisible();
 	await expect(page.getByTestId('docs-faq')).toBeVisible();
+	await expect(page.getByTestId('site-header')).toHaveCount(1);
 	await page.getByRole('link', { name: 'Overview' }).first().click();
 	await expect(page).toHaveURL(/\/docs\/overview$/);
+	await expect(page.getByTestId('site-header')).toHaveCount(1);
 	await expect(page.getByTestId('docs-sidebar')).toBeVisible();
 	await expect(page.getByTestId('docs-toc')).toBeVisible();
 	await expect(page.getByTestId('docs-pager')).toBeVisible();
@@ -89,6 +91,11 @@ test('appearance toggling applies the expected html class', async ({ page }) => 
 	// If hydration/event binding is broken, this will never flip.
 	await expect(darkBtn).toHaveAttribute('aria-pressed', 'true');
 	await expect(page.locator('html')).toHaveClass(/dark/);
+
+	const cobaltPaletteBtn = page.getByRole('button', { name: 'Use Cobalt palette' });
+	await cobaltPaletteBtn.click();
+	await expect(cobaltPaletteBtn).toHaveAttribute('aria-pressed', 'true');
+	await expect(page.locator('html')).toHaveAttribute('data-palette', 'cobalt');
 });
 
 test('rss feed is valid xml-ish and links do not include .md', async ({ request }) => {

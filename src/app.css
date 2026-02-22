@@ -93,6 +93,111 @@ html.dark {
 	--sidebar-ring: rgb(var(--c-brand) / 0.58);
 }
 
+/* Palette presets inspired by multi-style docs systems; modeled as chemical element identities. */
+html.light[data-palette='copper'] {
+	--c-background-main: 254 250 245;
+	--c-background-soft: 247 238 228;
+	--c-background-invert: 24 18 14;
+	--c-text-main: 35 25 18;
+	--c-text-sub: 92 64 46;
+	--c-text-muted: 124 97 80;
+	--c-text-invert: 255 247 239;
+	--c-border-soft: 120 78 54;
+	--c-brand: 184 108 62;
+	--c-brand-soft: 252 234 214;
+}
+
+html.dark[data-palette='copper'] {
+	--c-background-main: 18 13 10;
+	--c-background-soft: 28 20 15;
+	--c-background-invert: 251 246 239;
+	--c-text-main: 245 231 218;
+	--c-text-sub: 198 162 136;
+	--c-text-muted: 149 117 94;
+	--c-text-invert: 19 13 11;
+	--c-border-soft: 193 140 104;
+	--c-brand: 231 154 103;
+	--c-brand-soft: 70 36 21;
+}
+
+html.light[data-palette='cobalt'] {
+	--c-background-main: 245 249 255;
+	--c-background-soft: 233 241 252;
+	--c-background-invert: 9 17 34;
+	--c-text-main: 10 22 45;
+	--c-text-sub: 50 74 114;
+	--c-text-muted: 83 105 139;
+	--c-text-invert: 242 248 255;
+	--c-border-soft: 42 78 134;
+	--c-brand: 37 99 235;
+	--c-brand-soft: 219 234 254;
+}
+
+html.dark[data-palette='cobalt'] {
+	--c-background-main: 6 12 26;
+	--c-background-soft: 12 21 40;
+	--c-background-invert: 244 248 255;
+	--c-text-main: 224 234 252;
+	--c-text-sub: 149 177 224;
+	--c-text-muted: 102 131 179;
+	--c-text-invert: 8 13 24;
+	--c-border-soft: 120 163 232;
+	--c-brand: 96 165 250;
+	--c-brand-soft: 15 33 68;
+}
+
+html.light[data-palette='selenium'] {
+	--c-background-main: 255 247 249;
+	--c-background-soft: 250 236 241;
+	--c-background-invert: 32 10 20;
+	--c-text-main: 53 14 31;
+	--c-text-sub: 104 42 72;
+	--c-text-muted: 136 73 101;
+	--c-text-invert: 255 244 248;
+	--c-border-soft: 134 44 84;
+	--c-brand: 225 29 72;
+	--c-brand-soft: 255 228 238;
+}
+
+html.dark[data-palette='selenium'] {
+	--c-background-main: 20 7 14;
+	--c-background-soft: 34 11 23;
+	--c-background-invert: 254 245 250;
+	--c-text-main: 251 228 240;
+	--c-text-sub: 219 153 184;
+	--c-text-muted: 168 105 136;
+	--c-text-invert: 28 10 20;
+	--c-border-soft: 240 116 164;
+	--c-brand: 244 63 94;
+	--c-brand-soft: 70 13 36;
+}
+
+html.light[data-palette='neon'] {
+	--c-background-main: 246 255 250;
+	--c-background-soft: 231 251 243;
+	--c-background-invert: 5 18 18;
+	--c-text-main: 7 32 29;
+	--c-text-sub: 32 94 86;
+	--c-text-muted: 58 124 114;
+	--c-text-invert: 243 255 252;
+	--c-border-soft: 18 126 110;
+	--c-brand: 16 185 129;
+	--c-brand-soft: 209 250 229;
+}
+
+html.dark[data-palette='neon'] {
+	--c-background-main: 4 19 20;
+	--c-background-soft: 7 30 31;
+	--c-background-invert: 244 255 252;
+	--c-text-main: 216 255 243;
+	--c-text-sub: 128 232 206;
+	--c-text-muted: 87 181 160;
+	--c-text-invert: 5 18 19;
+	--c-border-soft: 52 211 153;
+	--c-brand: 74 222 128;
+	--c-brand-soft: 10 57 46;
+}
+
 @theme inline {
 	--radius-sm: calc(var(--radius) - 4px);
 	--radius-md: calc(var(--radius) - 2px);

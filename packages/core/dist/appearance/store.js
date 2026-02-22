@@ -1,5 +1,6 @@
 import { BROWSER } from 'esm-env';
 import { writable } from 'svelte/store';
+import { APPEARANCE_PALETTES, DEFAULT_APPEARANCE_PALETTE, isAppearancePalette } from './palettes';
 function resolve(mode) {
     if (mode === 'light' || mode === 'dark')
         return mode;
@@ -12,22 +13,40 @@ function apply(mode) {
     document.documentElement.classList.add(resolved);
     document.documentElement.dataset.appearance = mode;
 }
+function applyPalette(palette) {
+    document.documentElement.dataset.palette = palette;
+}
 export function createAppearanceController(opts) {
     const storageKey = opts?.storageKey ?? 'svelta-appearance';
+    const paletteStorageKey = opts?.paletteStorageKey ?? 'svelta-appearance-palette';
     const defaultMode = opts?.defaultMode ?? 'system';
+    const palettes = opts?.palettes ?? APPEARANCE_PALETTES;
+    const defaultPalette = opts?.defaultPalette ?? DEFAULT_APPEARANCE_PALETTE;
     const appearanceMode = writable(defaultMode);
+    const appearancePalette = writable(defaultPalette);
     function readStored() {
         const v = localStorage.getItem(storageKey);
         if (v === 'light' || v === 'dark' || v === 'system')
             return v;
         return defaultMode;
     }
+    function readStoredPalette() {
+        const stored = localStorage.getItem(paletteStorageKey);
+        if (isAppearancePalette(stored) && palettes.some((palette) => palette.id === stored))
+            return stored;
+        if (palettes.some((palette) => palette.id === defaultPalette))
+            return defaultPalette;
+        return palettes[0]?.id ?? DEFAULT_APPEARANCE_PALETTE;
+    }
     function initAppearance() {
         if (!BROWSER)
             return;
         const mode = readStored();
+        const palette = readStoredPalette();
         appearanceMode.set(mode);
+        appearancePalette.set(palette);
         apply(mode);
+        applyPalette(palette);
         const mq = window.matchMedia?.('(prefers-color-scheme: dark)');
         const onChange = () => {
             let current = mode;
@@ -46,5 +65,23 @@ export function createAppearanceController(opts) {
         localStorage.setItem(storageKey, mode);
         apply(mode);
     }
-    return { storageKey, appearanceMode, initAppearance, setAppearanceMode };
+    function setAppearancePalette(palette) {
+        if (!palettes.some((item) => item.id === palette))
+            return;
+        appearancePalette.set(palette);
+        if (!BROWSER)
+            return;
+        localStorage.setItem(paletteStorageKey, palette);
+        applyPalette(palette);
+    }
+    return {
+        storageKey,
+        paletteStorageKey,
+        palettes,
+        appearanceMode,
+        appearancePalette,
+        initAppearance,
+        setAppearanceMode,
+        setAppearancePalette
+    };
 }

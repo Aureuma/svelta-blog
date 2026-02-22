@@ -11,6 +11,7 @@
 </script>
 
 <header
+	data-testid="site-header"
 	class="sticky top-0 z-50 border-b border-border-soft/10 bg-background-main/75 backdrop-blur supports-[backdrop-filter]:bg-background-main/55"
 >
 	<div class="mx-auto flex h-16 w-full max-w-5xl items-center justify-between px-6">
