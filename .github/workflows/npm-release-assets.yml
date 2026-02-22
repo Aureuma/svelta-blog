@@ -1,0 +1,93 @@
+name: NPM Release Assets
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing release tag to build/upload (for example v0.1.0)
+        required: true
+        type: string
+
+concurrency:
+  group: npm-release-assets-${{ github.event.release.tag_name || github.event.inputs.tag || github.run_id }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  attestations: write
+  id-token: write
+
+jobs:
+  resolve-tag:
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.resolve.outputs.tag }}
+    steps:
+      - name: Resolve release tag
+        id: resolve
+        shell: bash
+        run: |
+          set -euo pipefail
+          tag="${{ github.event.release.tag_name }}"
+          if [[ -z "${tag}" ]]; then
+            tag="${{ github.event.inputs.tag }}"
+          fi
+          if [[ -z "${tag}" ]]; then
+            echo "No release tag provided." >&2
+            exit 1
+          fi
+          echo "tag=${tag}" >> "${GITHUB_OUTPUT}"
+          echo "Building assets for tag: ${tag}"
+
+  publish-assets:
+    needs: [resolve-tag]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.resolve-tag.outputs.tag }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm ci
+
+      - name: Validate release tag and package versions
+        shell: bash
+        run: |
+          set -euo pipefail
+          tools/release/validate-release-version.sh --tag "${{ needs.resolve-tag.outputs.tag }}"
+
+      - name: Build npm release archives and checksums
+        shell: bash
+        run: |
+          set -euo pipefail
+          tools/release/build-npm-release-assets.sh --version "${{ needs.resolve-tag.outputs.tag }}" --out-dir dist
+          ls -lah dist
+
+      - name: Upload assets to GitHub Release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          tag="${{ needs.resolve-tag.outputs.tag }}"
+          gh release view "${tag}" --repo "${{ github.repository }}" >/dev/null
+          gh release upload "${tag}" dist/*.tgz dist/checksums.txt --repo "${{ github.repository }}" --clobber
+
+      - name: Attest release artifacts
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: |
+            dist/*.tgz
+            dist/checksums.txt
