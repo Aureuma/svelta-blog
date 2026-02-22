@@ -9,6 +9,11 @@ export { default as MorePosts } from './components/blog/MorePosts.svelte';
 export { default as ShareButtons } from './components/blog/ShareButtons.svelte';
 export { default as SummaryCard } from './components/blog/SummaryCard.svelte';
 export { default as TagTabs } from './components/blog/TagTabs.svelte';
+export { default as DocsPager } from './components/docs/DocsPager.svelte';
+export { default as DocsSectionGrid } from './components/docs/DocsSectionGrid.svelte';
+export { default as DocsShell } from './components/docs/DocsShell.svelte';
+export { default as DocsSidebar } from './components/docs/DocsSidebar.svelte';
+export { createExperienceCatalog, parseExperienceKind } from './experience';
 
 // Types
 export type {
@@ -19,3 +24,5 @@ export type {
 	BlogPostWithContent,
 	BlogTag
 } from './types/blog';
+export type { DocsPage, DocsPageFull, DocsPageWithContent, DocsSection, DocsSidebarSection } from './types/docs';
+export type { ExperienceCatalog, ExperienceDefinition, ExperienceKind } from './types/experience';

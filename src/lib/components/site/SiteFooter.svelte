@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { ThemeSwitcher } from '@aureuma/svelta/theme';
-	import { theme } from '$lib/stores/theme';
+	import { AppearanceSwitcher } from '@aureuma/svelta/appearance';
+	import { appearance } from '$lib/stores/appearance';
 </script>
 
 <footer class="border-t border-border-soft/10">
@@ -18,7 +18,7 @@
 				<span class="inline-block size-1.5 rounded-full bg-brand" aria-hidden="true"></span>
 			</a>
 
-			<ThemeSwitcher controller={theme} />
+			<AppearanceSwitcher controller={appearance} />
 		</div>
 	</div>
 </footer>

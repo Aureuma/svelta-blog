@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Theme tokens (documentation-first) */
+/* Appearance tokens (documentation-first) */
 html.light {
 	color-scheme: light;
 	--c-background-main: 252 252 252;

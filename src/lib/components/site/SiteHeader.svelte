@@ -1,9 +1,13 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import { initialExperience } from '$lib/config/experience';
 
 	function isActive(path: string) {
+		if (path === '/') return $page.url.pathname === '/';
 		return $page.url.pathname === path || $page.url.pathname.startsWith(`${path}/`);
 	}
+
+	$: experienceLabel = initialExperience === 'docs' ? 'Docs' : 'Blog';
 </script>
 
 <header
@@ -15,7 +19,7 @@
 			<span
 				class="rounded-full bg-brand/15 px-2 py-0.5 text-[11px] font-mono uppercase tracking-[0.6px] text-brand"
 			>
-				Blog
+				{experienceLabel} experience
 			</span>
 		</a>
 
@@ -26,6 +30,11 @@
 				>Home</a
 			>
 			<a
+				href="/docs"
+				class="transition hover:text-text-main {isActive('/docs') ? 'text-text-main' : 'text-text-sub'}"
+				>Docs</a
+			>
+			<a
 				href="/blog"
 				class="transition hover:text-text-main {isActive('/blog') ? 'text-text-main' : 'text-text-sub'}"
 				>Blog</a
@@ -33,4 +42,3 @@
 		</nav>
 	</div>
 </header>
-

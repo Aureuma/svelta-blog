@@ -8,13 +8,13 @@
 	import '../app.css';
 	import SiteFooter from '$lib/components/site/SiteFooter.svelte';
 	import SiteHeader from '$lib/components/site/SiteHeader.svelte';
-	import { initTheme } from '$lib/stores/theme';
+	import { initAppearance } from '$lib/stores/appearance';
 	import { onMount } from 'svelte';
 
 	let { children } = $props();
 
 	onMount(() => {
-		const cleanup = initTheme();
+		const cleanup = initAppearance();
 		return cleanup;
 	});
 </script>

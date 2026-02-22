@@ -19,10 +19,14 @@
       "types": "./dist/server/index.d.ts",
       "default": "./dist/server/index.js"
     },
-    "./theme": {
-      "types": "./dist/theme/index.d.ts",
-      "svelte": "./dist/theme/index.js",
-      "default": "./dist/theme/index.js"
+    "./appearance": {
+      "types": "./dist/appearance/index.d.ts",
+      "svelte": "./dist/appearance/index.js",
+      "default": "./dist/appearance/index.js"
+    },
+    "./experience": {
+      "types": "./dist/experience/index.d.ts",
+      "default": "./dist/experience/index.js"
     }
   },
   "types": "./dist/index.d.ts",

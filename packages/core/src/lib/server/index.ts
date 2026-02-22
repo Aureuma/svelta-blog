@@ -14,3 +14,10 @@ export {
 	type VivaImageAsset,
 	type VivaSeoFields
 } from './blog';
+
+export {
+	createDocs,
+	type DocsCreateConfig,
+	type DocsFrontmatter,
+	type DocsFrontmatterAdapter
+} from './docs';

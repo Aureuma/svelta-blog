@@ -20,10 +20,14 @@
 			"types": "./packages/core/dist/server/index.d.ts",
 			"default": "./packages/core/dist/server/index.js"
 		},
-		"./theme": {
-			"types": "./packages/core/dist/theme/index.d.ts",
-			"svelte": "./packages/core/dist/theme/index.js",
-			"default": "./packages/core/dist/theme/index.js"
+		"./appearance": {
+			"types": "./packages/core/dist/appearance/index.d.ts",
+			"svelte": "./packages/core/dist/appearance/index.js",
+			"default": "./packages/core/dist/appearance/index.js"
+		},
+		"./experience": {
+			"types": "./packages/core/dist/experience/index.d.ts",
+			"default": "./packages/core/dist/experience/index.js"
 		}
 	},
 	"types": "./packages/core/dist/index.d.ts",

@@ -1,4 +1,4 @@
-import type { ThemeController } from './store';
+import type { AppearanceController } from './store';
 interface $$__sveltets_2_IsomorphicComponent<Props extends Record<string, any> = any, Events extends Record<string, any> = any, Slots extends Record<string, any> = any, Exports = {}, Bindings = string> {
     new (options: import('svelte').ComponentConstructorOptions<Props>): import('svelte').SvelteComponent<Props, Events, Slots> & {
         $$bindings?: Bindings;
@@ -12,10 +12,10 @@ interface $$__sveltets_2_IsomorphicComponent<Props extends Record<string, any> =
     };
     z_$$bindings?: Bindings;
 }
-declare const ThemeSwitcher: $$__sveltets_2_IsomorphicComponent<{
-    controller: ThemeController;
+declare const AppearanceSwitcher: $$__sveltets_2_IsomorphicComponent<{
+    controller: AppearanceController;
 }, {
     [evt: string]: CustomEvent<any>;
 }, {}, {}, string>;
-type ThemeSwitcher = InstanceType<typeof ThemeSwitcher>;
-export default ThemeSwitcher;
+type AppearanceSwitcher = InstanceType<typeof AppearanceSwitcher>;
+export default AppearanceSwitcher;

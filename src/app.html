@@ -6,13 +6,13 @@
 		<script>
 			(() => {
 				try {
-					const stored = localStorage.getItem('svelta-theme') || 'system';
+					const stored = localStorage.getItem('svelta-appearance') || 'system';
 					const prefersDark =
 						window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
 					const resolved = stored === 'system' ? (prefersDark ? 'dark' : 'light') : stored;
 					document.documentElement.classList.remove('light', 'dark');
 					document.documentElement.classList.add(resolved);
-					document.documentElement.dataset.theme = stored;
+					document.documentElement.dataset.appearance = stored;
 				} catch {
 					document.documentElement.classList.add('light');
 				}

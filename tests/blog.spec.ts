@@ -14,6 +14,16 @@ test('blog index renders hero, tags, and paginates', async ({ page }) => {
 	await expect.poll(async () => cards.count()).toBeGreaterThan(8);
 });
 
+test('docs index renders section grid and links into a docs page', async ({ page }) => {
+	await page.goto('/docs');
+
+	await expect(page.getByTestId('docs-section-grid')).toBeVisible();
+	await page.getByRole('link', { name: 'Overview' }).first().click();
+	await expect(page).toHaveURL(/\/docs\/overview$/);
+	await expect(page.getByTestId('docs-sidebar')).toBeVisible();
+	await expect(page.getByTestId('docs-pager')).toBeVisible();
+});
+
 test('post page renders summary, shiki blocks, and more posts', async ({ page }) => {
 	await page.goto('/blog/ai-summary-cards-with-frontmatter');
 
@@ -29,7 +39,7 @@ test('post page renders summary, shiki blocks, and more posts', async ({ page })
 	await expect(page.getByTestId('blog-more-posts')).toBeVisible();
 });
 
-test('theme toggling applies the expected html class', async ({ page }) => {
+test('appearance toggling applies the expected html class', async ({ page }) => {
 	await page.goto('/');
 	await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
 	const darkBtn = page.getByRole('button', { name: 'Dark' });

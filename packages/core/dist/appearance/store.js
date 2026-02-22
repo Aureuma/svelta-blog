@@ -10,28 +10,28 @@ function apply(mode) {
     const resolved = resolve(mode);
     document.documentElement.classList.remove('light', 'dark');
     document.documentElement.classList.add(resolved);
-    document.documentElement.dataset.theme = mode;
+    document.documentElement.dataset.appearance = mode;
 }
-export function createThemeController(opts) {
-    const storageKey = opts?.storageKey ?? 'svelta-theme';
+export function createAppearanceController(opts) {
+    const storageKey = opts?.storageKey ?? 'svelta-appearance';
     const defaultMode = opts?.defaultMode ?? 'system';
-    const themeMode = writable(defaultMode);
+    const appearanceMode = writable(defaultMode);
     function readStored() {
         const v = localStorage.getItem(storageKey);
         if (v === 'light' || v === 'dark' || v === 'system')
             return v;
         return defaultMode;
     }
-    function initTheme() {
+    function initAppearance() {
         if (!BROWSER)
             return;
         const mode = readStored();
-        themeMode.set(mode);
+        appearanceMode.set(mode);
         apply(mode);
         const mq = window.matchMedia?.('(prefers-color-scheme: dark)');
         const onChange = () => {
             let current = mode;
-            const unsub = themeMode.subscribe((v) => (current = v));
+            const unsub = appearanceMode.subscribe((v) => (current = v));
             unsub();
             if (current === 'system')
                 apply('system');
@@ -39,12 +39,12 @@ export function createThemeController(opts) {
         mq?.addEventListener?.('change', onChange);
         return () => mq?.removeEventListener?.('change', onChange);
     }
-    function setThemeMode(mode) {
-        themeMode.set(mode);
+    function setAppearanceMode(mode) {
+        appearanceMode.set(mode);
         if (!BROWSER)
             return;
         localStorage.setItem(storageKey, mode);
         apply(mode);
     }
-    return { storageKey, themeMode, initTheme, setThemeMode };
+    return { storageKey, appearanceMode, initAppearance, setAppearanceMode };
 }
