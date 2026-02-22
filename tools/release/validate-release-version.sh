@@ -59,10 +59,4 @@ if [[ "${root_version}" != "${version}" ]]; then
   die "package.json has ${root_version}, but release tag is ${tag}"
 fi
 
-blogkit_version="$(read_json_version "${repo_root}/packages/blogkit/package.json")"
-[[ -n "${blogkit_version}" ]] || die "could not parse version from packages/blogkit/package.json"
-if [[ "${blogkit_version}" != "${version}" ]]; then
-  die "packages/blogkit/package.json has ${blogkit_version}, but release tag is ${tag}"
-fi
-
 echo "release tag and package versions are aligned (${tag})"

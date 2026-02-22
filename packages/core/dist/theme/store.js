@@ -13,7 +13,7 @@ function apply(mode) {
     document.documentElement.dataset.theme = mode;
 }
 export function createThemeController(opts) {
-    const storageKey = opts?.storageKey ?? 'blogkit-theme';
+    const storageKey = opts?.storageKey ?? 'svelta-theme';
     const defaultMode = opts?.defaultMode ?? 'system';
     const themeMode = writable(defaultMode);
     function readStored() {

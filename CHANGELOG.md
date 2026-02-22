@@ -13,4 +13,4 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 - Standardized release process around annotated tags and GitHub Releases (`vX.Y.Z`).
-- Aligned root package versioning with blogkit package versioning for release consistency.
+- Aligned root package versioning with the internal core package for release consistency.

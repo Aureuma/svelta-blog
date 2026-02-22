@@ -24,7 +24,7 @@ function apply(mode: ThemeMode) {
 }
 
 export function createThemeController(opts?: { storageKey?: string; defaultMode?: ThemeMode }): ThemeController {
-	const storageKey = opts?.storageKey ?? 'blogkit-theme';
+	const storageKey = opts?.storageKey ?? 'svelta-theme';
 	const defaultMode = opts?.defaultMode ?? 'system';
 	const themeMode = writable<ThemeMode>(defaultMode);
 

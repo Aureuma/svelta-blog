@@ -48,7 +48,7 @@ npm whoami
 Recommended npm permission check:
 
 ```bash
-npm access ls-packages <your-npm-user-or-team> | grep '@aureuma/svelta\|@aureuma/blogkit'
+npm access ls-packages <your-npm-user-or-team> | grep '@aureuma/svelta'
 ```
 
 ### 1) Determine version and release title
@@ -60,13 +60,11 @@ npm access ls-packages <your-npm-user-or-team> | grep '@aureuma/svelta\|@aureuma
 ### 2) Update release notes
 
 1. Add the new section to `CHANGELOG.md`.
-2. Add package notes to `packages/blogkit/CHANGELOG.md`.
 
 ### 3) Bump versions
 
 Update:
 - `package.json`
-- `packages/blogkit/package.json`
 - `package-lock.json` (`npm install --package-lock-only`)
 
 ### 4) Validate + build release artifacts locally
@@ -81,7 +79,7 @@ tools/release/build-npm-release-assets.sh --version vX.Y.Z --out-dir .artifacts/
 ### 5) Commit + tag
 
 ```bash
-git add CHANGELOG.md package.json package-lock.json packages/blogkit/CHANGELOG.md packages/blogkit/package.json
+git add CHANGELOG.md package.json package-lock.json
 git commit -m "release: vX.Y.Z"
 git tag -a vX.Y.Z -m "vX.Y.Z"
 ```
@@ -97,9 +95,7 @@ git push origin vX.Y.Z
 
 ```bash
 npm publish --access public
-npm publish -w @aureuma/blogkit --access public
 npm view @aureuma/svelta version
-npm view @aureuma/blogkit version
 ```
 
 If npm publish fails, stop here and fix before creating a GitHub Release.
@@ -126,7 +122,6 @@ gh release create vX.Y.Z \
 gh release view vX.Y.Z --web
 gh release view vX.Y.Z --json assets --jq '.assets[].name'
 npm view @aureuma/svelta version
-npm view @aureuma/blogkit version
 ```
 
 ## Automated release assets
@@ -134,7 +129,6 @@ npm view @aureuma/blogkit version
 Workflow `.github/workflows/npm-release-assets.yml` runs on GitHub Release publish and uploads:
 
 - `aureuma-svelta-<version>.tgz`
-- `aureuma-blogkit-<version>.tgz`
 - `checksums.txt`
 
 It enforces version/tag parity using `tools/release/validate-release-version.sh`.

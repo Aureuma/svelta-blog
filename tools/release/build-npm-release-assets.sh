@@ -84,7 +84,6 @@ mkdir -p "${out_dir}"
 
 packages=(
   "."
-  "packages/blogkit"
 )
 
 for package_dir in "${packages[@]}"; do
@@ -98,7 +97,6 @@ done
 version_nov="${version#v}"
 expected_files=(
   "aureuma-svelta-${version_nov}.tgz"
-  "aureuma-blogkit-${version_nov}.tgz"
 )
 
 for f in "${expected_files[@]}"; do

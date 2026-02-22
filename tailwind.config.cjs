@@ -4,8 +4,8 @@ module.exports = {
 	content: [
 		'./src/**/*.{html,js,svelte,ts,md}',
 		'./src/content/**/*.{md}',
-		'./packages/blogkit/src/**/*.{svelte,ts}',
-		'./packages/blogkit/dist/**/*.{js,ts,svelte}'
+		'./packages/core/src/**/*.{svelte,ts}',
+		'./packages/core/dist/**/*.{js,ts,svelte}'
 	],
 	theme: {
 		extend: {

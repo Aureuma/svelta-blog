@@ -15,7 +15,7 @@ Usage:
 Example:
   tools/release/build-npm-release-asset.sh \
     --version v0.1.0 \
-    --package-dir packages/blogkit \
+    --package-dir . \
     --out-dir dist
 USAGE
 }

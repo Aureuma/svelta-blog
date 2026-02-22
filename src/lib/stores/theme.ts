@@ -1,4 +1,4 @@
-import { createThemeController, type ThemeController, type ThemeMode } from '@aureuma/blogkit/theme';
+import { createThemeController, type ThemeController, type ThemeMode } from '@aureuma/svelta/theme';
 
 // Keep the storage key stable for this app (also used in `src/app.html`).
 export const theme: ThemeController = createThemeController({ storageKey: 'svelta-theme' });

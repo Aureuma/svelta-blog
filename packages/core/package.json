@@ -1,7 +1,7 @@
 {
-  "name": "@aureuma/blogkit",
+  "name": "@aureuma/svelta-core",
   "version": "0.1.0",
-  "private": false,
+  "private": true,
   "type": "module",
   "files": [
     "dist",
@@ -32,12 +32,12 @@
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/Aureuma/svelta.git",
-    "directory": "packages/blogkit"
+    "directory": "packages/core"
   },
   "bugs": {
     "url": "https://github.com/Aureuma/svelta/issues"
   },
-  "homepage": "https://github.com/Aureuma/svelta/tree/main/packages/blogkit#readme",
+  "homepage": "https://github.com/Aureuma/svelta/tree/main/packages/core#readme",
   "keywords": [
     "svelte",
     "sveltekit",
@@ -47,9 +47,6 @@
     "shiki",
     "tailwind"
   ],
-  "publishConfig": {
-    "access": "public"
-  },
   "scripts": {
     "build": "svelte-package --tsconfig ./tsconfig.json",
     "prepack": "npm run build"

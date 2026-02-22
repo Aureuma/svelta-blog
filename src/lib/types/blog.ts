@@ -1,1 +1,1 @@
-export type { BlogAuthor, BlogCategory, BlogPost, BlogPostFull } from '@aureuma/blogkit';
+export type { BlogAuthor, BlogCategory, BlogPost, BlogPostFull } from '@aureuma/svelta';

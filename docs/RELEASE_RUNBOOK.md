@@ -10,7 +10,7 @@ This repository uses Git tags + GitHub Releases + npm publish. Follow this order
 - You are authenticated to npm for `@aureuma`
 - npm publish access is confirmed:
   - `npm whoami`
-  - `npm access ls-packages <your-npm-user-or-team> | grep '@aureuma/svelta\|@aureuma/blogkit'`
+  - `npm access ls-packages <your-npm-user-or-team> | grep '@aureuma/svelta'`
 
 ## 1. Decide Version
 
@@ -20,16 +20,14 @@ This repository uses Git tags + GitHub Releases + npm publish. Follow this order
 ## 2. Update Changelog and Versions
 
 1. Edit `CHANGELOG.md` (repo-level release notes).
-1. Edit `packages/blogkit/CHANGELOG.md` (package-level notes).
 1. Update `package.json` version to `X.Y.Z`.
-1. Update `packages/blogkit/package.json` version to `X.Y.Z`.
 1. Regenerate lockfile metadata:
    - `npm install --package-lock-only`
 
 ## 3. Commit
 
 1. Commit release prep changes:
-   - `git add CHANGELOG.md package.json package-lock.json packages/blogkit/CHANGELOG.md packages/blogkit/package.json`
+   - `git add CHANGELOG.md package.json package-lock.json`
    - `git commit -m "release: vX.Y.Z"`
 
 ## 4. Tag
@@ -56,11 +54,8 @@ This confirms package tarballs and checksum generation before publishing a GitHu
 
 1. Publish the root package:
    - `npm publish --access public`
-1. Publish blogkit workspace package:
-   - `npm publish -w @aureuma/blogkit --access public`
-1. Verify both publishes resolved on npmjs:
+1. Verify publish resolved on npmjs:
    - `npm view @aureuma/svelta version`
-   - `npm view @aureuma/blogkit version`
 
 ## 7. Create GitHub Release
 
@@ -82,9 +77,7 @@ This confirms package tarballs and checksum generation before publishing a GitHu
   - `gh release view vX.Y.Z --json assets --jq '.assets[].name'`
 - Verify npm versions:
   - `npm view @aureuma/svelta version`
-  - `npm view @aureuma/blogkit version`
 
 Expected release assets:
 - `aureuma-svelta-<version>.tgz`
-- `aureuma-blogkit-<version>.tgz`
 - `checksums.txt`

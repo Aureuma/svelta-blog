@@ -40,14 +40,14 @@ jobs:
         run: |
           TAG="$(node - <<'NODE'
           const pkgs = JSON.parse(process.env.PUBLISHED_PACKAGES || '[]');
-          const blogkit = pkgs.find((p) => p.name && p.name.includes('blogkit'));
-          if (!blogkit) process.exit(0);
-          process.stdout.write(`${blogkit.name}@${blogkit.version}`);
+          const pkg = pkgs.find((p) => p.name === '@aureuma/svelta') || pkgs[0];
+          if (!pkg) process.exit(0);
+          process.stdout.write(`${pkg.name}@${pkg.version}`);
           NODE
           )"
 
           if [ -z "$TAG" ]; then
-            echo "No published blogkit package found; skipping tag."
+            echo "No published package found; skipping tag."
             exit 0
           fi
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ThemeSwitcher } from '@aureuma/blogkit/theme';
+	import { ThemeSwitcher } from '@aureuma/svelta/theme';
 	import { theme } from '$lib/stores/theme';
 </script>
 

@@ -1,4 +1,4 @@
-import { createBlog } from '@aureuma/blogkit/server';
+import { createBlog } from '@aureuma/svelta/server';
 import { getAuthor } from '$lib/content/authors';
 import type { BlogPostFull } from '$lib/types/blog';
 
