@@ -24,7 +24,8 @@ export type {
 	BlogPost,
 	BlogPostFull,
 	BlogPostWithContent,
-	BlogTag
+	BlogTag,
+	SharePlatform
 } from './types/blog';
 export type { DocsPage, DocsPageFull, DocsPageWithContent, DocsSection, DocsSidebarSection } from './types/docs';
 export type { ExperienceCatalog, ExperienceDefinition, ExperienceKind } from './types/experience';

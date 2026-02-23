@@ -27,6 +27,7 @@ export type BlogCreateConfig = {
     rawModules: Record<string, () => Promise<string>>;
     getAuthor: (id: string) => BlogAuthor;
     categoryOrder?: string[];
+    allowMultipleTags?: boolean;
     mapFrontmatter?: BlogFrontmatterAdapter;
 };
 export type MarkdownRenderer = (markdown: string) => string | Promise<string>;
@@ -34,6 +35,7 @@ export type RawBlogCreateConfig = {
     rawModules: Record<string, () => Promise<string>>;
     getAuthor: (id: string) => BlogAuthor;
     categoryOrder?: string[];
+    allowMultipleTags?: boolean;
     mapFrontmatter?: BlogFrontmatterAdapter;
     renderMarkdown?: MarkdownRenderer;
 };

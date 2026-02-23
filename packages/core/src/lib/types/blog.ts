@@ -39,6 +39,8 @@ export type BlogTag = {
 	slug: string;
 };
 
+export type SharePlatform = 'x' | 'linkedin' | 'facebook' | 'reddit' | 'hackernews' | 'copy';
+
 export type BlogArchiveGroup = {
 	id: string; // "2026-02"
 	year: number;

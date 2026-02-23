@@ -33,6 +33,7 @@ export type BlogTag = {
     name: string;
     slug: string;
 };
+export type SharePlatform = 'x' | 'linkedin' | 'facebook' | 'reddit' | 'hackernews' | 'copy';
 export type BlogArchiveGroup = {
     id: string;
     year: number;

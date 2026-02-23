@@ -45,6 +45,7 @@ export type BlogCreateConfig = {
 	rawModules: Record<string, () => Promise<string>>;
 	getAuthor: (id: string) => BlogAuthor;
 	categoryOrder?: string[];
+	allowMultipleTags?: boolean;
 	// Optional adapter for apps with existing frontmatter schemas.
 	mapFrontmatter?: BlogFrontmatterAdapter;
 };
@@ -55,6 +56,7 @@ export type RawBlogCreateConfig = {
 	rawModules: Record<string, () => Promise<string>>;
 	getAuthor: (id: string) => BlogAuthor;
 	categoryOrder?: string[];
+	allowMultipleTags?: boolean;
 	mapFrontmatter?: BlogFrontmatterAdapter;
 	renderMarkdown?: MarkdownRenderer;
 };
@@ -176,7 +178,7 @@ function normalizeCategory(label: string): BlogCategory {
 
 function parseISODate(date: string): Date {
 	// Prefer stable UTC parsing for YYYY-MM-DD.
-	if (/^\\d{4}-\\d{2}-\\d{2}$/.test(date)) {
+	if (/^\d{4}-\d{2}-\d{2}$/.test(date)) {
 		const d = new Date(`${date}T00:00:00Z`);
 		if (!Number.isNaN(d.getTime())) return d;
 	}
@@ -240,8 +242,15 @@ function minutesToLabels(minutes: number) {
 	};
 }
 
+function normalizeTags(tags: string[] | undefined, categoryLabel: string, allowMultipleTags: boolean) {
+	const cleaned = (tags ?? []).map((tag) => tag.trim()).filter(Boolean);
+	const resolved = cleaned.length > 0 ? cleaned : [categoryLabel];
+	return allowMultipleTags ? resolved : [resolved[0]!];
+}
+
 export function createBlog(config: BlogCreateConfig) {
 	const categoryOrder = config.categoryOrder ?? DEFAULT_CATEGORY_ORDER;
+	const allowMultipleTags = config.allowMultipleTags ?? false;
 
 	let cachedMetaIndex: BlogPost[] | null = null;
 	let cachedFullIndex: BlogPostFull[] | null = null;
@@ -289,6 +298,7 @@ export function createBlog(config: BlogCreateConfig) {
 			const dateObj = parseISODate(metadata.date);
 			const rt = minutesToLabels(readingTime(content).minutes);
 			const category = normalizeCategory(metadata.category);
+			const tags = normalizeTags(metadata.tags, category.label, allowMultipleTags);
 			const excerpt = metadata.excerpt?.trim() || excerptFromContent(content);
 
 			posts.push({
@@ -296,7 +306,7 @@ export function createBlog(config: BlogCreateConfig) {
 				title: metadata.title.trim(),
 				excerpt,
 				category,
-				tags: metadata.tags ?? [],
+				tags,
 				author: config.getAuthor(metadata.author),
 				date: metadata.date,
 				dateLong: fmtLong.format(dateObj),
@@ -469,25 +479,22 @@ export function createBlog(config: BlogCreateConfig) {
 		const posts = await getAllPosts();
 		const current = posts.find((post) => post.slug === slug);
 		if (!current) return [];
-		const tagSet = new Set(current.tags.map((tag) => slugify(tag)));
+		const primaryTag = current.tags[0];
+		if (primaryTag) {
+			const primaryTagSlug = slugify(primaryTag);
+			const sameTag = posts
+				.filter(
+					(post) =>
+						post.slug !== slug && post.tags.some((tagName) => slugify(tagName) === primaryTagSlug)
+				)
+				.sort((a, b) => parseISODate(b.date).getTime() - parseISODate(a.date).getTime())
+				.slice(0, limit);
+			if (sameTag.length > 0) return sameTag;
+		}
 
-		const byOverlap = posts
-			.filter((post) => post.slug !== slug)
-			.map((post) => {
-				const overlap = post.tags.filter((tag) => tagSet.has(slugify(tag))).length;
-				const sameCategory = post.category.slug === current.category.slug ? 1 : 0;
-				return { post, overlap, sameCategory };
-			})
-			.filter((entry) => entry.overlap > 0 || entry.sameCategory > 0)
-			.sort((a, b) => {
-				if (b.overlap !== a.overlap) return b.overlap - a.overlap;
-				if (b.sameCategory !== a.sameCategory) return b.sameCategory - a.sameCategory;
-				return parseISODate(b.post.date).getTime() - parseISODate(a.post.date).getTime();
-			})
-			.slice(0, limit)
-			.map((entry) => entry.post);
-
-		return byOverlap;
+		return posts
+			.filter((post) => post.slug !== slug && post.category.slug === current.category.slug)
+			.slice(0, limit);
 	}
 
 	return {
@@ -585,6 +592,7 @@ function toBlogTag(name: string): BlogTag {
 
 export function createRawBlog(config: RawBlogCreateConfig) {
 	const categoryOrder = config.categoryOrder ?? DEFAULT_CATEGORY_ORDER;
+	const allowMultipleTags = config.allowMultipleTags ?? false;
 	const renderMarkdown = config.renderMarkdown ?? defaultRenderMarkdown;
 
 	let cachedContentIndex: BlogPostWithContent[] | null = null;
@@ -613,6 +621,7 @@ export function createRawBlog(config: RawBlogCreateConfig) {
 			const dateObj = parseISODate(metadata.date);
 			const rt = minutesToLabels(readingTime(content).minutes);
 			const category = normalizeCategory(metadata.category);
+			const tags = normalizeTags(metadata.tags, category.label, allowMultipleTags);
 			const excerpt = metadata.excerpt?.trim() || excerptFromContent(content);
 			const rendered = await renderMarkdown(content);
 
@@ -621,7 +630,7 @@ export function createRawBlog(config: RawBlogCreateConfig) {
 				title: metadata.title.trim(),
 				excerpt,
 				category,
-				tags: metadata.tags ?? [],
+				tags,
 				author: config.getAuthor(metadata.author),
 				authorId: metadata.author,
 				date: metadata.date,
@@ -723,17 +732,22 @@ export function createRawBlog(config: RawBlogCreateConfig) {
 		const posts = await buildContentIndex();
 		const current = posts.find((post) => post.slug === slug);
 		if (!current) return [];
-		const tagSet = new Set(current.tags.map((tag) => slugify(tag)));
+		const primaryTag = current.tags[0];
+		if (primaryTag) {
+			const primaryTagSlug = slugify(primaryTag);
+			const sameTag = posts
+				.filter(
+					(post) =>
+						post.slug !== slug && post.tags.some((tagName) => slugify(tagName) === primaryTagSlug)
+				)
+				.sort((a, b) => parseISODate(b.date).getTime() - parseISODate(a.date).getTime())
+				.slice(0, limit);
+			if (sameTag.length > 0) return sameTag;
+		}
+
 		return posts
-			.filter((post) => post.slug !== slug)
-			.map((post) => {
-				const overlap = post.tags.filter((tag) => tagSet.has(slugify(tag))).length;
-				return { post, overlap };
-			})
-			.filter((entry) => entry.overlap > 0)
-			.sort((a, b) => b.overlap - a.overlap)
-			.slice(0, limit)
-			.map((entry) => entry.post);
+			.filter((post) => post.slug !== slug && post.category.slug === current.category.slug)
+			.slice(0, limit);
 	}
 
 	return {
