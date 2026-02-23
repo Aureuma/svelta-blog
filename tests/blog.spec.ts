@@ -14,6 +14,15 @@ test('blog index renders hero, tags, and paginates', async ({ page }) => {
 	await expect.poll(async () => cards.count()).toBeGreaterThan(8);
 });
 
+test('blog tag filtering stays on /blog and updates query params', async ({ page }) => {
+	await page.goto('/blog');
+
+	const tagsRail = page.getByTestId('blog-tags');
+	await tagsRail.getByRole('tab', { name: 'Engineering' }).click();
+	await expect(page).toHaveURL(/\/blog\?tag=engineering$/);
+	await expect(page).not.toHaveURL(/\/blog\/tags\//);
+});
+
 test('docs index renders section grid and links into a docs page', async ({ page }) => {
 	await page.goto('/docs');
 
@@ -63,7 +72,9 @@ test('post page renders summary, shiki blocks, and more posts', async ({ page })
 		.toBeGreaterThan(0);
 
 	await expect(page.getByTestId('blog-more-posts')).toBeVisible();
-	await expect(page.getByTestId('blog-adjacent-nav')).toBeVisible();
+	await expect(page.getByText('More posts to read')).toBeVisible();
+	await expect(page.getByText('Previous')).toHaveCount(0);
+	await expect(page.getByText('Next')).toHaveCount(0);
 });
 
 test('blog taxonomy pages render tags, archive, and authors', async ({ page }) => {

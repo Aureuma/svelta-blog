@@ -8,8 +8,8 @@
 	let { data } = $props<{
 		data: {
 			hero: BlogPost;
-			categories: { label: string; slug: string }[];
-			selectedCategory: string;
+			tags: { label: string; slug: string }[];
+			selectedTag: string;
 			initialPosts: BlogPost[];
 			pageSize: number;
 			hasMore: boolean;
@@ -30,11 +30,14 @@
 		loading = false;
 	});
 
-	function selectCategory(slug: string) {
+	function selectTag(slug: string) {
 		const u = new URL($page.url);
-		if (!slug) u.searchParams.delete('category');
-		else u.searchParams.set('category', slug);
-		goto(`${u.pathname}${u.searchParams.toString() ? `?${u.searchParams.toString()}` : ''}`);
+		if (!slug) u.searchParams.delete('tag');
+		else u.searchParams.set('tag', slug);
+		goto(`${u.pathname}${u.searchParams.toString() ? `?${u.searchParams.toString()}` : ''}`, {
+			keepFocus: true,
+			noScroll: true
+		});
 	}
 
 	async function loadMore() {
@@ -44,7 +47,7 @@
 		const u = new URL('/blog/posts.json', $page.url.origin);
 		u.searchParams.set('offset', String(offset));
 		u.searchParams.set('limit', String(data.pageSize));
-		if (data.selectedCategory) u.searchParams.set('category', data.selectedCategory);
+		if (data.selectedTag) u.searchParams.set('tag', data.selectedTag);
 
 		const res = await fetch(u);
 		if (!res.ok) {
@@ -63,9 +66,9 @@
 		if (!sentinel) return;
 		const io = new IntersectionObserver(
 			(entries) => {
-				if (entries.some((e) => e.isIntersecting)) loadMore();
+				if (entries.some((entry) => entry.isIntersecting)) loadMore();
 			},
-			{ rootMargin: '800px 0px' }
+			{ rootMargin: '1000px 0px' }
 		);
 		io.observe(sentinel);
 		return () => io.disconnect();
@@ -77,16 +80,12 @@
 
 	<div class="flex items-center justify-between gap-4">
 		<div class="min-w-0 flex-1">
-			<TagTabs
-				categories={data.categories}
-				selected={data.selectedCategory}
-				onSelect={selectCategory}
-			/>
+			<TagTabs categories={data.tags} selected={data.selectedTag} onSelect={selectTag} />
 		</div>
 
 		<a
 			href="/feed.xml"
-			class="inline-flex size-9 shrink-0 items-center justify-center rounded-full border border-border-soft/10 bg-background-soft text-text-sub transition hover:bg-background-main/60 hover:text-text-main"
+			class="inline-flex size-7 shrink-0 items-center justify-center text-text-muted transition hover:text-text-main"
 			aria-label="RSS feed"
 		>
 			<svg viewBox="0 0 24 24" class="size-4" aria-hidden="true">
@@ -99,23 +98,19 @@
 	</div>
 
 	<section class="pb-32 pt-8">
-		<div class="mb-8 flex flex-wrap items-center gap-2 text-xs font-mono uppercase tracking-[0.6px] text-text-muted">
-			<a href="/blog/tags" class="rounded-full border border-border-soft/10 bg-background-soft px-3 py-1 transition hover:bg-background-main/60">Tags</a>
-			<a href="/blog/archive" class="rounded-full border border-border-soft/10 bg-background-soft px-3 py-1 transition hover:bg-background-main/60">Archive</a>
-			<a href="/blog/authors" class="rounded-full border border-border-soft/10 bg-background-soft px-3 py-1 transition hover:bg-background-main/60">Authors</a>
-		</div>
-
 		<div class="grid grid-cols-1 gap-x-5 gap-y-12 md:grid-cols-2">
 			{#if posts.length === 0}
-				<p class="text-sm leading-6 text-text-sub">No posts in this category yet.</p>
+				<p class="text-sm leading-6 text-text-sub">No posts in this tag yet.</p>
 			{:else}
-				{#each posts as post (post.slug)}
-					<BlogCard post={post} />
+				{#each posts as post, index (post.slug)}
+					<div class="blog-feed-item" style={`--entry-delay:${Math.min(index, 12) * 36}ms`}>
+						<BlogCard post={post} />
+					</div>
 				{/each}
 			{/if}
 		</div>
 
-		<div class="mt-16 flex items-center justify-center">
+		<div class="mt-14 flex items-center justify-center">
 			<div bind:this={sentinel} class="h-10 w-full" aria-hidden="true"></div>
 		</div>
 
@@ -126,3 +121,29 @@
 		{/if}
 	</section>
 </Container>
+
+<style>
+	.blog-feed-item {
+		animation: blog-feed-item-in 460ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+		animation-delay: var(--entry-delay, 0ms);
+		will-change: opacity, transform;
+	}
+
+	@keyframes blog-feed-item-in {
+		from {
+			opacity: 0;
+			transform: translate3d(0, 18px, 0);
+		}
+		to {
+			opacity: 1;
+			transform: translate3d(0, 0, 0);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.blog-feed-item {
+			animation: none;
+		}
+	}
+</style>
+

@@ -1,5 +1,6 @@
 import { createBlog } from '@aureuma/svelta/server';
 import { getAuthor } from '$lib/content/authors';
+import { blogSetup } from '$lib/config/blog';
 import type { BlogPostFull } from '$lib/types/blog';
 
 type CompiledModule = { default: BlogPostFull['component'] };
@@ -16,7 +17,8 @@ const rawModules = import.meta.glob('/src/content/blog/*.md', {
 export const blog = createBlog({
 	compiledModules,
 	rawModules,
-	getAuthor
+	getAuthor,
+	allowMultipleTags: blogSetup.allowMultipleTags
 });
 
 export const {

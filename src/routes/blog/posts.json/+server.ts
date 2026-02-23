@@ -1,4 +1,5 @@
-import { getAllPosts, getCategories, pickHero } from '$lib/server/blog';
+import { getAllPosts, getAllTags, pickHero } from '$lib/server/blog';
+import { slugify } from '$lib/server/slugify';
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
@@ -11,17 +12,16 @@ export const GET: RequestHandler = async ({ url }) => {
 		Number.parseInt(url.searchParams.get('limit') ?? String(DEFAULT_LIMIT), 10) || DEFAULT_LIMIT;
 	const limit = Math.min(MAX_LIMIT, Math.max(1, limitRaw));
 
-	const [all, categories] = await Promise.all([getAllPosts(), getCategories()]);
+	const [all, tags] = await Promise.all([getAllPosts(), getAllTags()]);
 	const hero = await pickHero(all);
 
-	const requestedCategory = url.searchParams.get('category') ?? '';
-	const category =
-		requestedCategory && categories.some((c) => c.slug === requestedCategory)
-			? requestedCategory
-			: '';
+	const requestedTag = url.searchParams.get('tag') ?? '';
+	const selectedTag = requestedTag && tags.some((tag) => tag.slug === requestedTag) ? requestedTag : '';
 
 	const rest = all.filter((p) => p.slug !== hero.slug);
-	const filtered = category ? rest.filter((p) => p.category.slug === category) : rest;
+	const filtered = selectedTag
+		? rest.filter((post) => post.tags.some((tagName) => slugify(tagName) === selectedTag))
+		: rest;
 	const posts = filtered.slice(offset, offset + limit);
 
 	return json({
@@ -29,4 +29,3 @@ export const GET: RequestHandler = async ({ url }) => {
 		hasMore: filtered.length > offset + posts.length
 	});
 };
-
