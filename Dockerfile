@@ -7,6 +7,7 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY app/au/package.json app/au/package.json
 COPY app/cv/package.json app/cv/package.json
 COPY app/rm/package.json app/rm/package.json
+COPY app/ls/package.json app/ls/package.json
 
 RUN corepack enable \
     && pnpm install --frozen-lockfile --prod=false --filter ./app/cv...
