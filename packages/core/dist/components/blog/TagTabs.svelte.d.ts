@@ -1,4 +1,3 @@
-import type { BlogCategory } from '../../types/blog';
 interface $$__sveltets_2_IsomorphicComponent<Props extends Record<string, any> = any, Events extends Record<string, any> = any, Slots extends Record<string, any> = any, Exports = {}, Bindings = string> {
     new (options: import('svelte').ComponentConstructorOptions<Props>): import('svelte').SvelteComponent<Props, Events, Slots> & {
         $$bindings?: Bindings;
@@ -13,7 +12,10 @@ interface $$__sveltets_2_IsomorphicComponent<Props extends Record<string, any> =
     z_$$bindings?: Bindings;
 }
 declare const TagTabs: $$__sveltets_2_IsomorphicComponent<{
-    categories: BlogCategory[];
+    categories: {
+        label: string;
+        slug: string;
+    }[];
     selected: string;
     onSelect: (slug: string) => void;
 }, {
