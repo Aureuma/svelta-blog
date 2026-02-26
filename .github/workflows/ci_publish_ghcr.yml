@@ -27,10 +27,10 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 9
+          version: 10
 
       - name: Install
-        run: pnpm install --no-frozen-lockfile
+        run: pnpm install --no-frozen-lockfile --ignore-scripts
 
       - name: Type check
         run: pnpm check
@@ -60,7 +60,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ghcr.io/${{ github.repository_owner }}/convelt
+          images: ghcr.io/aureuma/convelt
           tags: |
             type=raw,value=latest,enable={{is_default_branch}}
             type=ref,event=branch
