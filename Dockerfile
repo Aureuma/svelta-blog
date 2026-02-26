@@ -1,25 +1,24 @@
-FROM node:20-alpine AS base
+FROM node:20-alpine AS build
 WORKDIR /app
 
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-# pnpm --filter still evaluates the workspace; copy all workspace package.json
-# files so frozen-lockfile stays consistent with pnpm-lock.yaml importers.
-COPY app/au/package.json app/au/package.json
-COPY app/cv/package.json app/cv/package.json
-COPY app/rm/package.json app/rm/package.json
-COPY app/ls/package.json app/ls/package.json
-
+COPY package.json ./
 RUN corepack enable \
-    && pnpm install --frozen-lockfile --prod=false --filter ./app/cv...
+    && pnpm install --no-frozen-lockfile
 
-COPY app/cv ./app/cv
-
-WORKDIR /app/app/cv
+COPY . ./
 RUN pnpm build
+
+FROM node:20-alpine AS runtime
+WORKDIR /app
 
 RUN apk add --no-cache dumb-init
 
 ENV NODE_ENV=production
+COPY --from=build /app/package.json ./package.json
+COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/build ./build
+
+USER node
 EXPOSE 3000
 
 ENTRYPOINT ["dumb-init", "--"]
