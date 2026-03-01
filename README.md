@@ -33,6 +33,31 @@ Set `PUBLIC_SVELTA_EXPERIENCE=docs` or `PUBLIC_SVELTA_EXPERIENCE=blog`.
 npm run dev
 ```
 
+## Pattern-First Configuration
+
+Configure docs and blog experiences through explicit pattern builders:
+
+```ts
+import { createSveltaPatternConfig } from '@aureuma/svelta/experience';
+
+const patterns = createSveltaPatternConfig({
+	docs: {
+		brandName: 'Aureuma',
+		productName: 'Documentation',
+		search: { placeholder: 'Search docs...', shortcut: 'Ctrl K' },
+		editLinkTemplate: 'https://github.com/Aureuma/aureuma/blob/main/src/content/docs/:slug.md'
+	},
+	blog: {
+		pageSize: 8,
+		maxPageSize: 24,
+		infiniteScroll: true,
+		showRss: true
+	}
+});
+```
+
+This keeps the implementation reusable while app repos control behavior through config.
+
 ## Internal Hosting (Pre-deploy)
 
 ```sh

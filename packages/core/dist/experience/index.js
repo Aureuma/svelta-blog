@@ -1,3 +1,5 @@
+import { createBlogPatternConfig, createDocsPatternConfig, createSveltaPatternConfig, DEFAULT_BLOG_PATTERN_CONFIG, DEFAULT_DOCS_PATTERN_CONFIG, resolveDocsEditUrl } from './patterns';
+export { createBlogPatternConfig, createDocsPatternConfig, createSveltaPatternConfig, DEFAULT_BLOG_PATTERN_CONFIG, DEFAULT_DOCS_PATTERN_CONFIG, resolveDocsEditUrl };
 const DEFAULTS = {
     docs: {
         kind: 'docs',

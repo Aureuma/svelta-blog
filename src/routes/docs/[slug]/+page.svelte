@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { BackLink, DocsPager, DocsShell } from '@aureuma/svelta';
 	import { attachCodeCopyButtons } from '$lib/client/code-copy';
+	import { docsPattern } from '$lib/config/patterns';
 	import DocsFeedback from '$lib/components/site/DocsFeedback.svelte';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
@@ -47,7 +48,7 @@
 </script>
 
 <svelte:head>
-	<title>{data.page.title} | svelta docs</title>
+	<title>{data.page.title} | {docsPattern.brandName} {docsPattern.productName}</title>
 	<meta name="description" content={data.page.description || data.page.title} />
 	<link rel="canonical" href={data.canonicalUrl} />
 </svelte:head>
@@ -124,39 +125,43 @@
 				{@html data.contentHtml}
 			</article>
 
-			<DocsFeedback pageSlug={data.page.slug} />
+			{#if docsPattern.feedback.enabled}
+				<DocsFeedback pageSlug={data.page.slug} prompt={docsPattern.feedback.prompt} />
+			{/if}
 
 			<DocsPager previous={data.adjacent.previous} next={data.adjacent.next} />
 		</div>
 
-		<aside class="hidden xl:block">
-			<Card.Root class="sticky top-24" data-testid="docs-toc">
-				<Card.Header class="pb-3">
-					<Card.Title class="text-sm">On This Page</Card.Title>
-				</Card.Header>
-				<Card.Content>
-					{#if data.toc.length === 0}
-						<p class="text-xs text-text-muted">No headings found on this page.</p>
-					{:else}
-						<nav aria-label="On this page">
-							<ul class="space-y-2">
-								{#each data.toc as heading (heading.id)}
-									<li>
-										<a
-											href={`#${heading.id}`}
-											class="block text-xs transition hover:text-text-main {heading.level === 3
-												? 'pl-3 text-text-muted'
-												: 'text-text-sub'}"
-										>
-											{heading.text}
-										</a>
-									</li>
-								{/each}
-							</ul>
-						</nav>
-					{/if}
-				</Card.Content>
-			</Card.Root>
-		</aside>
+		{#if docsPattern.toc.enabled}
+			<aside class="hidden xl:block">
+				<Card.Root class="sticky top-24" data-testid="docs-toc">
+					<Card.Header class="pb-3">
+						<Card.Title class="text-sm">{docsPattern.toc.title}</Card.Title>
+					</Card.Header>
+					<Card.Content>
+						{#if data.toc.length === 0}
+							<p class="text-xs text-text-muted">No headings found on this page.</p>
+						{:else}
+							<nav aria-label="On this page">
+								<ul class="space-y-2">
+									{#each data.toc as heading (heading.id)}
+										<li>
+											<a
+												href={`#${heading.id}`}
+												class="block text-xs transition hover:text-text-main {heading.level === 3
+													? 'pl-3 text-text-muted'
+													: 'text-text-sub'}"
+											>
+												{heading.text}
+											</a>
+										</li>
+									{/each}
+								</ul>
+							</nav>
+						{/if}
+					</Card.Content>
+				</Card.Root>
+			</aside>
+		{/if}
 	</div>
 </DocsShell>

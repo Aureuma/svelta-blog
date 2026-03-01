@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import { docsPattern } from '$lib/config/patterns';
 	import { initialExperience } from '$lib/config/experience';
 
 	function isActive(path: string) {
@@ -8,6 +9,15 @@
 	}
 
 	$: experienceLabel = initialExperience === 'docs' ? 'Docs' : 'Blog';
+	$: navItems = (() => {
+		const seen = new Set<string>();
+		const merged = [{ label: 'Home', href: '/' }, ...docsPattern.navigation.header];
+		return merged.filter((item) => {
+			if (seen.has(item.href)) return false;
+			seen.add(item.href);
+			return true;
+		});
+	})();
 </script>
 
 <header
@@ -16,7 +26,7 @@
 >
 	<div class="mx-auto flex h-16 w-full max-w-5xl items-center justify-between px-6">
 		<a href="/" class="group inline-flex items-center gap-2">
-			<span class="text-sm font-semibold tracking-tight">svelta</span>
+			<span class="text-sm font-semibold tracking-tight">{docsPattern.brandName}</span>
 			<span
 				class="rounded-full bg-brand/15 px-2 py-0.5 text-[11px] font-mono uppercase tracking-[0.6px] text-brand"
 			>
@@ -25,21 +35,14 @@
 		</a>
 
 		<nav class="flex items-center gap-6 text-sm">
-			<a
-				href="/"
-				class="transition hover:text-text-main {isActive('/') ? 'text-text-main' : 'text-text-sub'}"
-				>Home</a
-			>
-			<a
-				href="/docs"
-				class="transition hover:text-text-main {isActive('/docs') ? 'text-text-main' : 'text-text-sub'}"
-				>Docs</a
-			>
-			<a
-				href="/blog"
-				class="transition hover:text-text-main {isActive('/blog') ? 'text-text-main' : 'text-text-sub'}"
-				>Blog</a
-			>
+			{#each navItems as item (item.href)}
+				<a
+					href={item.href}
+					class="transition hover:text-text-main {isActive(item.href) ? 'text-text-main' : 'text-text-sub'}"
+				>
+					{item.label}
+				</a>
+			{/each}
 		</nav>
 	</div>
 </header>

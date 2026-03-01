@@ -1,8 +1,7 @@
 import { getAllPosts, getAllTags, pickHero } from '$lib/server/blog';
+import { blogSetup } from '$lib/config/blog';
 import { slugify } from '$lib/server/slugify';
 import type { PageServerLoad } from './$types';
-
-const PAGE_SIZE = 8;
 
 export const load: PageServerLoad = async ({ url }) => {
 	const [all, tags] = await Promise.all([getAllPosts(), getAllTags()]);
@@ -16,16 +15,17 @@ export const load: PageServerLoad = async ({ url }) => {
 	const filtered = validSelected
 		? rest.filter((p) => p.tags.some((tagName) => slugify(tagName) === validSelected))
 		: rest;
-	const initialPosts = filtered.slice(0, PAGE_SIZE);
+	const initialPosts = filtered.slice(0, blogSetup.pageSize);
 
 	return {
 		hero,
 		tags: tabTags,
 		selectedTag: validSelected,
 		initialPosts,
-		pageSize: PAGE_SIZE,
+		pageSize: blogSetup.pageSize,
+		infiniteScroll: blogSetup.infiniteScroll,
+		showRss: blogSetup.showRss,
 		hasMore: filtered.length > initialPosts.length,
 		total: filtered.length
 	};
 };
-

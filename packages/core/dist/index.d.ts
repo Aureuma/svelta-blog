@@ -13,6 +13,8 @@ export { default as DocsSectionGrid } from './components/docs/DocsSectionGrid.sv
 export { default as DocsShell } from './components/docs/DocsShell.svelte';
 export { default as DocsSidebar } from './components/docs/DocsSidebar.svelte';
 export { createExperienceCatalog, parseExperienceKind } from './experience';
+export { createBlogPatternConfig, createDocsPatternConfig, createSveltaPatternConfig, DEFAULT_BLOG_PATTERN_CONFIG, DEFAULT_DOCS_PATTERN_CONFIG, resolveDocsEditUrl } from './experience';
 export type { BlogAuthor, BlogAuthorSummary, BlogArchiveGroup, BlogCategory, BlogPost, BlogPostFull, BlogPostWithContent, BlogTag, SharePlatform } from './types/blog';
 export type { DocsPage, DocsPageFull, DocsPageWithContent, DocsSection, DocsSidebarSection } from './types/docs';
 export type { ExperienceCatalog, ExperienceDefinition, ExperienceKind } from './types/experience';
+export type { SveltaBlogPatternConfig, SveltaDocsPatternConfig, SveltaNavItem, SveltaPatternConfig } from './types/experience';

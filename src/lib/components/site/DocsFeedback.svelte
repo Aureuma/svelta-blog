@@ -4,7 +4,10 @@
 
 	type FeedbackVote = 'yes' | 'no' | null;
 
-	let { pageSlug } = $props<{ pageSlug: string }>();
+	let {
+		pageSlug,
+		prompt = 'Was this page helpful?'
+	} = $props<{ pageSlug: string; prompt?: string }>();
 
 	let vote = $state<FeedbackVote>(null);
 
@@ -30,7 +33,7 @@
 </script>
 
 <section class="mt-10 rounded-2xl border border-border-soft/10 bg-background-soft p-4" data-testid="docs-feedback">
-	<p class="text-sm font-medium text-text-main">Was this page helpful?</p>
+	<p class="text-sm font-medium text-text-main">{prompt}</p>
 
 	<div class="mt-3 flex items-center gap-2">
 		<Button

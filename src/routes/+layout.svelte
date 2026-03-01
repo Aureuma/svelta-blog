@@ -8,6 +8,7 @@
 	import '../app.css';
 	import SiteFooter from '$lib/components/site/SiteFooter.svelte';
 	import SiteHeader from '$lib/components/site/SiteHeader.svelte';
+	import { blogPattern } from '$lib/config/patterns';
 	import { initAppearance } from '$lib/stores/appearance';
 	import { onMount } from 'svelte';
 
@@ -21,7 +22,9 @@
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
-	<link rel="alternate" type="application/rss+xml" title="svelta Blog" href="/feed.xml" />
+	{#if blogPattern.showRss}
+		<link rel="alternate" type="application/rss+xml" title="svelta Blog" href="/feed.xml" />
+	{/if}
 </svelte:head>
 
 <div class="min-h-dvh bg-background-main text-text-main">

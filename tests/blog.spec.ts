@@ -31,6 +31,7 @@ test('docs index renders section grid and links into a docs page', async ({ page
 	await expect(page.getByTestId('docs-section-grid')).toBeVisible();
 	await expect(page.getByTestId('docs-home-tabs')).toBeVisible();
 	await expect(page.getByTestId('docs-faq')).toBeVisible();
+	await expect(page.getByTestId('docs-search-trigger')).toContainText('Search docs...');
 	await expect(page.getByTestId('site-header')).toHaveCount(1);
 	await page.getByRole('link', { name: 'Overview' }).first().click();
 	await expect(page).toHaveURL(/\/docs\/overview$/);
@@ -44,7 +45,7 @@ test('docs command palette opens and navigates to selected page', async ({ page 
 	await page.goto('/docs');
 
 	await page.getByTestId('docs-search-trigger').click();
-	const searchInput = page.getByPlaceholder('Search documentation...');
+	const searchInput = page.getByPlaceholder('Search docs...');
 	await expect(searchInput).toBeVisible();
 	await searchInput.fill('Server API');
 	await searchInput.press('Enter');
@@ -53,6 +54,10 @@ test('docs command palette opens and navigates to selected page', async ({ page 
 
 test('docs markdown enhancements render admonitions, code-copy, and feedback', async ({ page }) => {
 	await page.goto('/docs/overview');
+	await expect(page.getByRole('link', { name: 'Edit Page' })).toHaveAttribute(
+		'href',
+		/\/src\/content\/docs\/overview\.md$/
+	);
 	await expect(page.locator('[data-admonition]').first()).toBeVisible();
 	await page.getByTestId('docs-feedback-yes').click();
 	await expect(page.getByTestId('docs-feedback')).toContainText('Thanks for the feedback.');

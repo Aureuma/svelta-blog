@@ -1,4 +1,5 @@
 import { createDocs } from '@aureuma/svelta/server';
+import { docsPattern } from '$lib/config/patterns';
 import type { DocsPageFull } from '$lib/types/docs';
 
 type CompiledModule = { default: DocsPageFull['component'] };
@@ -15,7 +16,8 @@ const rawModules = import.meta.glob('/src/content/docs/*.md', {
 export const docs = createDocs({
 	compiledModules,
 	rawModules,
-	sectionOrder: ['overview', 'getting-started', 'guides', 'api', 'reference']
+	defaultSectionLabel: docsPattern.defaultSectionLabel,
+	sectionOrder: docsPattern.sectionOrder
 });
 
 export const { getAllPages, getPageBySlug, getSections, getSidebar, getAdjacentPages, pickLandingPage } = docs;

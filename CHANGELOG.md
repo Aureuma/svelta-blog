@@ -4,6 +4,25 @@ All notable changes to this repository are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project follows [Semantic Versioning](https://semver.org/).
 
+## [v0.3.0] - 2026-02-28
+### Added
+- Added first-class pattern configuration APIs for docs/blog experiences:
+  - `createDocsPatternConfig`
+  - `createBlogPatternConfig`
+  - `createSveltaPatternConfig`
+  - `resolveDocsEditUrl`
+- Added exported pattern-related types:
+  - `SveltaNavItem`
+  - `SveltaDocsPatternConfig`
+  - `SveltaBlogPatternConfig`
+  - `SveltaPatternConfig`
+- Added runtime app config wiring for docs/blog behavior (search, TOC, feedback prompt, edit links, pagination, RSS visibility).
+
+### Changed
+- Updated docs experience screens to consume centralized pattern config values.
+- Updated blog pagination endpoints and UI to use pattern-configured page-size and infinite-scroll toggles.
+- Expanded Playwright stability and assertions for docs pattern UI and edit-link behavior.
+
 ## [v0.1.1] - 2026-02-22
 ### Added
 - Added SI-browser-based end-to-end validation coverage for key website features on a live preview deployment.

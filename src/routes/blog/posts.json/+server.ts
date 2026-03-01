@@ -1,10 +1,11 @@
 import { getAllPosts, getAllTags, pickHero } from '$lib/server/blog';
+import { blogSetup } from '$lib/config/blog';
 import { slugify } from '$lib/server/slugify';
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
-const DEFAULT_LIMIT = 8;
-const MAX_LIMIT = 24;
+const DEFAULT_LIMIT = blogSetup.pageSize;
+const MAX_LIMIT = blogSetup.maxPageSize;
 
 export const GET: RequestHandler = async ({ url }) => {
 	const offset = Math.max(0, Number.parseInt(url.searchParams.get('offset') ?? '0', 10) || 0);

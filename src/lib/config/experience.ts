@@ -1,4 +1,5 @@
 import { createExperienceCatalog, parseExperienceKind, type ExperienceKind } from '@aureuma/svelta/experience';
+import { blogPattern, docsPattern } from './patterns';
 
 const configured = parseExperienceKind(import.meta.env.PUBLIC_SVELTA_EXPERIENCE, 'docs');
 
@@ -6,10 +7,10 @@ export const experienceCatalog = createExperienceCatalog({
 	defaultKind: configured,
 	overrides: {
 		docs: {
-			description: 'Reference-quality documentation with structured navigation and progressive guides.'
+			description: docsPattern.description
 		},
 		blog: {
-			description: 'Narrative long-form updates, product notes, and engineering stories.'
+			description: blogPattern.description
 		}
 	}
 });

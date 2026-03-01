@@ -14,3 +14,4 @@ export { default as DocsSectionGrid } from './components/docs/DocsSectionGrid.sv
 export { default as DocsShell } from './components/docs/DocsShell.svelte';
 export { default as DocsSidebar } from './components/docs/DocsSidebar.svelte';
 export { createExperienceCatalog, parseExperienceKind } from './experience';
+export { createBlogPatternConfig, createDocsPatternConfig, createSveltaPatternConfig, DEFAULT_BLOG_PATTERN_CONFIG, DEFAULT_DOCS_PATTERN_CONFIG, resolveDocsEditUrl } from './experience';

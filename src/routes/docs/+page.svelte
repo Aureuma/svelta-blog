@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { DocsSectionGrid } from '@aureuma/svelta';
+	import { docsPattern } from '$lib/config/patterns';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
@@ -26,11 +27,10 @@
 	<div class="max-w-3xl">
 		<Badge variant="outline" class="bg-background-soft">Documentation Experience</Badge>
 		<h1 class="mt-4 text-4xl font-semibold leading-[44px] tracking-[-0.8px]">
-			Ship a complete docs website from the same svelta content system.
+			{docsPattern.title}
 		</h1>
 		<p class="mt-4 text-base leading-7 text-text-sub">
-			This docs site includes command-palette search, sectioned navigation, table of contents,
-			breadcrumb metadata, and previous/next paging for every markdown page.
+			{docsPattern.description}
 		</p>
 
 		<div class="mt-8 flex flex-wrap items-center gap-3">

@@ -12,6 +12,8 @@
 			selectedTag: string;
 			initialPosts: BlogPost[];
 			pageSize: number;
+			infiniteScroll: boolean;
+			showRss: boolean;
 			hasMore: boolean;
 			total: number;
 		};
@@ -41,6 +43,7 @@
 	}
 
 	async function loadMore() {
+		if (!data.infiniteScroll) return;
 		if (!hasMore || loading) return;
 		loading = true;
 
@@ -63,6 +66,7 @@
 	}
 
 	onMount(() => {
+		if (!data.infiniteScroll) return;
 		if (!sentinel) return;
 		const io = new IntersectionObserver(
 			(entries) => {
@@ -83,18 +87,20 @@
 			<TagTabs categories={data.tags} selected={data.selectedTag} onSelect={selectTag} />
 		</div>
 
-		<a
-			href="/feed.xml"
-			class="inline-flex size-7 shrink-0 items-center justify-center text-text-muted transition hover:text-text-main"
-			aria-label="RSS feed"
-		>
-			<svg viewBox="0 0 24 24" class="size-4" aria-hidden="true">
-				<path
-					fill="currentColor"
-					d="M6.18 17.82a2.18 2.18 0 1 1 0 4.36 2.18 2.18 0 0 1 0-4.36ZM2 8.5v3.1c5.7 0 10.4 4.7 10.4 10.4h3.1C15.5 14.6 9.4 8.5 2 8.5Zm0-6v3.1c9.1 0 16.4 7.3 16.4 16.4H22C22 11.2 12.8 2 2 2Z"
-				/>
-			</svg>
-		</a>
+		{#if data.showRss}
+			<a
+				href="/feed.xml"
+				class="inline-flex size-7 shrink-0 items-center justify-center text-text-muted transition hover:text-text-main"
+				aria-label="RSS feed"
+			>
+				<svg viewBox="0 0 24 24" class="size-4" aria-hidden="true">
+					<path
+						fill="currentColor"
+						d="M6.18 17.82a2.18 2.18 0 1 1 0 4.36 2.18 2.18 0 0 1 0-4.36ZM2 8.5v3.1c5.7 0 10.4 4.7 10.4 10.4h3.1C15.5 14.6 9.4 8.5 2 8.5Zm0-6v3.1c9.1 0 16.4 7.3 16.4 16.4H22C22 11.2 12.8 2 2 2Z"
+					/>
+				</svg>
+			</a>
+		{/if}
 	</div>
 
 	<section class="pb-32 pt-8">
@@ -110,9 +116,11 @@
 			{/if}
 		</div>
 
-		<div class="mt-14 flex items-center justify-center">
-			<div bind:this={sentinel} class="h-10 w-full" aria-hidden="true"></div>
-		</div>
+		{#if data.infiniteScroll}
+			<div class="mt-14 flex items-center justify-center">
+				<div bind:this={sentinel} class="h-10 w-full" aria-hidden="true"></div>
+			</div>
+		{/if}
 
 		{#if loading}
 			<p class="mt-6 text-center text-xs font-mono uppercase tracking-[0.6px] text-text-muted">
@@ -146,4 +154,3 @@
 		}
 	}
 </style>
-
