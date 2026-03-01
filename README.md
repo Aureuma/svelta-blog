@@ -58,6 +58,25 @@ const patterns = createSveltaPatternConfig({
 
 This keeps the implementation reusable while app repos control behavior through config.
 
+## Raw Docs Runtime (No mdsvex Required)
+
+If your app stores docs as plain markdown and wants server-rendered HTML without mdsvex, use `createRawDocs`:
+
+```ts
+import { createRawDocs } from '@aureuma/svelta/server';
+
+const docs = createRawDocs({
+	rawModules: import.meta.glob('/src/content/docs/*.md', {
+		query: '?raw',
+		import: 'default'
+	}),
+	renderMarkdown: async (markdown) => yourMarkdownRenderer(markdown)
+});
+
+export const getDocsSidebar = docs.getSidebar;
+export const getDocsPageBySlug = docs.getPageBySlug;
+```
+
 ## Internal Hosting (Pre-deploy)
 
 ```sh

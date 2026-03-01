@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import type { DocsPage, DocsPageFull, DocsSidebarSection, DocsSection } from '../types/docs';
+import type { DocsPage, DocsPageFull, DocsPageWithContent, DocsSidebarSection, DocsSection } from '../types/docs';
 declare const docsFrontmatterSchema: z.ZodObject<{
     title: z.ZodString;
     navTitle: z.ZodOptional<z.ZodString>;
@@ -29,10 +29,30 @@ export type DocsCreateConfig = {
     sectionOrder?: string[];
     mapFrontmatter?: DocsFrontmatterAdapter;
 };
+export type DocsMarkdownRenderer = (markdown: string) => string | Promise<string>;
+export type RawDocsCreateConfig = {
+    rawModules: Record<string, () => Promise<string>>;
+    defaultSectionLabel?: string;
+    sectionOrder?: string[];
+    mapFrontmatter?: DocsFrontmatterAdapter;
+    renderMarkdown?: DocsMarkdownRenderer;
+};
 export declare function createDocs(config: DocsCreateConfig): {
     getAllPages: () => Promise<DocsPage[]>;
     getAllPagesFull: () => Promise<DocsPageFull[]>;
     getPageBySlug: (slug: string) => Promise<DocsPageFull | null>;
+    getSections: () => Promise<DocsSection[]>;
+    getSidebar: () => Promise<DocsSidebarSection[]>;
+    getAdjacentPages: (slug: string) => Promise<{
+        previous: DocsPage | null;
+        next: DocsPage | null;
+    }>;
+    pickLandingPage: () => Promise<DocsPage | null>;
+};
+export declare function createRawDocs(config: RawDocsCreateConfig): {
+    getAllPages: () => Promise<DocsPage[]>;
+    getAllPagesWithContent: () => Promise<DocsPageWithContent[]>;
+    getPageBySlug: (slug: string) => Promise<DocsPageWithContent | null>;
     getSections: () => Promise<DocsSection[]>;
     getSidebar: () => Promise<DocsSidebarSection[]>;
     getAdjacentPages: (slug: string) => Promise<{

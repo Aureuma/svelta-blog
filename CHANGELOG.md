@@ -4,6 +4,16 @@ All notable changes to this repository are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project follows [Semantic Versioning](https://semver.org/).
 
+## [v0.4.0] - 2026-03-01
+### Added
+- Added `createRawDocs` in `@aureuma/svelta/server` for plain markdown docs ingestion without mdsvex.
+- Added `RawDocsCreateConfig` and `DocsMarkdownRenderer` exports.
+- Added Node runtime test coverage for the new raw docs API (`tests/raw-docs.test.mjs`).
+
+### Changed
+- Expanded Playwright coverage from Chromium-only to Chromium + WebKit (Safari engine) in local and CI runs.
+- Enabled CI on `push`/`pull_request` to `main` in addition to manual dispatch.
+
 ## [v0.3.1] - 2026-03-01
 ### Fixed
 - Removed consumer-breaking `postinstall` workspace build step from the published package so downstream `npm install @aureuma/svelta` works in non-workspace repos.
