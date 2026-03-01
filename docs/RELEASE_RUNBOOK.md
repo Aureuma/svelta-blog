@@ -50,12 +50,21 @@ Run:
 
 This confirms package tarballs and checksum generation before publishing a GitHub Release.
 
-## 6. Publish npm Packages (npmjs)
+## 6. Publish npm Package (npmjs)
 
-1. Publish the root package:
-   - `npm publish --access public`
+Preferred path:
+
+1. Trigger workflow `Publish NPM` for the release tag (`vX.Y.Z`).
+1. Ensure either:
+   - `NPM_TOKEN` secret is set in GitHub Actions, or
+   - npm trusted publishing (OIDC) is configured for this repo/package.
 1. Verify publish resolved on npmjs:
    - `npm view @aureuma/svelta version`
+
+Fallback local path (only if needed):
+
+1. `npm whoami`
+1. `npm publish --access public --provenance`
 
 ## 7. Create GitHub Release
 

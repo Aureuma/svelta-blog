@@ -1,0 +1,55 @@
+name: Publish NPM
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Tag to publish (for example v0.3.1)
+        required: true
+        type: string
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.tag || github.ref_name }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+          always-auth: true
+
+      - name: Verify tag matches package version
+        shell: bash
+        run: |
+          set -euo pipefail
+          tag="${{ github.event.inputs.tag || github.ref_name }}"
+          version="${tag#v}"
+          pkg_version="$(node -p \"require('./package.json').version\")"
+          if [[ "$version" != "$pkg_version" ]]; then
+            echo "tag version ($version) does not match package.json ($pkg_version)" >&2
+            exit 1
+          fi
+
+      - name: Install
+        run: npm ci
+
+      - name: Publish package
+        shell: bash
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          set -euo pipefail
+          npm publish --access public --provenance
