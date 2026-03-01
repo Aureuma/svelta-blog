@@ -1,7 +1,7 @@
 {
 	"name": "@aureuma/svelta",
 	"private": false,
-	"version": "0.3.0",
+	"version": "0.3.1",
 	"type": "module",
 	"files": [
 		"packages/core/dist",
@@ -45,7 +45,6 @@
 		"preview": "vite preview",
 		"host:internal": "npm run build && npm run preview -- --host 0.0.0.0 --port 4173",
 		"prepare": "svelte-kit sync || echo ''",
-		"postinstall": "npm -w @aureuma/svelta-core run build",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"test:e2e": "playwright test",

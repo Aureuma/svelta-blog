@@ -4,6 +4,10 @@ All notable changes to this repository are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project follows [Semantic Versioning](https://semver.org/).
 
+## [v0.3.1] - 2026-03-01
+### Fixed
+- Removed consumer-breaking `postinstall` workspace build step from the published package so downstream `npm install @aureuma/svelta` works in non-workspace repos.
+
 ## [v0.3.0] - 2026-02-28
 ### Added
 - Added first-class pattern configuration APIs for docs/blog experiences:
