@@ -47,9 +47,15 @@ jobs:
         run: npm ci
 
       - name: Publish package
+        if: ${{ secrets.NPM_TOKEN != '' }}
         shell: bash
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           set -euo pipefail
           npm publish --access public --provenance
+
+      - name: Skip notice (missing NPM token)
+        if: ${{ secrets.NPM_TOKEN == '' }}
+        run: |
+          echo "NPM_TOKEN is not configured; skipping npm publish."
