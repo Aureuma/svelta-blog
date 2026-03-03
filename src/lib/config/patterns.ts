@@ -46,7 +46,7 @@ const patterns = createSveltaPatternConfig({
 	blog: {
 		brandName: 'svelta',
 		title: 'Narrative product and engineering updates.',
-		description: 'Editorial feed with filters, taxonomy pages, and progressive pagination.',
+		description: 'Editorial feed with in-place tag filters and progressive pagination.',
 		pageSize: parsePositiveInt(import.meta.env.PUBLIC_SVELTA_BLOG_PAGE_SIZE, 8),
 		maxPageSize: parsePositiveInt(import.meta.env.PUBLIC_SVELTA_BLOG_MAX_PAGE_SIZE, 24),
 		infiniteScroll: parseBoolean(import.meta.env.PUBLIC_SVELTA_BLOG_INFINITE_SCROLL, true),

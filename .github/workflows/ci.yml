@@ -14,7 +14,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  test:
+  quality:
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
@@ -40,8 +40,44 @@ jobs:
       - name: Server runtime tests
         run: npm run test:server
 
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium webkit
+  e2e:
+    needs: quality
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            project: chromium
+            browser: chromium
+          - os: macos-latest
+            project: chromium
+            browser: chromium
+          - os: macos-latest
+            project: webkit
+            browser: webkit
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        run: npx playwright install --with-deps ${{ matrix.browser }}
+
+      - name: Install Playwright browsers (macOS)
+        if: matrix.os == 'macos-latest'
+        run: npx playwright install ${{ matrix.browser }}
 
       - name: End-to-end tests
-        run: npm run test:e2e
+        run: npm run test:e2e -- --project=${{ matrix.project }}

@@ -84,11 +84,12 @@ test('post page renders summary, shiki blocks, and more posts', async ({ page })
 	await expect(page.getByText('Next')).toHaveCount(0);
 });
 
-test('blog taxonomy pages render tags, archive, and authors', async ({ page }) => {
+test('blog taxonomy pages render archive and authors', async ({ page }) => {
 	await page.goto('/blog/tags');
-	await expect(page.getByTestId('blog-tags-page')).toBeVisible();
-	await page.locator('[data-testid=\"blog-tags-page\"] a').first().click();
-	await expect(page.getByTestId('blog-tag-page')).toBeVisible();
+	await expect(page).toHaveURL(/\/blog\/?$/);
+
+	await page.goto('/blog/tags/release');
+	await expect(page).toHaveURL(/\/blog\/?\?tag=release$/);
 
 	await page.goto('/blog/archive');
 	await expect(page.getByTestId('blog-archive-page')).toBeVisible();
