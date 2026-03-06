@@ -18,9 +18,9 @@ test('blog tag filtering stays on /blog and updates query params', async ({ page
 	await page.goto('/blog');
 
 	const tagsRail = page.getByTestId('blog-tags');
-	// Click the first non-default category tab so the test stays valid
-	// even when the seeded taxonomy set changes.
-	await tagsRail.getByRole('tab').nth(1).click();
+	const tabs = tagsRail.getByRole('tab');
+	await expect.poll(async () => tabs.count()).toBeGreaterThan(1);
+	await tabs.nth(1).click();
 	await expect(page).toHaveURL(/\/blog\?tag=[a-z0-9-]+$/);
 	await expect(page).not.toHaveURL(/\/blog\/tags\//);
 });
