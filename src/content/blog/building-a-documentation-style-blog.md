@@ -42,7 +42,3 @@ const minutes = Math.max(1, Math.round(readingTime(markdown).minutes));
 | AI summary card | Better “skim” mode |
 | Sticky share rail | Share UX without interrupting reading |
 | RSS feed | Works in every reader |
-
-## Next
-
-In the following posts we’ll break down each part (tabs, infinite scroll, Markdown, RSS) into its own implementation.
