@@ -21,6 +21,7 @@ export const load: PageServerLoad = async ({ url }) => {
 		hero,
 		tags: tabTags,
 		selectedTag: validSelected,
+		allPosts: filtered,
 		initialPosts,
 		pageSize: blogSetup.pageSize,
 		infiniteScroll: blogSetup.infiniteScroll,
