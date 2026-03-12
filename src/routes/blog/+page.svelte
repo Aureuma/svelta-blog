@@ -4,7 +4,7 @@
 	import { BlogCard, BlogHeroCard, Container, TagTabs } from '@aureuma/svelta';
 	import type { BlogPost } from '$lib/types/blog';
 	import SearchIcon from '@lucide/svelte/icons/search';
-	import { onMount, tick } from 'svelte';
+	import { tick } from 'svelte';
 
 	let { data } = $props<{
 		data: {
@@ -14,10 +14,8 @@
 			allPosts: BlogPost[];
 			initialPosts: BlogPost[];
 			pageSize: number;
-			infiniteScroll: boolean;
 			showRss: boolean;
 			hasMore: boolean;
-			total: number;
 		};
 	}>();
 
@@ -77,38 +75,39 @@
 	}
 
 	async function loadMore() {
-		if (!data.infiniteScroll) return;
 		if (isSearching) return;
 		if (!hasMore || loading) return;
 		loading = true;
 
-		const u = new URL('/blog/posts.json', $page.url.origin);
-		u.searchParams.set('offset', String(offset));
-		u.searchParams.set('limit', String(data.pageSize));
-		if (data.selectedTag) u.searchParams.set('tag', data.selectedTag);
+		try {
+			const u = new URL('/blog/posts.json', $page.url.origin);
+			u.searchParams.set('offset', String(offset));
+			u.searchParams.set('limit', String(data.pageSize));
+			if (data.selectedTag) u.searchParams.set('tag', data.selectedTag);
 
-		const res = await fetch(u);
-		if (!res.ok) {
+			const res = await fetch(u);
+			if (!res.ok) return;
+
+			const payload = (await res.json()) as { posts: BlogPost[]; hasMore: boolean };
+			posts = [...posts, ...payload.posts];
+			offset += payload.posts.length;
+			hasMore = payload.hasMore;
+		} finally {
 			loading = false;
-			return;
 		}
-
-		const payload = (await res.json()) as { posts: BlogPost[]; hasMore: boolean };
-		posts = [...posts, ...payload.posts];
-		offset += payload.posts.length;
-		hasMore = payload.hasMore;
-		loading = false;
 	}
 
-	onMount(() => {
-		if (!data.infiniteScroll) return;
+	$effect(() => {
 		if (!sentinel) return;
+		if (isSearching) return;
+
 		const io = new IntersectionObserver(
 			(entries) => {
 				if (entries.some((entry) => entry.isIntersecting)) loadMore();
 			},
 			{ rootMargin: '1000px 0px' }
 		);
+
 		io.observe(sentinel);
 		return () => io.disconnect();
 	});
@@ -196,7 +195,7 @@
 			{/if}
 		</div>
 
-		{#if data.infiniteScroll && !isSearching}
+		{#if !isSearching}
 			<div class="mt-14 flex items-center justify-center">
 				<div bind:this={sentinel} class="h-10 w-full" aria-hidden="true"></div>
 			</div>

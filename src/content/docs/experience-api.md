@@ -47,7 +47,6 @@ const config = createSveltaPatternConfig({
   blog: {
     pageSize: 8,
     maxPageSize: 24,
-    infiniteScroll: true,
     showRss: true
   }
 });

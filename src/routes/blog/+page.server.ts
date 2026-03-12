@@ -24,9 +24,7 @@ export const load: PageServerLoad = async ({ url }) => {
 		allPosts: filtered,
 		initialPosts,
 		pageSize: blogSetup.pageSize,
-		infiniteScroll: blogSetup.infiniteScroll,
 		showRss: blogSetup.showRss,
-		hasMore: filtered.length > initialPosts.length,
-		total: filtered.length
+		hasMore: filtered.length > initialPosts.length
 	};
 };

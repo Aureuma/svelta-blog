@@ -55,7 +55,6 @@ export type SveltaBlogPatternConfig = {
 	description: string;
 	pageSize: number;
 	maxPageSize: number;
-	infiniteScroll: boolean;
 	showRss: boolean;
 	navigation: {
 		header: SveltaNavItem[];

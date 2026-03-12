@@ -4,6 +4,12 @@ All notable changes to this repository are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project follows [Semantic Versioning](https://semver.org/).
 
+## [v0.4.1] - 2026-03-12
+### Changed
+- Updated the blog index to always load additional posts on scroll instead of relying on optional pagination controls.
+- Reattached the infinite-scroll observer correctly after search state changes so auto-loading resumes reliably.
+- Simplified the blog experience configuration and docs by removing the public `infiniteScroll` toggle.
+
 ## [v0.4.0] - 2026-03-01
 ### Added
 - Added `createRawDocs` in `@aureuma/svelta/server` for plain markdown docs ingestion without mdsvex.

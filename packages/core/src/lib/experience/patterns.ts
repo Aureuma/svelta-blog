@@ -68,10 +68,9 @@ export const DEFAULT_BLOG_PATTERN_CONFIG: SveltaBlogPatternConfig = {
 	brandName: 'svelta',
 	title: 'Editorial publishing with modern feed ergonomics.',
 	description:
-		'Publish markdown-driven updates with in-feed tag filtering, progressive pagination, author attribution, and RSS delivery.',
+		'Publish markdown-driven updates with in-feed tag filtering, continuous infinite loading, author attribution, and RSS delivery.',
 	pageSize: 8,
 	maxPageSize: 24,
-	infiniteScroll: true,
 	showRss: true,
 	navigation: {
 		header: [

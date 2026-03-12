@@ -6,6 +6,5 @@ export const blogSetup = {
 	sharePlatforms: ['x', 'linkedin', 'facebook'] as SharePlatform[],
 	pageSize: blogPattern.pageSize,
 	maxPageSize: blogPattern.maxPageSize,
-	infiniteScroll: blogPattern.infiniteScroll,
 	showRss: blogPattern.showRss
 };
