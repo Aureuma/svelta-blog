@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Avatar, BackLink, Container, ImageLightbox, MorePosts, ShareButtons, SummaryCard } from '@aureuma/svelta';
+	import { Avatar, BackLink, Container, ImageLightbox, MorePosts, ShareButtons, SummaryCard } from '@aureuma/svelta-blog';
 	import { attachCodeCopyButtons } from '$lib/client/code-copy';
 	import { blogSetup } from '$lib/config/blog';
 	import type { BlogPost } from '$lib/types/blog';

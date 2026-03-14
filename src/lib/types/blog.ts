@@ -6,4 +6,4 @@ export type {
 	BlogPost,
 	BlogPostFull,
 	BlogTag
-} from '@aureuma/svelta';
+} from '@aureuma/svelta-blog';

@@ -1,4 +1,3 @@
-// Components
 export { default as Avatar } from './components/blog/Avatar.svelte';
 export { default as BackLink } from './components/blog/BackLink.svelte';
 export { default as BlogCard } from './components/blog/BlogCard.svelte';
@@ -9,9 +8,4 @@ export { default as MorePosts } from './components/blog/MorePosts.svelte';
 export { default as ShareButtons } from './components/blog/ShareButtons.svelte';
 export { default as SummaryCard } from './components/blog/SummaryCard.svelte';
 export { default as TagTabs } from './components/blog/TagTabs.svelte';
-export { default as DocsPager } from './components/docs/DocsPager.svelte';
-export { default as DocsSectionGrid } from './components/docs/DocsSectionGrid.svelte';
-export { default as DocsShell } from './components/docs/DocsShell.svelte';
-export { default as DocsSidebar } from './components/docs/DocsSidebar.svelte';
-export { createExperienceCatalog, parseExperienceKind } from './experience';
-export { createBlogPatternConfig, createDocsPatternConfig, createSveltaPatternConfig, DEFAULT_BLOG_PATTERN_CONFIG, DEFAULT_DOCS_PATTERN_CONFIG, resolveDocsEditUrl } from './experience';
+export { createBlogPatternConfig, DEFAULT_BLOG_PATTERN_CONFIG } from './experience';

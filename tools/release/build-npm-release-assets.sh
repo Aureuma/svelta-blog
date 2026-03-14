@@ -96,7 +96,7 @@ done
 
 version_nov="${version#v}"
 expected_files=(
-  "aureuma-svelta-${version_nov}.tgz"
+  "aureuma-svelta-blog-${version_nov}.tgz"
 )
 
 for f in "${expected_files[@]}"; do

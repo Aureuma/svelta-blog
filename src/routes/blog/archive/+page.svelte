@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { BlogCard, Container } from '@aureuma/svelta';
+	import { BlogCard, Container } from '@aureuma/svelta-blog';
 	import type { BlogArchiveGroup } from '$lib/types/blog';
 
 	let { data } = $props<{

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Avatar, BlogCard, Container } from '@aureuma/svelta';
+	import { Avatar, BlogCard, Container } from '@aureuma/svelta-blog';
 	import type { BlogAuthorSummary, BlogPost } from '$lib/types/blog';
 
 	let { data } = $props<{
