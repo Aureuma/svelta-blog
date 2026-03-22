@@ -4,6 +4,9 @@ date: "2026-02-04"
 category: "Best practices"
 author: "shawn"
 cover: "/blog/covers/rss.svg"
+series:
+  title: "SvelteKit Publishing System"
+  description: "A multi-part track covering the content pipeline, presentation layer, and delivery mechanics for a modern SvelteKit publication."
 tags:
   - "RSS"
   - "SEO"
@@ -22,4 +25,3 @@ If you have a blog, you should have RSS. It’s a low-effort, high-trust feature
 ## A note on HTML
 
 RSS readers vary. Keep the description **plain text** (the excerpt) and let the post page carry the rich formatting.
-

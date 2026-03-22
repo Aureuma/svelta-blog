@@ -22,10 +22,31 @@
       {/if}
 
       <a
+        href="/blog/search"
+        class="text-xs font-mono uppercase tracking-[0.6px] text-text-sub transition hover:text-text-main"
+      >
+        Search
+      </a>
+
+      <a
+        href="/blog/tags"
+        class="text-xs font-mono uppercase tracking-[0.6px] text-text-sub transition hover:text-text-main"
+      >
+        Tags
+      </a>
+
+      <a
         href="/blog/authors"
         class="text-xs font-mono uppercase tracking-[0.6px] text-text-sub transition hover:text-text-main"
       >
         Authors
+      </a>
+
+      <a
+        href="/blog/series"
+        class="text-xs font-mono uppercase tracking-[0.6px] text-text-sub transition hover:text-text-main"
+      >
+        Series
       </a>
 
       <AppearanceSwitcher controller={appearance} />

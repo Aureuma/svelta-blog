@@ -5,6 +5,9 @@ category: "Engineering"
 author: "shawn"
 cover: "/blog/covers/blog-style.svg"
 featured: true
+series:
+  title: "SvelteKit Publishing System"
+  description: "A multi-part track covering the content pipeline, presentation layer, and delivery mechanics for a modern SvelteKit publication."
 tags:
   - "SvelteKit"
   - "mdsvex"

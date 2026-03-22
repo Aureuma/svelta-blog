@@ -5,8 +5,11 @@
   const navItems = [
     { label: 'Home', href: '/' },
     { label: 'Blog', href: '/blog' },
+    { label: 'Search', href: '/blog/search' },
+    { label: 'Tags', href: '/blog/tags' },
     { label: 'Archive', href: '/blog/archive' },
-    { label: 'Authors', href: '/blog/authors' }
+    { label: 'Authors', href: '/blog/authors' },
+    { label: 'Series', href: '/blog/series' }
   ];
 
   function isActive(path: string) {
@@ -27,11 +30,11 @@
       </span>
     </a>
 
-    <nav class="flex items-center gap-6 text-sm">
+    <nav class="flex items-center gap-1 rounded-full border border-border-soft/10 bg-background-soft/70 p-1 text-sm shadow-[0_1px_0_rgba(255,255,255,0.04)_inset]">
       {#each navItems as item (item.href)}
         <a
           href={item.href}
-          class="transition hover:text-text-main {isActive(item.href) ? 'text-text-main' : 'text-text-sub'}"
+          class="rounded-full px-3 py-2 text-[11px] font-medium uppercase tracking-[0.12em] transition {isActive(item.href) ? 'bg-background-main text-text-main' : 'text-text-sub hover:bg-background-main/60 hover:text-text-main'}"
         >
           {item.label}
         </a>

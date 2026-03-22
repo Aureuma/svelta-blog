@@ -4,6 +4,9 @@ date: "2026-02-01"
 category: "Engineering"
 author: "alex"
 cover: "/blog/covers/markdown-pipeline.svg"
+series:
+  title: "SvelteKit Publishing System"
+  description: "A multi-part track covering the content pipeline, presentation layer, and delivery mechanics for a modern SvelteKit publication."
 tags:
   - "Markdown"
   - "Shiki"

@@ -4,6 +4,8 @@
 	import { BlogCard, BlogHeroCard, Container, TagTabs } from '@aureuma/svelta-blog';
 	import type { BlogPost } from '$lib/types/blog';
 	import SearchIcon from '@lucide/svelte/icons/search';
+	import XIcon from '@lucide/svelte/icons/x';
+	import KeyboardIcon from '@lucide/svelte/icons/keyboard';
 	import { tick } from 'svelte';
 
 	let { data } = $props<{
@@ -19,9 +21,13 @@
 		};
 	}>();
 
-	let posts = $state<BlogPost[]>([]);
-	let offset = $state(0);
-	let hasMore = $state(false);
+	const getInitialPosts = () => data.initialPosts;
+	const getInitialOffset = () => data.initialPosts.length;
+	const getInitialHasMore = () => data.hasMore;
+
+	let posts = $state<BlogPost[]>(getInitialPosts());
+	let offset = $state(getInitialOffset());
+	let hasMore = $state(getInitialHasMore());
 	let loading = $state(false);
 	let sentinel: HTMLDivElement | null = $state(null);
 	let searchOpen = $state(false);
@@ -36,8 +42,11 @@
 		return data.allPosts.filter((post: BlogPost) => {
 			const haystack = [
 				post.title,
+				post.excerpt,
+				post.category.label,
 				post.author.name,
 				post.author.title,
+				post.dateLong,
 				...(post.tags ?? [])
 			]
 				.join(' ')
@@ -45,6 +54,9 @@
 			return haystack.includes(normalizedQuery);
 		});
 	});
+	const resultLabel = $derived(
+		`${visiblePosts.length} result${visiblePosts.length === 1 ? '' : 's'}${isSearching ? ` for “${searchQuery.trim()}”` : ''}`
+	);
 
 	$effect(() => {
 		posts = data.initialPosts;
@@ -59,9 +71,33 @@
 		searchInput?.focus();
 	}
 
+	function clearSearch() {
+		searchQuery = '';
+		searchOpen = false;
+	}
+
 	function collapseSearch() {
 		if (searchQuery.trim()) return;
 		searchOpen = false;
+	}
+
+	function handleKeydown(event: KeyboardEvent) {
+		const target = event.target as HTMLElement | null;
+		const isTypingTarget =
+			target instanceof HTMLInputElement ||
+			target instanceof HTMLTextAreaElement ||
+			target?.isContentEditable;
+
+		if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+			event.preventDefault();
+			void openSearch();
+			return;
+		}
+
+		if (event.key === '/' && !isTypingTarget) {
+			event.preventDefault();
+			void openSearch();
+		}
 	}
 
 	function selectTag(slug: string) {
@@ -103,7 +139,7 @@
 
 		const io = new IntersectionObserver(
 			(entries) => {
-				if (entries.some((entry) => entry.isIntersecting)) loadMore();
+				if (entries.some((entry) => entry.isIntersecting)) void loadMore();
 			},
 			{ rootMargin: '1000px 0px' }
 		);
@@ -113,22 +149,26 @@
 	});
 </script>
 
+<svelte:window onkeydown={handleKeydown} />
+
+<svelte:head>
+	<title>svelta Blog</title>
+	<meta
+		name="description"
+		content="A focused markdown blog system with author pages, archive views, richer discovery, and RSS."
+	/>
+</svelte:head>
+
 <Container>
 	<BlogHeroCard post={data.hero} />
 
-	<div class="flex items-center justify-between gap-4">
+	<div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
 		<div class="min-w-0 flex-1">
 			<TagTabs categories={data.tags} selected={data.selectedTag} onSelect={selectTag} />
 		</div>
 
 		<div class="flex shrink-0 items-center gap-2">
-			<div
-				class:search-shell-open={searchOpen}
-				class="search-shell"
-				role="search"
-				onmouseenter={openSearch}
-				onmouseleave={collapseSearch}
-			>
+			<div class:search-shell-open={searchOpen} class="search-shell" role="search">
 				<button
 					type="button"
 					class="search-trigger"
@@ -144,19 +184,29 @@
 						bind:value={searchQuery}
 						type="search"
 						class="search-field"
-						placeholder="Search by topic, title, or author"
-						aria-label="Search by topic, title, or author"
+						placeholder="Search by topic, excerpt, title, or author"
+						aria-label="Search by topic, excerpt, title, or author"
 						onfocus={openSearch}
 						onblur={collapseSearch}
 						onkeydown={(event) => {
 							if (event.key === 'Escape') {
-								searchQuery = '';
+								clearSearch();
 								searchInput?.blur();
-								collapseSearch();
 							}
 						}}
 					/>
 				</div>
+
+				<div class="search-shortcut" aria-hidden="true">
+					<KeyboardIcon class="size-3.5" />
+					<span>⌘K</span>
+				</div>
+
+				{#if isSearching}
+					<button type="button" class="search-clear" aria-label="Clear search" onclick={clearSearch}>
+						<XIcon class="size-3.5" />
+					</button>
+				{/if}
 			</div>
 
 			{#if data.showRss}
@@ -176,12 +226,26 @@
 		</div>
 	</div>
 
+	<div class="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-border-soft/10 pt-4">
+		<p class="text-xs font-mono uppercase tracking-[0.16em] text-text-muted">{resultLabel}</p>
+		{#if isSearching}
+			<button
+				type="button"
+				class="inline-flex items-center gap-2 rounded-full border border-border-soft/10 bg-background-soft px-3 py-1.5 text-xs font-medium text-text-sub transition hover:text-text-main"
+				onclick={clearSearch}
+			>
+				<XIcon class="size-3.5" />
+				Reset search
+			</button>
+		{/if}
+	</div>
+
 	<section class="pb-32 pt-8">
 		<div class="grid grid-cols-1 gap-x-5 gap-y-12 md:grid-cols-2">
 			{#if visiblePosts.length === 0}
 				<p class="text-sm leading-6 text-text-sub">
 					{#if isSearching}
-						No posts match that title, topic, or author yet.
+						No posts match that title, excerpt, topic, or author yet.
 					{:else}
 						No posts in this tag yet.
 					{/if}
@@ -231,12 +295,13 @@
 	}
 
 	.search-shell-open {
-		width: min(22rem, calc(100vw - 6.5rem));
+		width: min(28rem, calc(100vw - 4rem));
 		border-color: color-mix(in srgb, var(--color-text-main, #0f172a) 10%, var(--color-border, #d8dde4));
 		box-shadow: 0 16px 40px -26px rgba(15, 23, 42, 0.5);
 	}
 
-	.search-trigger {
+	.search-trigger,
+	.search-clear {
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
@@ -254,7 +319,8 @@
 			transform 180ms ease;
 	}
 
-	.search-trigger:hover {
+	.search-trigger:hover,
+	.search-clear:hover {
 		color: var(--color-text-main, #101828);
 		background: color-mix(in srgb, var(--color-text-main, #101828) 6%, transparent);
 		transform: translateY(-1px);
@@ -281,7 +347,7 @@
 		inline-size: 100%;
 		border: 0;
 		background: transparent;
-		padding-right: 0.85rem;
+		padding-right: 0.2rem;
 		font-size: 0.9rem;
 		color: var(--color-text-main, #101828);
 		outline: none;
@@ -289,6 +355,21 @@
 
 	.search-field::placeholder {
 		color: var(--color-text-muted, #8b94a3);
+	}
+
+	.search-shortcut {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.25rem;
+		padding-inline: 0.55rem;
+		height: 1.75rem;
+		border-radius: 999px;
+		background: color-mix(in srgb, var(--color-text-main, #101828) 4%, transparent);
+		color: var(--color-text-muted, #8b94a3);
+		font-size: 0.7rem;
+		font-weight: 600;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
 	}
 
 	.blog-feed-item {
@@ -308,19 +389,24 @@
 		}
 	}
 
+	@media (max-width: 640px) {
+		.search-shell-open {
+			width: min(100%, calc(100vw - 2rem));
+		}
+
+		.search-shortcut {
+			display: none;
+		}
+	}
+
 	@media (prefers-reduced-motion: reduce) {
 		.search-shell,
 		.search-field-wrap,
 		.search-trigger,
+		.search-clear,
 		.blog-feed-item {
 			animation: none;
 			transition: none;
-		}
-	}
-
-	@media (max-width: 640px) {
-		.search-shell-open {
-			width: min(17rem, calc(100vw - 5.25rem));
 		}
 	}
 </style>
