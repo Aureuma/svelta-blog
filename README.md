@@ -26,7 +26,7 @@ Markdown posts live in `src/content/blog/*.md`.
 ## Development
 
 ```sh
-npm run dev
+pnpm run dev
 ```
 
 ## Package
