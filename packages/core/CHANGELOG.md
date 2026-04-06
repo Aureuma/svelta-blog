@@ -1,4 +1,4 @@
-# svelta Core Changelog
+# svelta-blog Core Changelog
 
 All notable changes to this package will be documented in this file.
 

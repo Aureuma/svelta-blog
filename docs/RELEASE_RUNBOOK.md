@@ -88,5 +88,5 @@ Fallback local path (only if needed):
   - `pnpm view @aureuma/svelta-blog version`
 
 Expected release assets:
-- `aureuma-svelta-<version>.tgz`
+- `aureuma-svelta-blog-<version>.tgz`
 - `checksums.txt`
