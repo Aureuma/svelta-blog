@@ -5,7 +5,7 @@ test('blog index renders hero, tags, search, and paginates', async ({ page }) =>
 
   await expect(page.getByTestId('blog-hero')).toBeVisible();
   await expect(page.getByTestId('blog-tags')).toBeVisible();
-  await expect(page.getByLabel('Search by topic, title, or author')).toHaveCount(1);
+  await expect(page.getByLabel('Search by topic, excerpt, title, or author')).toHaveCount(1);
 
   const cards = page.getByTestId('blog-card');
   await expect(cards).toHaveCount(8);
@@ -33,8 +33,8 @@ test('post page renders summary, shiki blocks, and more posts', async ({ page })
   await expect.poll(async () => page.locator('.blog-prose .heading-anchor').count()).toBeGreaterThan(0);
   await expect(page.getByTestId('blog-more-posts')).toBeVisible();
   await expect(page.getByText('More posts to read')).toBeVisible();
-  await expect(page.getByText('Previous')).toHaveCount(0);
-  await expect(page.getByText('Next')).toHaveCount(0);
+  await expect(page.getByText('Previous article')).toHaveCount(1);
+  await expect(page.getByText('Next article')).toHaveCount(1);
 });
 
 test('blog taxonomy pages render archive and authors', async ({ page }) => {
