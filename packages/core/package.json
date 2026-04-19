@@ -1,6 +1,5 @@
 {
   "name": "@aureuma/svelta-blog-core",
-  "version": "0.5.2",
   "private": true,
   "type": "module",
   "files": [
