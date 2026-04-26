@@ -52,7 +52,7 @@
   ],
   "scripts": {
     "build": "svelte-package --tsconfig ./tsconfig.json",
-    "prepack": "npm run build"
+    "prepack": "pnpm build"
   },
   "peerDependencies": {
     "svelte": "^4.0.0 || ^5.0.0"

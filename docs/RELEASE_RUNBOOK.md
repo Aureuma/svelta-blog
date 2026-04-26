@@ -9,8 +9,8 @@ This repository uses Git tags + GitHub Releases + npm publish. Follow this order
 - You can push tags and create releases in GitHub
 - You are authenticated to npm for `@aureuma`
 - npm publish access is confirmed:
-  - `npm whoami`
-  - `npm access ls-packages <your-npm-user-or-team> | grep '@aureuma/svelta-blog'`
+  - `corepack pnpm npm whoami`
+  - `corepack pnpm npm access ls-packages <your-npm-user-or-team> | grep '@aureuma/svelta-blog'`
 
 ## 1. Decide Version
 
@@ -22,12 +22,12 @@ This repository uses Git tags + GitHub Releases + npm publish. Follow this order
 1. Edit `CHANGELOG.md` (repo-level release notes).
 1. Update `package.json` version to `X.Y.Z`.
 1. Regenerate lockfile metadata:
-   - `npm install --package-lock-only`
+   - `corepack pnpm install --lockfile-only`
 
 ## 3. Commit
 
 1. Commit release prep changes:
-   - `git add CHANGELOG.md package.json package-lock.json`
+   - `git add CHANGELOG.md package.json pnpm-lock.yaml`
    - `git commit -m "release: vX.Y.Z"`
 
 ## 4. Tag
@@ -64,7 +64,7 @@ Preferred path:
 Fallback local path (only if needed):
 
 1. `npm whoami`
-1. `npm publish --access public --provenance`
+1. `corepack pnpm publish --access public --provenance`
 
 ## 7. Create GitHub Release
 
@@ -85,7 +85,7 @@ Fallback local path (only if needed):
 - Verify uploaded assets:
   - `gh release view vX.Y.Z --json assets --jq '.assets[].name'`
 - Verify npm versions:
-  - `npm view @aureuma/svelta-blog version`
+  - `corepack pnpm view @aureuma/svelta-blog version`
 
 Expected release assets:
 - `aureuma-svelta-<version>.tgz`
