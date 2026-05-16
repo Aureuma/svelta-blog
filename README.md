@@ -32,5 +32,5 @@ corepack pnpm dev
 ## Package
 
 ```sh
-npm i @aureuma/svelta-blog
+corepack pnpm add @aureuma/svelta-blog
 ```

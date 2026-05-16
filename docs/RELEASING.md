@@ -48,7 +48,7 @@ corepack pnpm whoami
 Recommended npm permission check:
 
 ```bash
-npm access ls-packages <your-npm-user-or-team> | grep '@aureuma/svelta-blog'
+corepack pnpm access ls-packages <your-package-user-or-team> | grep '@aureuma/svelta-blog'
 ```
 
 ### 1) Determine version and release title
@@ -91,7 +91,7 @@ git push origin main
 git push origin vX.Y.Z
 ```
 
-### 7) Publish to npm (npmjs first)
+### 7) Publish package (npmjs first)
 
 ```bash
 corepack pnpm publish --access public

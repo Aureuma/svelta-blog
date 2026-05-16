@@ -7,10 +7,10 @@ This repository uses Git tags + GitHub Releases + corepack pnpm publish. Follow 
 - Local worktree is clean: `git status`
 - CI is green on `main`
 - You can push tags and create releases in GitHub
-- You are authenticated to npm for `@aureuma`
+- You are authenticated to the package registry for `@aureuma`
 - corepack pnpm publish access is confirmed:
   - `corepack pnpm corepack pnpm whoami`
-  - `corepack pnpm npm access ls-packages <your-npm-user-or-team> | grep '@aureuma/svelta-blog'`
+  - `corepack pnpm corepack pnpm access ls-packages <your-package-user-or-team> | grep '@aureuma/svelta-blog'`
 
 ## 1. Decide Version
 
@@ -50,7 +50,7 @@ Run:
 
 This confirms package tarballs and checksum generation before publishing a GitHub Release.
 
-## 6. Publish npm Package (npmjs)
+## 6. Publish package (npmjs)
 
 Preferred path:
 
@@ -84,7 +84,7 @@ Fallback local path (only if needed):
   - `gh release view vX.Y.Z --json tagName,name,publishedAt`
 - Verify uploaded assets:
   - `gh release view vX.Y.Z --json assets --jq '.assets[].name'`
-- Verify npm versions:
+- Verify package versions:
   - `corepack pnpm view @aureuma/svelta-blog version`
 
 Expected release assets:
