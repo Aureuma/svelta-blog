@@ -91,11 +91,11 @@ jobs:
 
       - name: Install Playwright browsers (Linux)
         if: matrix.os == 'ubuntu-latest'
-        run: npx playwright install --with-deps ${{ matrix.browser }}
+        run: corepack pnpm dlx playwright install --with-deps ${{ matrix.browser }}
 
       - name: Install Playwright browsers (macOS)
         if: matrix.os == 'macos-latest'
-        run: npx playwright install ${{ matrix.browser }}
+        run: corepack pnpm dlx playwright install ${{ matrix.browser }}
 
       - name: End-to-end tests
         run: pnpm test:guard && pnpm exec playwright test --project=${{ matrix.project }}

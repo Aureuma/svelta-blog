@@ -58,7 +58,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          npm ci
+          corepack pnpm install --frozen-lockfile
 
       - name: Validate release tag and package versions
         shell: bash

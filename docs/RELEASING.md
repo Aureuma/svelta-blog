@@ -42,7 +42,7 @@ git status -sb
 git fetch --tags origin
 git switch main
 git pull --ff-only
-npm whoami
+corepack pnpm whoami
 ```
 
 Recommended npm permission check:
@@ -65,13 +65,13 @@ npm access ls-packages <your-npm-user-or-team> | grep '@aureuma/svelta-blog'
 
 Update:
 - `package.json`
-- `package-lock.json` (`npm install --package-lock-only`)
+- `package-lock.json` (`corepack pnpm install --package-lock-only`)
 
 ### 4) Validate + build release artifacts locally
 
 ```bash
-npm ci
-npm run check
+corepack pnpm install --frozen-lockfile
+corepack pnpm check
 tools/release/validate-release-version.sh --tag vX.Y.Z
 tools/release/build-npm-release-assets.sh --version vX.Y.Z --out-dir .artifacts/release-preflight
 ```
@@ -94,11 +94,11 @@ git push origin vX.Y.Z
 ### 7) Publish to npm (npmjs first)
 
 ```bash
-npm publish --access public
-npm view @aureuma/svelta-blog version
+corepack pnpm publish --access public
+corepack pnpm view @aureuma/svelta-blog version
 ```
 
-If npm publish fails, stop here and fix before creating a GitHub Release.
+If corepack pnpm publish fails, stop here and fix before creating a GitHub Release.
 
 ### 8) Create GitHub Release
 
@@ -121,7 +121,7 @@ gh release create vX.Y.Z \
 ```bash
 gh release view vX.Y.Z --web
 gh release view vX.Y.Z --json assets --jq '.assets[].name'
-npm view @aureuma/svelta-blog version
+corepack pnpm view @aureuma/svelta-blog version
 ```
 
 ## Automated release assets

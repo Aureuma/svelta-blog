@@ -1,6 +1,6 @@
 # Release Runbook
 
-This repository uses Git tags + GitHub Releases + npm publish. Follow this order to avoid partial or inconsistent releases.
+This repository uses Git tags + GitHub Releases + corepack pnpm publish. Follow this order to avoid partial or inconsistent releases.
 
 ## Preconditions
 
@@ -8,8 +8,8 @@ This repository uses Git tags + GitHub Releases + npm publish. Follow this order
 - CI is green on `main`
 - You can push tags and create releases in GitHub
 - You are authenticated to npm for `@aureuma`
-- npm publish access is confirmed:
-  - `corepack pnpm npm whoami`
+- corepack pnpm publish access is confirmed:
+  - `corepack pnpm corepack pnpm whoami`
   - `corepack pnpm npm access ls-packages <your-npm-user-or-team> | grep '@aureuma/svelta-blog'`
 
 ## 1. Decide Version
@@ -59,11 +59,11 @@ Preferred path:
    - `NPM_TOKEN` secret is set in GitHub Actions, or
    - npm trusted publishing (OIDC) is configured for this repo/package.
 1. Verify publish resolved on npmjs:
-   - `npm view @aureuma/svelta-blog version`
+   - `corepack pnpm view @aureuma/svelta-blog version`
 
 Fallback local path (only if needed):
 
-1. `npm whoami`
+1. `corepack pnpm whoami`
 1. `corepack pnpm publish --access public --provenance`
 
 ## 7. Create GitHub Release
