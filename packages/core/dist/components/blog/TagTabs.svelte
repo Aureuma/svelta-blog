@@ -57,11 +57,11 @@
 		<div bind:this={railEl} class="relative inline-flex min-w-max items-center gap-1 whitespace-nowrap pr-3">
 			{#if indicatorReady}
 				<span
-					class="pointer-events-none absolute bottom-[2px] top-[2px] z-[0] rounded-full border border-border-soft/15 bg-background-soft/90 shadow-[0_10px_20px_-14px_rgba(8,14,24,0.75)] transition-[left,width] duration-500 ease-[cubic-bezier(0.2,0.9,0.2,1)]"
+					class="pointer-events-none absolute bottom-[2px] top-[2px] z-[0] rounded-full border border-border-soft/15 bg-background-soft/90 shadow-[0_10px_20px_-14px_rgba(8,14,24,0.75)] transition-[left,width] duration-500 [transition-timing-function:cubic-bezier(0.2,0.9,0.2,1)]"
 					style={`left:${indicatorLeft}px;width:${indicatorWidth}px;`}
 				></span>
 				<span
-					class="pointer-events-none absolute bottom-[3px] top-[3px] z-[0] rounded-full bg-background-main/60 blur-[7px] transition-[left,width] duration-500 ease-[cubic-bezier(0.2,0.9,0.2,1)]"
+					class="pointer-events-none absolute bottom-[3px] top-[3px] z-[0] rounded-full bg-background-main/60 blur-[7px] transition-[left,width] duration-500 [transition-timing-function:cubic-bezier(0.2,0.9,0.2,1)]"
 					style={`left:${indicatorLeft}px;width:${indicatorWidth}px;`}
 				></span>
 			{/if}
