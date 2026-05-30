@@ -82,6 +82,16 @@ test('rss feed is valid xml-ish and links do not include .md', async ({ request 
   expect(body).not.toContain('.md</link>');
 });
 
+test('sitemap uses canonical blog tag URLs', async ({ request }) => {
+  const res = await request.get('/sitemap.xml');
+  expect(res.ok()).toBeTruthy();
+
+  const body = await res.text();
+  expect(body).toContain('/blog?tag=launch');
+  expect(body).not.toContain('/blog/tags</loc>');
+  expect(body).not.toContain('/blog/tags/');
+});
+
 test('mobile layout folds share UI into the content column', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/blog/ai-summary-cards-with-frontmatter');

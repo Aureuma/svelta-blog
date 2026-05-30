@@ -1,8 +1,8 @@
 {
   "name": "@aureuma/svelta-blog",
   "private": false,
-  "version": "0.7.6",
-  "packageManager": "pnpm@latest",
+  "version": "0.7.7",
+  "packageManager": "pnpm@10.33.0",
   "type": "module",
   "files": [
     "packages/core/dist",

@@ -13,6 +13,7 @@ cover: /blog/covers/launch.svg
 excerpt: Release recap.
 tags:
   - release
+  - roadmap
 featured: true
 ---
 
@@ -62,10 +63,11 @@ test('createRawBlog builds post indexes and filters drafts', async () => {
   const posts = await blog.getAllPosts();
   assert.equal(posts.length, 2);
   assert.deepEqual(posts.map((post) => post.slug), ['launch', 'notes']);
+  assert.deepEqual(posts[0].tags, ['release']);
 
-	const tags = await blog.getAllTags();
-	assert.equal(tags.length, 1);
-	assert.equal(tags[0].slug, 'release');
+  const tags = await blog.getAllTags();
+  assert.equal(tags.length, 1);
+  assert.equal(tags[0].slug, 'release');
 
   const hero = await blog.pickHero(posts);
   assert.equal(hero.slug, 'launch');
@@ -87,4 +89,23 @@ test('createRawBlog returns content and related metadata', async () => {
   const related = await blog.getRelatedPosts('launch', 1);
   assert.equal(related.length, 1);
   assert.equal(related[0].slug, 'notes');
+});
+
+test('createRawBlog supports opt-in multi-tag raw posts', async () => {
+  const blog = createRawBlog({
+    rawModules,
+    getAuthor,
+    allowMultipleTags: true,
+    renderMarkdown: async (markdown) => `<article>${markdown.trim()}</article>`
+  });
+
+  const post = await blog.getPostBySlug('launch');
+  assert.ok(post);
+  assert.deepEqual(post.tags, ['release', 'roadmap']);
+
+  const tags = await blog.getAllTags();
+  assert.deepEqual(tags.map((tag) => tag.slug), ['release', 'roadmap']);
+
+  const roadmapPosts = await blog.getPostsByTag('roadmap');
+  assert.deepEqual(roadmapPosts.map((roadmapPost) => roadmapPost.slug), ['launch']);
 });

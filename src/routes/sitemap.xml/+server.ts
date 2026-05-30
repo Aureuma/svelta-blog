@@ -36,11 +36,10 @@ export const GET: RequestHandler = async ({ url }) => {
 		{ path: '/blog/series', lastmod: posts[0]?.date },
 		{ path: '/manifest.webmanifest', lastmod: posts[0]?.date },
 		{ path: '/blog/authors', lastmod: authorSummaries[0]?.latestPostDate },
-		{ path: '/blog/tags', lastmod: posts[0]?.date },
 		{ path: '/feed.json', lastmod: posts[0]?.date },
 		{ path: '/llms.txt', lastmod: posts[0]?.date },
 		...posts.map((post) => ({ path: `/blog/${post.slug}`, lastmod: post.date })),
-		...tags.map((tag) => ({ path: `/blog/tags/${tag.slug}`, lastmod: posts[0]?.date })),
+		...tags.map((tag) => ({ path: `/blog?tag=${tag.slug}`, lastmod: posts[0]?.date })),
 		...series.map((entry) => ({ path: `/blog/series/${entry.id}`, lastmod: entry.posts.at(-1)?.date ?? posts[0]?.date })),
 		...authorSummaries.map((author) => ({
 			path: `/blog/authors/${author.author.id}`,
