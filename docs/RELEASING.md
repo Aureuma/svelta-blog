@@ -65,7 +65,7 @@ corepack pnpm access ls-packages <your-package-user-or-team> | grep '@aureuma/sv
 
 Update:
 - `package.json`
-- `package-lock.json` (`corepack pnpm install --package-lock-only`)
+- `pnpm-lock.yaml` (`corepack pnpm install --lockfile-only`)
 
 ### 4) Validate + build release artifacts locally
 
@@ -79,7 +79,7 @@ tools/release/build-npm-release-assets.sh --version vX.Y.Z --out-dir .artifacts/
 ### 5) Commit + tag
 
 ```bash
-git add CHANGELOG.md package.json package-lock.json
+git add CHANGELOG.md package.json pnpm-lock.yaml
 git commit -m "release: vX.Y.Z"
 git tag -a vX.Y.Z -m "vX.Y.Z"
 ```
