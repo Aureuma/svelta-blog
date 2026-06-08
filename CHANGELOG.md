@@ -4,6 +4,11 @@ All notable changes to this repository are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project follows [Semantic Versioning](https://semver.org/).
 
+## [v0.7.15] - 2026-06-08
+### Changed
+- Added blog search input test identifier for deterministic E2E automation (`blog-search-input`).
+- Added desktop search polish coverage for open/search/reset flows and visible result labels.
+
 ## [v0.7.14] - 2026-06-08
 ### Changed
 - Added blog keyboard shortcut coverage for opening search (`/` and Ctrl/Cmd+K).

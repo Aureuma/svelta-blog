@@ -117,6 +117,18 @@ test('mobile search shell opens and filters by query', async ({ page }) => {
   await expect(page.getByLabel('Search by topic, excerpt, title, or author')).toHaveValue('');
 });
 
+test('desktop search shell renders and responds to clear action', async ({ page }) => {
+  await page.goto('/blog');
+
+  await page.getByTestId('blog-search-trigger').click();
+  const input = page.getByTestId('blog-search-input');
+  await expect(input).toBeVisible();
+  await input.fill('svelta');
+  await expect(page.getByText('results for “svelta”')).toBeVisible();
+  await page.getByRole('button', { name: 'Reset search' }).click();
+  await expect(input).toHaveValue('');
+});
+
 test('keyboard shortcuts open the blog search shell', async ({ page }) => {
   await page.goto('/blog');
 

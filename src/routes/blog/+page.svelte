@@ -184,6 +184,7 @@
 						bind:this={searchInput}
 						bind:value={searchQuery}
 						type="search"
+						data-testid="blog-search-input"
 						class="search-field"
 						placeholder="Search by topic, excerpt, title, or author"
 						aria-label="Search by topic, excerpt, title, or author"
