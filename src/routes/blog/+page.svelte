@@ -173,6 +173,7 @@
 					type="button"
 					class="search-trigger"
 					aria-label="Search blog posts"
+					data-testid="blog-search-trigger"
 					onclick={openSearch}
 				>
 					<SearchIcon class="size-4" />

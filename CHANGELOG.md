@@ -4,6 +4,15 @@ All notable changes to this repository are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project follows [Semantic Versioning](https://semver.org/).
 
+## [v0.7.14] - 2026-06-08
+### Changed
+- Added blog keyboard shortcut coverage for opening search (`/` and Ctrl/Cmd+K).
+- Expanded Playwright assertions for search shell visibility and reset behavior.
+
+## [v0.7.13] - 2026-06-08
+### Changed
+- Added a stable blog search trigger test ID and improved accessibility labeling for search affordance parity.
+
 ## [v0.7.12] - 2026-06-08
 ### Changed
 - Added Playwright coverage for the mobile blog search shell (open/filter/clear) behavior.

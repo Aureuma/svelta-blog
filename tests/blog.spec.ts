@@ -5,6 +5,7 @@ test('blog index renders hero, tags, search, and paginates', async ({ page }) =>
 
   await expect(page.getByTestId('blog-hero')).toBeVisible();
   await expect(page.getByTestId('blog-tags')).toBeVisible();
+  await expect(page.getByTestId('blog-search-trigger')).toBeVisible();
   await expect(page.getByLabel('Search by topic, excerpt, title, or author')).toHaveCount(1);
 
   const cards = page.getByTestId('blog-card');
@@ -114,4 +115,17 @@ test('mobile search shell opens and filters by query', async ({ page }) => {
 
   await page.getByRole('button', { name: 'Clear search' }).click();
   await expect(page.getByLabel('Search by topic, excerpt, title, or author')).toHaveValue('');
+});
+
+test('keyboard shortcuts open the blog search shell', async ({ page }) => {
+  await page.goto('/blog');
+
+  await page.keyboard.press('/');
+  await expect(page.getByLabel('Search by topic, excerpt, title, or author')).toBeVisible();
+
+  await page.keyboard.press('Escape');
+  await expect(page.getByLabel('Search by topic, excerpt, title, or author')).toHaveValue('');
+
+  await page.keyboard.press('Control+K');
+  await expect(page.getByLabel('Search by topic, excerpt, title, or author')).toBeVisible();
 });
