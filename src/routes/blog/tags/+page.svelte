@@ -14,6 +14,14 @@
 	);
 </script>
 
+<svelte:head>
+	<title>Tags | svelta Blog</title>
+	<meta
+		name="description"
+		content="Browse every tag used across the svelta blog and jump straight to related posts."
+	/>
+</svelte:head>
+
 <Container>
 	<section class="pb-24 pt-14" data-testid="blog-tags-page">
 		<p class="text-xs font-mono uppercase tracking-[0.6px] text-text-muted">Blog tags</p>
