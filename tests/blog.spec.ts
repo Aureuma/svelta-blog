@@ -39,7 +39,8 @@ test('post page renders summary, shiki blocks, and more posts', async ({ page })
 
 test('blog taxonomy pages render archive and authors', async ({ page }) => {
   await page.goto('/blog/tags');
-  await expect(page).toHaveURL(/\/blog\/?$/);
+  await expect(page.getByTestId('blog-tags-page')).toBeVisible();
+  await expect(page).toHaveURL(/\/blog\/tags$/);
 
   await page.goto('/blog/tags/release');
   await expect(page).toHaveURL(/\/blog\/?\?tag=release$/);

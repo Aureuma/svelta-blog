@@ -1,9 +1,25 @@
 <script lang="ts">
-	let { status } = $props<{ status: number }>();
+	type BlogError = {
+		status?: unknown;
+		message?: string;
+	};
 
-	const title = $derived(status === 404 ? 'Page not found' : 'Something went wrong');
+	let { status, error } = $props<{ status?: number; error?: BlogError }>();
+
+	const statusCode = $derived.by(() => {
+		const fromStatus = Number(status ?? error?.status);
+		if (Number.isInteger(fromStatus)) return fromStatus;
+
+		const message = error?.message?.toLowerCase();
+		if (message?.includes('not found')) return 404;
+
+		return 0;
+	});
+	const isNotFound = $derived(statusCode === 404);
+
+	const title = $derived(isNotFound ? 'Page not found' : 'Something went wrong');
 	const description = $derived(
-		status === 404
+		isNotFound
 			? 'The page you requested is not part of the blog surface anymore or the URL is wrong.'
 			: 'The blog hit an unexpected error while rendering this request.'
 	);
