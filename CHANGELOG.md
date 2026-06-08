@@ -4,6 +4,10 @@ All notable changes to this repository are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project follows [Semantic Versioning](https://semver.org/).
 
+## [v0.7.12] - 2026-06-08
+### Changed
+- Added Playwright coverage for the mobile blog search shell (open/filter/clear) behavior.
+
 ## [v0.7.0] - 2026-04-26
 ### Changed
 - Standardized the repository on a single root package version and removed the internal workspace package version.

@@ -100,3 +100,18 @@ test('mobile layout folds share UI into the content column', async ({ page }) =>
   await expect(page.getByTestId('blog-share-mobile')).toBeVisible();
   await expect(page.getByTestId('blog-share-desktop')).toBeHidden();
 });
+
+test('mobile search shell opens and filters by query', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/blog');
+
+  await expect(page.getByRole('button', { name: 'Search blog posts' })).toBeVisible();
+  await page.getByRole('button', { name: 'Search blog posts' }).click();
+  await expect(page.getByLabel('Search by topic, excerpt, title, or author')).toBeVisible();
+
+  await page.getByLabel('Search by topic, excerpt, title, or author').fill('svelta');
+  await expect(page.getByText('for “svelta”')).toBeVisible();
+
+  await page.getByRole('button', { name: 'Clear search' }).click();
+  await expect(page.getByLabel('Search by topic, excerpt, title, or author')).toHaveValue('');
+});
